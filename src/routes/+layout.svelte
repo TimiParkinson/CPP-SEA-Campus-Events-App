@@ -1,4 +1,5 @@
 <script>
+  import '$css'; 
   import { page } from '$app/stores';
   import { Button } from '$lib/components/ui/button/index.js';
   import * as NavigationMenu from '$lib/components/ui/navigation-menu/index.js';
