@@ -2,21 +2,11 @@
     <h1>Your Events</h1>
 
     <div id="selectionTabs" style="display:flex">
-        <div id="tab">
-            <p> E-Sports </p>
-        </div>
-        <div id="tab">
-            <p> SEA Events </p>
-        </div>
-        <div id="tab">
-            <p> Workshops </p>
-        </div>
-        <div id="tab">
-            <p> Bronco Pride </p>
-        </div>
-        <div id="tab">
-            <p> NSBE Events </p>
-        </div>
+        <button class="button"><p style="margin-right:4px; margin-left:4px;">E-Sports</p></button>
+        <button class="button"><p style="margin-right:4px; margin-left:4px;">SEA Events</p></button>
+        <button class="button"><p style="margin-right:4px; margin-left:4px;">Workshops</p></button>
+        <button class="button"><p style="margin-right:4px; margin-left:4px;">Bronco Pride</p></button>
+        <button class="button"><p style="margin-right:4px; margin-left:4px;">NSBE Events</p></button>
     </div>
 
     <div id="eventTabs" style="display:flex">
@@ -38,8 +28,7 @@
 </main>
 <style>
     main{
-        margin-left: 4px;
-        height: 480px;
+        height: 100%;
     }
     h1{
         font-size: 2em;
@@ -48,7 +37,7 @@
         margin-left: 4px;
         margin-right: 4px;
     }
-    #tab{
+    .button{
         border-radius: 5px;
         border-width: 2px;
         border-color: rgb(193, 193, 193);
