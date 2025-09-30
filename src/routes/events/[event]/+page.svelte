@@ -72,10 +72,10 @@
             <Card.Title class="font-normal text-2xl"
                 >Description_Name</Card.Title
             >
-            <Card.Description>
+            <div class="text-sm text-muted-foreground">
                 <p>Location</p>
                 <p>Synopsis</p>
-            </Card.Description>
+            </div>
         </div>
     </Card.Header>
 
