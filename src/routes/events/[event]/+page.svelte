@@ -15,7 +15,7 @@
         synopsis: "Synopsis",
         labels: ["General", "Workshop"],
         rating: 4,
-        isFavorite: true,
+        isFavorite: false,
     };
 </script>
 
@@ -83,11 +83,17 @@
                 />
             {/each}
         </div>
-        <Heart
-            class="w-6 fill-[#625B71] stroke-[#625B71] {event.isFavorite
-                ? 'fill-[#FF2600] stroke-[#FF2600]'
-                : ''}"
-            strokeWidth="2.8"
-        />
+        <Button
+            class="cursor-pointer"
+            variant="ghost"
+            onclick={() => (event.isFavorite = !event.isFavorite)}
+        >
+            <Heart
+                class="size-4, {event.isFavorite
+                    ? 'fill-[#FF2600] stroke-[#FF2600]'
+                    : 'fill-[#625B71] stroke-[#625B71]'}"
+                strokeWidth="2.8"
+            />
+        </Button>
     </Card.Action>
 </Card.Root>
