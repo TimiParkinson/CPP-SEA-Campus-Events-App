@@ -34,9 +34,7 @@
 
     <Card.Content>
         <Card.Action class="space-x-2 flex items-center">
-            <Button
-                class="bg-[#F7F2FA] text-zinc-800 hover:bg-[#F7F2FA] hover:cursor-pointer"
-            >
+            <Button class="bg-[#F7F2FA] cursor-pointer" variant="ghost">
                 <CalendarPlus strokeWidth="2.8" />
                 Add</Button
             >
