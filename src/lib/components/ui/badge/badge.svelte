@@ -14,7 +14,7 @@
                 outline:
                     "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
                 buttonMimic:
-                    "h-9 px-4 py-2 has-[>svg]:px-3 bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 inline-flex items-center gap-2 rounded-md px-3 py-1 text-sm font-medium transition-colors bg-white/20 text-white border [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+                    "h-9 px-4 py-2 has-[>svg]:px-3 bg-primary text-primary-foreground shadow-xs inline-flex items-center gap-2 rounded-md px-3 py-1 text-sm font-medium transition-colors bg-white/20 text-white border [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
             },
         },
         defaultVariants: {
