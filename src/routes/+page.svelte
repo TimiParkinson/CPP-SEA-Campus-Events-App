@@ -12,7 +12,7 @@
     let subscriptions: Sub[] = [
         { name: 'SEA'}, {name: 'CPP Official' }, {name: 'NSBE' },
         {name: 'E=sports' }, { name: 'Anime'}, { name: 'UAV-SAR'},
-        {name: 'Chess' }
+        {name: 'Chess' },
     ];
 
     // Events list (mock data with title/date/location)
