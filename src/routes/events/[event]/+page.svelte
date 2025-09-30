@@ -4,6 +4,19 @@
     import * as Card from "$lib/components/ui/card/index.js";
 
     import { CalendarPlus, Clock, Heart, Star } from "@lucide/svelte";
+
+    // Static Values
+    const event = {
+        title: "SEA General Meeting",
+        organization: "SEA",
+        time: "12:00pm – 1:00pm",
+        description_name: "Description_Name",
+        location: "Location",
+        synopsis: "Synopsis",
+        labels: ["General", "Workshop"],
+        rating: 4,
+        isFavorite: true,
+    };
 </script>
 
 <!-- Event Header -->
@@ -12,9 +25,11 @@
 >
     <Card.Header>
         <Card.Title class="text-white text-5xl font-semibold"
-            >SEA General Meeting</Card.Title
+            >{event.title}</Card.Title
         >
-        <Card.Description class="text-[#F5EFF7]/80">SEA</Card.Description>
+        <Card.Description class="text-[#F5EFF7]/80"
+            >{event.organization}</Card.Description
+        >
     </Card.Header>
 
     <Card.Content>
@@ -26,7 +41,7 @@
                 Add</Button
             >
             <Badge variant="buttonMimic" class="bg-[#F7F2FA] text-zinc-800">
-                <Clock strokeWidth="2.8" />12:00pm - 1:00pm</Badge
+                <Clock strokeWidth="2.8" />{event.time}</Badge
             >
         </Card.Action>
     </Card.Content>
@@ -34,8 +49,12 @@
 
 <!-- Filters? -->
 <div class="flex justify-center gap-1 my-6">
-    <Button class="rounded-4xl w-32">Label</Button>
-    <Button variant="outline" class="rounded-4xl w-32">Label</Button>
+    {#each event.labels as label, i}
+        <Button
+            class="rounded-4xl w-32 cursor-pointer"
+            variant={i === 0 ? "default" : "outline"}>{label}</Button
+        >
+    {/each}
 </div>
 
 <!-- Description Cards -->
@@ -46,26 +65,31 @@
         <div class="w-20 h-20 bg-gray-200 rounded-lg"></div>
         <div class="space-y-2">
             <Card.Title class="font-normal text-2xl"
-                >Description_Name</Card.Title
+                >{event.description_name}</Card.Title
             >
             <div class="text-sm text-muted-foreground">
-                <p>Location</p>
-                <p>Synopsis</p>
+                <p>{event.location}</p>
+                <p>{event.synopsis}</p>
             </div>
         </div>
     </Card.Header>
 
     <Card.Action class="flex items-center gap-4">
         <div class="flex">
-            {#each Array(5) as _}
+            {#each Array(5) as _, i}
                 <Star
                     color="#625B71"
-                    fill="#625B71"
+                    fill={i < event.rating ? "#FFCC00" : "#625B71"}
                     strokeWidth="0"
                     class="w-5"
                 />
             {/each}
         </div>
-        <Heart color="#625B71" strokeWidth="2.8" class="w-6" />
+        <Heart
+            class="w-6 fill-[#625B71] stroke-[#625B71] {event.isFavorite
+                ? 'fill-[#FF2600] stroke-[#FF2600]'
+                : ''}"
+            strokeWidth="2.8"
+        />
     </Card.Action>
 </Card.Root>
