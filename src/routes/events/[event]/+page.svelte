@@ -21,7 +21,7 @@
 
 <!-- Event Header -->
 <Card.Root
-    class="flex justify-end h-60 gap-3 bg-linear-to-b from-gray-400 to-black rounded-4xl"
+    class="flex justify-end h-60 gap-3 border-none bg-linear-to-b from-gray-400 to-black rounded-4xl"
 >
     <Card.Header>
         <Card.Title class="text-white text-5xl font-semibold"
@@ -34,7 +34,7 @@
 
     <Card.Content>
         <Card.Action class="space-x-2 flex items-center">
-            <Button class="bg-[#F7F2FA] cursor-pointer" variant="ghost">
+            <Button class="bg-[#F7F2FA] cursor-pointer text-zinc-800">
                 <CalendarPlus strokeWidth="2.8" />
                 Add</Button
             >
@@ -57,7 +57,7 @@
 
 <!-- Description Cards -->
 <Card.Root
-    class="flex flex-row justify-between shadow-none rounded-none border-t-0 border-x-0 border-b-2"
+    class="flex flex-row justify-between bg-transparent shadow-none rounded-none border-t-0 border-x-0 border-b-2"
 >
     <Card.Header class="flex grow items-center gap-4 p-0">
         <div class="w-20 h-20 bg-gray-200 rounded-lg"></div>
