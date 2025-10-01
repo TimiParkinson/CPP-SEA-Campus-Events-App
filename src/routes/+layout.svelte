@@ -18,7 +18,7 @@
       const pathParts = routePath.split('/').filter(Boolean);
       if (pathParts.length > 1) return null;
       if (routePath === '/') return null; // Exclude home from navigation links
-      if (pathParts[0].startsWith('_')) return null; // Exclude routes
+      if (pathParts[0].startsWith('*')) return null; // Exclude routes
       const name = routePath === '/' 
         ? '' 
         : pathParts[0]
