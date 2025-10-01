@@ -34,7 +34,7 @@
 </script>
 
 <!-- Container for the whole page-->
- <div class ="mx-auto max-w-6xl px-4 py-6">
+<div class ="mx-auto max-w-6xl px-4 py-6">
     <!--Profile section-->
     <section class="flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -67,7 +67,6 @@
             <!--Link to a page that lists all subsriptions-->
             <a href="/subscriptions" class="text-sm underline">See all</a>
         </div>
-
         <!--Horizontal scroll roll-->
         <div class="flex gap-8 overflow-x-auto pb-2">
             {#if loading}
@@ -84,6 +83,7 @@
                 <!--Loop through subscriptions array and render each item as 's'-->  
                 {#each subscriptions as s}
                     <!--(Link to org page later)-->
+                    <!-- svelte-ignore a11y_invalid_attribute -->
                     <a class="shrink-0 w-24" href="#">
                         <!--Round logo container (empty for now put <img src ={s.logo})-->
                         <div class="mx-auto h-26 w-26 rounded-full bg-gray-200 overflow-hidden"></div>
@@ -94,4 +94,40 @@
             {/if}
         </div>     
     </section>
- </div>
+    
+    <!--Events Preview-->
+    <section class="mt-12">
+        <!-- Header row for this section-->
+        <div class="mb-2 flex items-center justify-between">
+            <!--Section Title-->
+            <h2 class="text-xl font-semibold">Your Events →</h2>
+            <!--Link to all page of events-->
+            <a href="/events" class="text-sm underline">See all</a>
+        </div>
+
+        <!-- Event cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {#if loading}
+                <!-- Skeleton cards while loading -->
+                {#each Array(3) as _}
+                    <div class="h-40 rounded-2xl bg-gray-200 animate-pulse"> </div>
+                {/each}
+            {:else}
+                <!-- Actual events -->
+                {#each events as e}
+                    <div class="rounded-2xl bg-gray-100 p-4 shadow">
+                    <!-- Image placeholder -->
+                     <div class="h-24 w-full rounded-lg bg-gray-300 mb-3"></div>
+
+                    <!-- Event details -->
+                    <h3 class="font-semibold truncate">{e.title}</h3>
+                    <p class="text-sm text-gray-600">{e.date}</p>
+                    {#if e.location}
+                        <p class="text-xs text-gray-500">{e.location}</p>
+                    {/if}
+                </div>
+                {/each}
+            {/if}
+        </div>
+    </section>
+</div>
