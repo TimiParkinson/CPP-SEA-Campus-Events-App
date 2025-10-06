@@ -1,13 +1,30 @@
 <script lang="ts">
-	import { allTags, filteredItems, tagFilter} from '$lib/stores/filters.js';
+	import { allTags, filteredItems, searchQuery, tagFilter } from '$lib/stores/filters.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { AlarmClock, Calendar, MapPin, UsersRound, X, type Icon as IconType } from '@lucide/svelte';
+	import * as InputGroup from '$lib/components/ui/input-group/index.js';
+	import {
+		AlarmClock,
+		Calendar,
+		MapPin,
+		Search,
+		UsersRound,
+		X,
+		type Icon as IconType
+	} from '@lucide/svelte';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 </script>
 
 <main>
-	<h1>Your Events</h1>
+	<h1 class="text-3xl mb-4">Your Events</h1>
+
+	<!-- Search Bar -->
+	<InputGroup.Root>
+		<InputGroup.Input placeholder="Search events..." value={$searchQuery} oninput={e => $searchQuery = e.currentTarget.value} />
+		<InputGroup.Addon>
+			<Search />
+		</InputGroup.Addon>
+	</InputGroup.Root>
 
 	<!-- Filters -->
 	<section class="my-6 flex gap-1">
@@ -84,7 +101,7 @@
 							{/if}
 
 							{#if true}
-								{@render eventDetail('Time', "12:00 - 1:00", AlarmClock)}
+								{@render eventDetail('Time', '12:00 - 1:00', AlarmClock)}
 							{/if}
 
 							{#if event.location}
@@ -95,12 +112,9 @@
 						</div>
 
 						<!-- Open Event -->
-						 <div class="mt-16">
-							<Button class="cursor-pointer" disabled>
-								View Full Event Details
-							</Button>
-						 </div>
-
+						<div class="mt-16">
+							<Button class="cursor-pointer" disabled>View Full Event Details</Button>
+						</div>
 					</section>
 				</Dialog.Content>
 			</Dialog.Root>
