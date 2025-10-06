@@ -35,7 +35,10 @@
 
 	<!-- Event Gallery -->
 	<section class="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
-		{#each $filteredItems as event}
+		{#if $filteredItems.length === 0}
+			<p>No events found</p>
+		{/if}
+		{#each $filteredItems as event (event.title)}
 			<Dialog.Root>
 				<Dialog.Trigger
 					class="cursor-pointer self-start"
