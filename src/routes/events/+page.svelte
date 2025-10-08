@@ -1,60 +1,155 @@
+<script lang="ts">
+	import { allTags, filteredItems, searchQuery, tagFilter } from '$lib/stores/filters.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import * as InputGroup from '$lib/components/ui/input-group/index.js';
+	import {
+		AlarmClock,
+		Calendar,
+		MapPin,
+		Search,
+		UsersRound,
+		X,
+		type Icon as IconType
+	} from '@lucide/svelte';
+	import Badge from '$lib/components/ui/badge/badge.svelte';
+</script>
+
 <main>
-    <h1>Your Events</h1>
+	<h1 class="text-3xl mb-4">Your Events</h1>
 
-    <div id="selectionTabs" style="display:flex">
-        <button class="button"><p style="margin-right:4px; margin-left:4px;">E-Sports</p></button>
-        <button class="button"><p style="margin-right:4px; margin-left:4px;">SEA Events</p></button>
-        <button class="button"><p style="margin-right:4px; margin-left:4px;">Workshops</p></button>
-        <button class="button"><p style="margin-right:4px; margin-left:4px;">Bronco Pride</p></button>
-        <button class="button"><p style="margin-right:4px; margin-left:4px;">NSBE Events</p></button>
-    </div>
+	<!-- Search Bar -->
+	<InputGroup.Root>
+		<InputGroup.Input placeholder="Search events..." value={$searchQuery} oninput={e => $searchQuery = e.currentTarget.value} />
+		<InputGroup.Addon>
+			<Search />
+		</InputGroup.Addon>
+	</InputGroup.Root>
 
-    <div id="eventTabs" style="display:flex">
-        <div id="event">
-            <!-- <img src="imageSRC.jpg" alt="ScreenReaderText"> -->
-            <div id="fakeImageReplaceLater">
-            </div>
-            <h2>Code & Coffee</h2>
-            09/29/2025
-        </div>
-        <div id="event">
-            <!-- <img src="imageSRC.jpg" alt="ScreenReaderText"> -->
-            <div id="fakeImageReplaceLater">
-            </div>
-            <h2>SEA Tech Talks</h2>
-            09/30/2025
-        </div>
-    </div>
+	<!-- Filters -->
+	<section class="my-6 flex gap-1">
+		{#each allTags as tag}
+			<Button
+				variant={$tagFilter.includes(tag) ? 'default' : 'outline'}
+				class="cursor-pointer"
+				onclick={() => {
+					if ($tagFilter.includes(tag)) {
+						$tagFilter = $tagFilter.filter((currentTag) => currentTag !== tag);
+					} else {
+						$tagFilter = [...$tagFilter, tag];
+					}
+				}}
+			>
+				{tag}
+			</Button>
+		{/each}
+		{#if $tagFilter.length !== 0}
+			<Button class="cursor-pointer" onclick={() => ($tagFilter = [])}>
+				<X aria-label="Clear all labels." />
+			</Button>
+		{/if}
+	</section>
+
+	<!-- Event Gallery -->
+	<section class="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
+		{#if $filteredItems.length === 0}
+			<p>No events found</p>
+		{/if}
+		{#each $filteredItems as event (event.title)}
+			<Dialog.Root>
+				<Dialog.Trigger
+					class="cursor-pointer self-start"
+					aria-label="View details for {event.title}"
+				>
+					<div class="flex flex-col text-left">
+						<div class="temp-img"></div>
+						<h2 class="mt-2 line-clamp-1 font-semibold">{event.title}</h2>
+						{#if event.date}
+							<p class="font-extralight">
+								{new Date(event.date).toLocaleDateString('en-US', {
+									month: '2-digit',
+									day: '2-digit',
+									year: '2-digit'
+								})}
+							</p>
+						{/if}
+					</div>
+				</Dialog.Trigger>
+				<Dialog.Content>
+					<Dialog.Header>
+						<Dialog.Title>{event.title}</Dialog.Title>
+						<Dialog.Description>
+							Event Description for {event.title}
+						</Dialog.Description>
+					</Dialog.Header>
+					<section class="space-y-6">
+						<!-- Tags -->
+						{#if event.tags.length > 0}
+							<div>
+								<div class="flex flex-wrap gap-2">
+									{#each event.tags as tag}
+										<Badge variant="secondary">{tag}</Badge>
+									{/each}
+								</div>
+							</div>
+						{/if}
+
+						<!-- Event Details -->
+						<div class="grid grid-cols-2 gap-4">
+							{#if event.date}
+								{@render eventDetail('Date', event.date, Calendar)}
+							{/if}
+
+							{#if true}
+								{@render eventDetail('Time', '12:00 - 1:00', AlarmClock)}
+							{/if}
+
+							{#if event.location}
+								{@render eventDetail('Location', event.location, MapPin)}
+							{/if}
+
+							{@render eventDetail('Organization', event.organization, UsersRound)}
+						</div>
+
+						<!-- Open Event -->
+						<div class="mt-16">
+							<Button class="cursor-pointer" disabled>View Full Event Details</Button>
+						</div>
+					</section>
+				</Dialog.Content>
+			</Dialog.Root>
+		{/each}
+	</section>
 </main>
+
+{#snippet eventDetail(label: string, detail: string, icon: typeof IconType)}
+	<div class="flex items-center gap-3">
+		<div>
+			<svelte:component this={icon} class="h-5 w-5 text-muted-foreground" />
+		</div>
+		<div>
+			<h3 class="text-sm font-medium text-muted-foreground">{label}</h3>
+			<p class="text-sm">
+				{#if label === 'Date'}
+					{new Date(detail).toLocaleDateString('en-US', {
+						weekday: 'long',
+						month: 'short',
+						day: 'numeric',
+						year: 'numeric'
+					})}
+				{:else}
+					{detail}
+				{/if}
+			</p>
+		</div>
+	</div>
+{/snippet}
+
 <style>
-    main{
-        height: 100%;
-    }
-    h1{
-        font-size: 2em;
-    }
-    p{
-        margin-left: 4px;
-        margin-right: 4px;
-    }
-    .button{
-        border-radius: 5px;
-        border-width: 2px;
-        border-color: rgb(193, 193, 193);
-        margin-left: 2px;
-        margin-right: 2px;
-    }
-    #selectionTabs{
-        margin-bottom: 16px;
-        margin-top: 20px;
-    }
-    #fakeImageReplaceLater{
-        background-color: blue;
-        height:160px;
-        width:200px;
-        border-radius: 16px;
-    }
-    #event{
-        margin-right: 8px;
-    }
+	.temp-img {
+		width: 160px;
+		aspect-ratio: 1;
+		background-color: gray;
+		border-radius: 16px;
+	}
 </style>
