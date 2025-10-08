@@ -1,74 +1,149 @@
 <script lang="ts">
-	import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "$lib/components/ui/dialog";
-	import { Button } from "$lib/components/ui/button";
-	import { Command, CommandInput, CommandList, CommandGroup, CommandItem, CommandEmpty } from "$lib/components/ui/command";
-	import { Check } from "@lucide/svelte";
-	import { writable, derived, type Writable } from "svelte/store";
+	import { Building2, Calendar } from '@lucide/svelte';
+	import * as Command from '$lib/components/ui/command/index.js';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import { Switch } from '$lib/components/ui/switch/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
 
-	/**
-	 * Reusable FilterDialog
-	 * Props:
-	 *  - filters: string[]           → List of items to search/select from
-	 *  - selected: Writable<string[]>→ External store to manage selection
-	 *  - title?: string              → Dialog title (default: "Filter")
-	 */
-	export let filters: string[] = [];
-	export let selected: Writable<string[]> = writable([]);
-	export let title: string = "Filter";
-
-	function toggleItem(item: string) {
-		selected.update(current =>
-			current.includes(item)
-				? current.filter(i => i !== item)
-				: [...current, item]
-		);
+	interface Props {
+		open?: boolean;
+		selectedView?: 'events' | 'organizations';
+		selectedFilter?: 'all' | 'upcoming' | 'past' | 'thisMonth';
+		allTags?: string[];
+		selectedTags?: string[];
+		filterMode?: 'inclusive' | 'exclusive';
 	}
 
-	const selectedItems = derived(selected, $s => $s);
+	let {
+		open = $bindable(false),
+		selectedView = $bindable('events'),
+		selectedFilter = $bindable('all'),
+		allTags = [],
+		selectedTags = $bindable([]),
+		filterMode = $bindable('inclusive')
+	}: Props = $props();
+
+	// Handle keyboard shortcut
+	$effect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+				e.preventDefault();
+				open = !open;
+			}
+		};
+
+		document.addEventListener('keydown', handleKeyDown);
+		return () => document.removeEventListener('keydown', handleKeyDown);
+	});
+
+	function handleViewChange(view: 'events' | 'organizations') {
+		selectedView = view;
+		open = false;
+	}
+
+	function handleFilterChange(filter: 'all' | 'upcoming' | 'past' | 'thisMonth') {
+		selectedFilter = filter;
+		open = false;
+	}
+
+	function handleTagToggle(tag: string) {
+		if (selectedTags.includes(tag)) {
+			selectedTags = selectedTags.filter((t) => t !== tag);
+		} else {
+			selectedTags = [...selectedTags, tag];
+		}
+	}
 </script>
 
-<Dialog>
-	<DialogTrigger asChild>
-		<Button variant="outline">{title}</Button>
-	</DialogTrigger>
+<Dialog.Root bind:open>
+	<Dialog.Content class="p-0" style="max-width: 600px; max-height: 800px; width: 100%; height: 100%;">
+		<Command.Root class="w-full rounded-lg border-0 shadow-none">
+			<Command.Input placeholder="Type a command or searchl.." class="border-0 focus:ring-0" />
+			<Command.List style="max-width: 600px; max-height: 800px; width: 100%; height: 100%;">
+				<Command.Empty>No results found.</Command.Empty>
 
-	<DialogContent class="sm:max-w-[425px]">
-		<DialogHeader>
-			<DialogTitle>{title}</DialogTitle>
-		</DialogHeader>
+				<Command.Group heading="View">
+					<Command.Item onSelect={() => handleViewChange('events')} class="cursor-pointer">
+						<Calendar class="mr-2 h-4 w-4" />
+						<span>Events</span>
+						{#if selectedView === 'events'}
+							<Command.Shortcut>✓</Command.Shortcut>
+						{/if}
+					</Command.Item>
+					<Command.Item onSelect={() => handleViewChange('organizations')} class="cursor-pointer">
+						<Building2 class="mr-2 h-4 w-4" />
+						<span>Organizations</span>
+						{#if selectedView === 'organizations'}
+							<Command.Shortcut>✓</Command.Shortcut>
+						{/if}
+					</Command.Item>
+				</Command.Group>
 
-		<Command>
-			<CommandInput placeholder="Search..." />
-			<CommandList>
-				<CommandEmpty>No results found.</CommandEmpty>
+				<Command.Separator />
 
-				<CommandGroup heading="Available">
-					{#each filters as item}
-						<CommandItem onSelect={() => toggleItem(item)}>
-							<div class="flex items-center justify-between w-full">
-								<span>{item}</span>
-								{#if $selectedItems.includes(item)}
-									<Check class="w-4 h-4 text-primary" />
-								{/if}
+				<Command.Group heading="Quick Filters">
+					<Command.Item onSelect={() => handleFilterChange('upcoming')} class="cursor-pointer">
+						<span>Upcoming Only</span>
+						{#if selectedFilter === 'upcoming'}
+							<Command.Shortcut>✓</Command.Shortcut>
+						{/if}
+					</Command.Item>
+					<Command.Item onSelect={() => handleFilterChange('past')} class="cursor-pointer">
+						<span>Past Events</span>
+						{#if selectedFilter === 'past'}
+							<Command.Shortcut>✓</Command.Shortcut>
+						{/if}
+					</Command.Item>
+					<Command.Item onSelect={() => handleFilterChange('thisMonth')} class="cursor-pointer">
+						<span>This Month</span>
+						{#if selectedFilter === 'thisMonth'}
+							<Command.Shortcut>✓</Command.Shortcut>
+						{/if}
+					</Command.Item>
+				</Command.Group>
+
+				{#if allTags.length > 0}
+					<Command.Separator />
+					<Command.Group heading="Tags">
+						<div class="px-2 py-2">
+							<div class="mb-3 flex items-center justify-between">
+								<span class="text-xs text-muted-foreground">Match:</span>
+								<div class="flex gap-1">
+									<Button
+										variant={filterMode === 'inclusive' ? 'default' : 'outline'}
+										size="sm"
+										class="h-7 px-2 text-xs"
+										onclick={() => (filterMode = 'inclusive')}
+									>
+										Any
+									</Button>
+									<Button
+										variant={filterMode === 'exclusive' ? 'default' : 'outline'}
+										size="sm"
+										class="h-7 px-2 text-xs"
+										onclick={() => (filterMode = 'exclusive')}
+									>
+										All
+									</Button>
+								</div>
 							</div>
-						</CommandItem>
-					{/each}
-				</CommandGroup>
-			</CommandList>
-		</Command>
-
-		{#if $selectedItems.length > 0}
-			<div class="mt-4">
-				<h3 class="text-sm font-medium mb-1">Selected:</h3>
-				<div class="flex flex-wrap gap-2">
-					{#each $selectedItems as item}
-						<Button size="sm" variant="secondary" on:click={() => toggleItem(item)}>
-							{item}
-							<span class="ml-1 text-muted-foreground">×</span>
-						</Button>
-					{/each}
-				</div>
-			</div>
-		{/if}
-	</DialogContent>
-</Dialog>
+						</div>
+						{#each allTags as tag}
+							<Command.Item
+								value={tag}
+								class="cursor-pointer"
+								onSelect={() => handleTagToggle(tag)}
+							>
+								<div class="flex w-full items-center space-x-2">
+									<Switch id={`tag-${tag}`} checked={selectedTags.includes(tag)} />
+									<Label for={`tag-${tag}`} class="flex-1 cursor-pointer">{tag}</Label>
+								</div>
+							</Command.Item>
+						{/each}
+					</Command.Group>
+				{/if}
+			</Command.List>
+		</Command.Root>
+	</Dialog.Content>
+</Dialog.Root>
