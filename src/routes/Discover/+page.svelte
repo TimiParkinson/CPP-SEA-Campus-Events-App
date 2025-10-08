@@ -1,5 +1,5 @@
 <script lang="ts">
-  import FilterDialog from '$lib/components/FilterDialog.svelte';
+  import FilterDialog from '$lib/components/filterDialog.svelte';
   import { Button } from '$lib/components/ui/button/index.js';
   import * as Dialog from '$lib/components/ui/dialog/index.js';
   import * as InputGroup from '$lib/components/ui/input-group/index.js';
