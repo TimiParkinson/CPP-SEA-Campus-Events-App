@@ -15,7 +15,7 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 </script>
 
-<main>
+<section>
 	<h1 class="text-3xl mb-4">Your Events</h1>
 
 	<!-- Search Bar -->
@@ -26,32 +26,8 @@
 		</InputGroup.Addon>
 	</InputGroup.Root>
 
-	<!-- Filters -->
-	<section class="my-6 flex gap-1">
-		{#each allTags as tag}
-			<Button
-				variant={$tagFilter.includes(tag) ? 'default' : 'outline'}
-				class="cursor-pointer"
-				onclick={() => {
-					if ($tagFilter.includes(tag)) {
-						$tagFilter = $tagFilter.filter((currentTag) => currentTag !== tag);
-					} else {
-						$tagFilter = [...$tagFilter, tag];
-					}
-				}}
-			>
-				{tag}
-			</Button>
-		{/each}
-		{#if $tagFilter.length !== 0}
-			<Button class="cursor-pointer" onclick={() => ($tagFilter = [])}>
-				<X aria-label="Clear all labels." />
-			</Button>
-		{/if}
-	</section>
-
 	<!-- Event Gallery -->
-	<section class="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
+	<section class="my-8 grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
 		{#if $filteredItems.length === 0}
 			<p>No events found</p>
 		{/if}
@@ -120,7 +96,7 @@
 			</Dialog.Root>
 		{/each}
 	</section>
-</main>
+</section>
 
 {#snippet eventDetail(label: string, detail: string, icon: typeof IconType)}
 	<div class="flex items-center gap-3">
@@ -147,7 +123,7 @@
 
 <style>
 	.temp-img {
-		width: 160px;
+		width: 100%;
 		aspect-ratio: 1;
 		background-color: gray;
 		border-radius: 16px;
