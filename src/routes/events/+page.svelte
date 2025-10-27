@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { filteredItems, searchQuery, type EventItem } from '$lib/stores/filters.js';
 	import CardGrid from '$lib/components/cards/CardGrid.svelte';
-	import EventDialog from '$lib/components/events/EventDialog.svelte';
+	import EventDialog from '$lib/components/dialogs/EventDialog.svelte';
 	import EventCard from '$lib/components/cards/EventCard.svelte';
 	import SearchBar from '$lib/components/SearchBar.svelte';
 
