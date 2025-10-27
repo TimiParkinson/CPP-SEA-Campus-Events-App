@@ -15,6 +15,10 @@
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 </script>
 
+<svelte:head>
+	<title>Your Subscriptions</title>
+</svelte:head>
+
 <main>
 	<h1 class="text-3xl mb-4">Your Subscriptions</h1>
 
