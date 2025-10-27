@@ -14,6 +14,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Your Events</title>
+</svelte:head>
+
 <main class="container mx-auto max-w-7xl px-4 py-8">
 	<h1 class="mb-6 text-3xl">Your Events</h1>
 
