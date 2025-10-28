@@ -1,47 +1,107 @@
 <script lang="ts">
-  import { page } from '$app/stores';
-  import { goto } from '$app/navigation';
-  import * as Card from '$lib/components/ui/card/index.js';
-  import * as Tabs from '$lib/components/ui/tabs/index.js';
-  import { Button } from '$lib/components/ui/button/index.js';
-  import { onMount } from 'svelte';
+  import { onMount, afterUpdate } from 'svelte';
+  import gsap from 'gsap';
 
-  // Keep tab in sync with URL path
-  $: currentTab = $page.url.pathname.includes('/signin') ? 'signin' : 'register';
+  let currentTab: 'signin' | 'register' = 'register';
+  let card: HTMLElement;
+  let tabButtons: NodeListOf<HTMLButtonElement>;
 
-  function handleTabChange(value: string) {
-    goto(`/auth/${value}`);
-  }
+  onMount(() => {
+    document.body.style.overflow = 'hidden';
+    tabButtons = document.querySelectorAll('.tab-btn');
+
+    gsap.from(card, {
+      opacity: 0,
+      y: 20,
+      duration: 0.3,
+      ease: 'power2.out'
+    });
+  });
+
+  afterUpdate(() => {
+    gsap.to('.tab-content', {
+      opacity: 0,
+      y: 5,
+      duration: 0.15,
+      ease: 'power2.in',
+      onComplete: () => {
+        gsap.to('.tab-content', {
+          opacity: 1,
+          y: 0,
+          duration: 0.25,
+          ease: 'power2.out'
+        });
+      }
+    });
+
+    tabButtons.forEach((btn) => {
+      const isActive = btn.dataset.tab === currentTab;
+      gsap.to(btn, {
+        backgroundColor: isActive ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)',
+        color: isActive ? '#fff' : 'rgba(255,255,255,0.6)',
+        borderTopLeftRadius: isActive ? 0 : 12,
+        borderTopRightRadius: isActive ? 0 : 12,
+        duration: 0.2,
+        ease: 'power2.out'
+      });
+    });
+  });
 </script>
 
-<!-- Fixed full-screen overlay so modal is centered and background doesn't scroll -->
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-  <div class="w-full max-w-md">
-    <Card.Root class="border bg-popover shadow-lg">
-      <Card.Header class="space-y-1 text-center p-6">
-        <Card.Title class="text-2xl font-semibold">Welcome</Card.Title>
-        <Card.Description>
-          {currentTab === 'register' ? 'Create an account to get started' : 'Sign in to your account'}
-        </Card.Description>
-      </Card.Header>
+<!-- Fullscreen modal overlay -->
+<div class="fixed inset-0 flex items-center justify-center bg-zinc-900/95">
+  <div
+    bind:this={card}
+    class="relative w-full max-w-md mx-auto p-0 rounded-3xl bg-zinc-800/90 shadow-2xl backdrop-blur-2xl border border-white/10 overflow-hidden"
+  >
+    <!-- Tabs -->
+    <div class="flex space-x-2 mb-0">
+      <button
+        class="tab-btn flex-1 py-2 text-center font-medium transition-all duration-200"
+        data-tab="signin"
+        on:click={() => (currentTab = 'signin')}
+      >
+        Sign In
+      </button>
 
-      <Card.Content class="px-6 pb-4 pt-2">
-        <Tabs.Root value={currentTab} onValueChange={handleTabChange}>
-          <Tabs.List class="grid w-full grid-cols-2 gap-2 mb-6">
-            <Tabs.Trigger value="register">Register</Tabs.Trigger>
-            <Tabs.Trigger value="signin">Sign In</Tabs.Trigger>
-          </Tabs.List>
+      <button
+        class="tab-btn flex-1 py-2 text-center font-medium transition-all duration-200"
+        data-tab="register"
+        on:click={() => (currentTab = 'register')}
+      >
+        Register
+      </button>
+    </div>
 
-          <div class="mt-2">
-            <!-- Page content from nested routes will render here -->
-            <slot />
-          </div>
-        </Tabs.Root>
-      </Card.Content>
-
-      <Card.Footer class="flex gap-2 p-4">
-        <Button variant="ghost" class="w-full" on:click={() => goto('/')}>Back to home</Button>
-      </Card.Footer>
-    </Card.Root>
+    <!-- Content area -->
+    <div class="tab-content p-6 rounded-b-3xl bg-zinc-800/90 shadow-inner">
+      {#if currentTab === 'register'}
+        <slot name="register" />
+      {:else}
+        <slot name="signin" />
+      {/if}
+    </div>
   </div>
 </div>
+
+<style>
+  .tab-btn {
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.6);
+    border: none;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .tab-content {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+  }
+</style>

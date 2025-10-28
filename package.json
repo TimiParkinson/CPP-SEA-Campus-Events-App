@@ -74,6 +74,8 @@
 		"svelte"
 	],
 	"dependencies": {
+		"gsap": "^3.13.0",
+		"lucide-svelte": "^0.548.0",
 		"postgres": "^3.4.5"
 	}
 }
