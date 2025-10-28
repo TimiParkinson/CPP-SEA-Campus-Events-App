@@ -1,6 +1,7 @@
 <script>
   import '$css'; 
   import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
   import { Button } from '$lib/components/ui/button/index.js';
   import * as NavigationMenu from '$lib/components/ui/navigation-menu/index.js';
   
@@ -19,6 +20,7 @@
       if (pathParts.length > 1) return null;
       if (routePath === '/') return null; // Exclude home from navigation links
       if (pathParts[0].startsWith('_')) return null; // Exclude routes
+      if (pathParts[0] === 'auth') return null; // Exclude auth from navigation
       const name = routePath === '/' 
         ? '' 
         : pathParts[0]
@@ -83,7 +85,13 @@
             <path d="m21 21-4.35-4.35"/>
           </svg>
         </Button>
-        <Button variant="default" class="signin-btn">Sign In</Button>
+        <Button 
+          variant="default" 
+          class="signin-btn cursor-pointer"
+          onclick={() => goto('/auth')}
+        >
+          Sign In
+        </Button>
       </div>
     </div>
   </header>
