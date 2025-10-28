@@ -2,12 +2,11 @@
   import { goto } from '$app/navigation';
   import { Button } from '$lib/components/ui/button/index.js';
   import { Input } from '$lib/components/ui/input/index.js';
-  import { Icon } from '$lib/components/ui/icon/index.js'; // optional
 
   let step = 1;
   let username = '';
   let password = '';
-  
+
   let loading = false;
   let error = '';
 
