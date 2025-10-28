@@ -7,6 +7,7 @@
   let step = 1;
   let username = '';
   let password = '';
+  
   let loading = false;
   let error = '';
 
