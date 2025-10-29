@@ -1,42 +1,58 @@
 <script>
-  import '$css'; 
+  import '$css';
   import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
   import { Button } from '$lib/components/ui/button/index.js';
   import * as NavigationMenu from '$lib/components/ui/navigation-menu/index.js';
-  
+
   let { children } = $props();
 
-  // Dynamically get routes from the file system
+  // Get all +page.svelte files inside src/routes/(pages)
   const routeModules = import.meta.glob('/src/routes/**/+page.svelte', { eager: true });
-  
+
+  // Normalize key so we don't break if paths move
+  function normalizeKey(key) {
+    // remove leading ./ or /
+    key = key.replace(/^[./]+/, '');
+
+    // strip src/routes prefix
+    key = key.replace(/^src\/routes\/?/, '');
+
+    // strip trailing /+page.svelte
+    key = key.replace(/\/\+page\.svelte$/, '');
+
+    // remove leading slashes
+    return key.replace(/^\/+/, '');
+  }
+
+  // Build route objects
   const routes = Object.keys(routeModules)
-    .map(path => {
-      const match = path.match(/\/src\/routes(.*)\/\+page\.svelte$/);
-      if (!match) return null;
-      
-      const routePath = match[1] || '/';
-      const pathParts = routePath.split('/').filter(Boolean);
-      if (pathParts.length > 1) return null;
-      if (routePath === '/') return null; // Exclude home from navigation links
-      if (pathParts[0].startsWith('_')) return null; // Exclude routes
-      const name = routePath === '/' 
-        ? '' 
-        : pathParts[0]
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-      
-      return { name, path: routePath === '/' ? '' : routePath };
+    .map(rawKey => {
+      const key = normalizeKey(rawKey);
+
+      const pagesIndex = key.indexOf('(pages)');
+      if (pagesIndex === -1) return null;
+
+      let after = key.slice(pagesIndex + '(pages)'.length).replace(/^\/+/, '');
+      const parts = after.split('/').filter(Boolean);
+
+      // Only include top-level routes in (pages)
+      if (parts.length !== 1) return null;
+
+      const segment = parts[0];
+      if (!segment || segment.startsWith('_') || segment === 'auth') return null;
+
+      const name = segment
+        .split('-')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+
+      return { name, path: `/${segment}` };
     })
     .filter(Boolean)
-    .sort((a, b) => {
-      if (a.path === '/') return -1;
-      if (b.path === '/') return 1;
-      return a.name.localeCompare(b.name);
-    });
+    .sort((a, b) => a.name.localeCompare(b.name));
 
-  
-  let currentPath = $derived($page.url.pathname);
+  const currentPath = $derived($page.url.pathname);
 </script>
 
 <div class="app">
@@ -83,7 +99,13 @@
             <path d="m21 21-4.35-4.35"/>
           </svg>
         </Button>
-        <Button variant="default" class="signin-btn">Sign In</Button>
+        <Button 
+          variant="default" 
+          class="signin-btn cursor-pointer"
+          onclick={() => goto('/register')}
+        >
+          Sign In
+        </Button>
       </div>
     </div>
   </header>
