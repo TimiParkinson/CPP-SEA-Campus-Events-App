@@ -20,21 +20,22 @@
 <!-- Standalone auth page with centered card -->
 <div class="min-h-screen flex items-center justify-center bg-background p-4">
 	<div class="w-full max-w-md">
-		<!-- Chrome-style tabs -->
-		<div class="flex gap-1 mb-0">
+		<!-- Tabs -->
+		<div class="tab-buttons">
 			<button
+				id="register"
 				class="tab-button {currentTab === 'register' ? 'active' : ''}"
 				onclick={() => handleTabChange('register')}
 			>
 				Register
 			</button>
 			<button
+				id="signin"
 				class="tab-button {currentTab === 'signin' ? 'active' : ''}"
 				onclick={() => handleTabChange('signin')}
 			>
 				Sign In
 			</button>
-			<div class="flex-1"></div>
 		</div>
 
 		<!-- Card content -->
@@ -44,19 +45,19 @@
 					{currentTab === 'register' ? 'Welcome' : 'Welcome back'}
 				</h1>
 				<p class="text-muted-foreground text-sm">
-					{currentTab === 'register' 
-						? 'Create an account to get started' 
+					{currentTab === 'register'
+						? 'Create an account to get started'
 						: 'Sign in to your account to continue'}
 				</p>
 			</div>
 
-			<!-- Child page content (signin or register forms) -->
 			{@render children()}
 
 			<div class="mt-6 text-center">
 				<Button 
-					variant="ghost" 
-					class="w-full cursor-pointer text-sm text-muted-foreground hover:text-foreground" 
+					variant="ghost"
+					class="w-full cursor-pointer text-sm text-muted-foreground hover:text-foreground"
+					style="background: none;"
 					onclick={() => goto('/')}
 				>
 					Back to Home
@@ -67,57 +68,61 @@
 </div>
 
 <style>
-	.tab-button {
-		position: relative;
-		padding: 0.75rem 1.5rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		color: hsl(var(--muted-foreground));
-		background: hsl(var(--background));
-		border: 1px solid hsl(var(--border));
+	.tab-buttons {
+		display: flex;
+		width: 100%;
+		border: 1px solid #2d2d30; /* var(--border) kept rendering differently here */
 		border-bottom: none;
 		border-top-left-radius: 0.75rem;
 		border-top-right-radius: 0.75rem;
+		overflow: hidden; 
+	}
+
+	.tab-button {
+		
+		flex: 1;
+		padding: 0.75rem 1.5rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: var(--muted-foreground);
+		background: var(--background);
+		border: none;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		z-index: 1;
 	}
 
 	.tab-button:hover:not(.active) {
-		background: hsl(var(--accent));
-		color: hsl(var(--foreground));
+		color: var(--foreground);
+		background: color-mix(in srgb, var(--background) 90%, var(--border) 10%);
 	}
 
 	.tab-button.active {
-		background: hsl(var(--card));
-		color: hsl(var(--foreground));
+		background: var(--card);
+		color: var(--foreground);
 		font-weight: 600;
-		border: 1px solid hsl(var(--border));
-		border-bottom: 1px solid hsl(var(--card));
-		z-index: 3;
 		position: relative;
+		z-index: 2;
 	}
 
-	/* Make active tab blend into card */
 	.tab-button.active::after {
 		content: '';
 		position: absolute;
 		bottom: -1px;
 		left: 0;
 		right: 0;
-		height: 2px;
-		background: hsl(var(--card));
-		z-index: 4;
+		height: 1px;
+		background: var(--card);
 	}
 
 	.card-content {
-		background: hsl(var(--card));
-		border: 1px solid hsl(var(--border));
-		border-radius: 0.75rem;
-		border-top-left-radius: 0;
+		background: var(--card);
+		border: 1px solid var(--border);
+		border-top: none;
+		border-bottom-left-radius: 0.75rem;
+		border-bottom-right-radius: 0.75rem;
 		padding: 2rem;
-		box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+		z-index: 1;
 		position: relative;
-		z-index: 2;
+		margin-top: -1px;
 	}
 </style>
