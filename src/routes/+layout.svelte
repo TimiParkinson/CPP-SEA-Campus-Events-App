@@ -88,7 +88,7 @@
         <Button 
           variant="default" 
           class="signin-btn cursor-pointer"
-          onclick={() => goto('/auth')}
+          onclick={() => goto('/register')}
         >
           Sign In
         </Button>
