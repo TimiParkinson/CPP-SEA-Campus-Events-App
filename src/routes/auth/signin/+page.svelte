@@ -105,3 +105,4 @@
       <p>Signed up before? <a class="underline cursor-pointer" on:click={() => goto('/auth/signin')}>Sign in</a></p>
     </div>
   {/if}
+</div>
