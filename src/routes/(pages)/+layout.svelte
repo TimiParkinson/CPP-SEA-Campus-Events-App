@@ -1,38 +1,36 @@
-<script>
-	import '$css';
+<script lang="ts">
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+
+	interface Route {
+		name: string;
+		path: string;
+	}
 
 	let { children } = $props();
 
-	// Get all +page.svelte files inside src/routes/(pages)
+	const currentPath = $derived($page.url.pathname);
+
+	// Get all routes dynamically
 	const routeModules = import.meta.glob('/src/routes/**/+page.svelte', { eager: true });
 
-	// Normalize key so we don't break if paths move
-	function normalizeKey(key) {
-		// remove leading ./ or /
-		key = key.replace(/^[./]+/, '');
-
-		// strip src/routes prefix
-		key = key.replace(/^src\/routes\/?/, '');
-
-		// strip trailing /+page.svelte
-		key = key.replace(/\/\+page\.svelte$/, '');
-
-		// remove leading slashes
-		return key.replace(/^\/+/, '');
+	function normalizeKey(key: string): string {
+		return key
+			.replace(/^[./]+/, '')
+			.replace(/^src\/routes\/?/, '')
+			.replace(/\/\+page\.svelte$/, '')
+			.replace(/^\/+/, '');
 	}
 
-	// Build route objects
-	const routes = Object.keys(routeModules)
+	const routes: Route[] = Object.keys(routeModules)
 		.map((rawKey) => {
 			const key = normalizeKey(rawKey);
-
 			const pagesIndex = key.indexOf('(pages)');
+
 			if (pagesIndex === -1) return null;
 
-			let after = key.slice(pagesIndex + '(pages)'.length).replace(/^\/+/, '');
+			const after = key.slice(pagesIndex + '(pages)'.length).replace(/^\/+/, '');
 			const parts = after.split('/').filter(Boolean);
 
 			// Only include top-level routes in (pages)
@@ -48,30 +46,17 @@
 
 			return { name, path: `/${segment}` };
 		})
-		.filter(Boolean)
+		.filter((route): route is Route => route !== null)
 		.sort((a, b) => a.name.localeCompare(b.name));
-
-	const currentPath = $derived($page.url.pathname);
-	import { supabaseBrowser } from '$lib/supabaseClient';
-	import { onMount } from 'svelte';
-
-	onMount(() => {
-		const {
-			data: { subscription }
-		} = supabaseBrowser.auth.onAuthStateChange(async (_event, _session) => {
-			// When auth state changes on the client, refresh the current page to re-run server loads
-			await goto(window.location.pathname, { invalidateAll: true });
-		});
-		return () => subscription.unsubscribe();
-	});
 </script>
 
-<div class="min-h-screen bg-black">
-  <!-- <Navbar /> -->
+<div class="flex min-h-screen flex-col bg-black">
 
-  <main>
-    {@render children()}
-  </main>
+	<Navbar {routes} {currentPath} />
 
-  <Footer />
+	<main>
+		{@render children()}
+	</main>
+
+	<Footer />
 </div>
