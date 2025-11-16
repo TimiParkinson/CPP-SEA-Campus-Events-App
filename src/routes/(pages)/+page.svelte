@@ -1,133 +1,127 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+	import Hero from '$lib/components/home/Hero.svelte';
+	import FeaturedOrgs from '$lib/components/home/FeaturedOrgs.svelte';
+	import FeaturedEvents from '$lib/components/home/FeaturedEvents.svelte';
+	import CTA from '$lib/components/home/CTA.svelte';
 
-    // Mock data (we'll replace later)
-    type Sub = { name: string; logo?: string};
-    type Ev = { title: string; date: string; image?: string; location?: string };
+	const mockOrgs = [
+		{
+			id: 'org-1',
+			name: 'Computer Science Club',
+			description:
+				'A community for students interested in software development, algorithms, and tech careers. Join us for weekly coding sessions!',
+			logoUrl: 'https://cppcss.club/images/logo_for_web_2_2025.png',
+			abbreviation: 'CSS',
+			categories: [
+				{ name: 'academic', color: '#3B82F6' },
+				{ name: 'technology', color: '#8B5CF6' }
+			],
+			memberCount: 156,
+			establishedDate: new Date('2020-11-02'),
+			websiteUrl: 'https://csclub.university.edu',
+			contactEmail: 'csclub@university.edu'
+		},
+		{
+			id: 'org-2',
+			name: 'Software Engineering Association',
+			description: 'Building the future of software, one line at a time.',
+			logoUrl: 'https://logos-world.net/wp-content/uploads/2025/02/Cal-Poly-Pomona-Symbol.png',
+			abbreviation: 'SEA',
+			categories: [{ name: 'technology', color: '#8B5CF6' }],
+			memberCount: 89,
+			establishedDate: new Date('2019-08-15'),
+			websiteUrl: 'https://sea.university.edu',
+			contactEmail: 'sea@university.edu'
+		},
+		{
+			id: 'org-3',
+			name: 'SheCodes',
+			description: 'Empowering women in technology.',
+			logoUrl: null,
+			categories: [
+				{ name: 'diversity', color: '#EC4899' },
+				{ name: 'technology', color: '#8B5CF6' }
+			],
+			memberCount: 67,
+			establishedDate: new Date('2021-02-14'),
+			contactEmail: 'shecodes@university.edu'
+		},
+		{
+			id: 'org-4',
+			name: 'Game Development Guild',
+			description: 'Create, play, and learn game development together.',
+			logoUrl: null,
+			abbreviation: 'GDG',
+			categories: [
+				{ name: 'technology', color: '#8B5CF6' },
+				{ name: 'creative', color: '#F59E0B' }
+			],
+			memberCount: 45,
+			contactEmail: 'gdg@university.edu'
+		},
+		{
+			id: 'org-5',
+			name: 'Data Science Society',
+			description: 'Exploring the world of data, AI, and machine learning.',
+			logoUrl: null,
+			abbreviation: 'DSS',
+			categories: [
+				{ name: 'academic', color: '#3B82F6' },
+				{ name: 'technology', color: '#8B5CF6' }
+			],
+			memberCount: 92,
+			contactEmail: 'dss@university.edu'
+		}
+	];
 
-    // Mock user data (later this will come from the DB via +page.server.ts)
-    let user = { name: 'umarDaGoat', avatar: ''};
+	const mockEvents = [
+		{
+			id: 'event-1',
+			title: 'Intro to Web Development Workshop',
+			description:
+				"Learn the basics of HTML, CSS, and JavaScript. Perfect for beginners! We'll build a simple portfolio website together.",
+			location: 'Engineering Building, Room 205',
+			startTime: '2025-11-20T14:00:00Z',
+			endTime: '2025-11-20T16:00:00Z',
+			attendeeCount: 45,
+			imageUrl: 'https://www.cpp.edu/news/img/news/2021/05/20CLASS-grad13-scaled.jpg',
+			tags: [
+				{ name: 'workshop', color: '#8B5CF6' },
+				{ name: 'free-food', color: '#EF4444' }
+			],
+			organization: { name: 'Computer Science Club' }
+		},
+		{
+			id: 'event-2',
+			title: 'Salsa Night Social',
+			description:
+				"Join us for an evening of salsa dancing! Beginners welcome - we'll teach basic steps at the start.",
+			location: 'Student Center Ballroom',
+			startTime: '2025-11-22T19:00:00Z',
+			endTime: '2025-11-22T22:00:00Z',
+			attendeeCount: 127,
+			imageUrl: null,
+			tags: [{ name: 'social', color: '#EC4899' }],
+			organization: { name: 'Latin Dance Society' }
+		}
+	];
 
-    // Subscription list (clubs/ orgs)
-    let subscriptions: Sub[] = [
-        { name: 'SEA'}, {name: 'CPP Official' }, {name: 'NSBE' },
-        {name: 'E=sports' }, { name: 'Anime'}, { name: 'UAV-SAR'},
-        {name: 'Chess' },
-    ];
-
-    // Events list (mock data with title/date/location)
-    let events: Ev[] = [
-        { title: 'SEA Hack Night', date: 'Tomorrow • 6:00 PM', location: 'Bldg 9, Lab 213' },
-        { title: 'NSBE Resume Clinic', date: 'Fri • 3:00 PM', location: 'Career Center' },
-        { title: 'Anime Screening', date: 'Sat • 7:30 PM', location: 'Ursa Minor' }
-    ];
-
-    // Skeleton loader logic
-    // "loading" = true means show gray placeholders first
-    let loading = true;
-
-    // When the component mounts, wait 800ms then flip loading = false
-    onMount(() => {
-        const t = setTimeout(() => (loading = false), 800);
-        return () => clearTimeout(t); // cleanup if component unmounts
-    });
+	// Featured content (choose from mock data for now)
+	const featuredOrgs = mockOrgs.slice(0, 5);
+	const featuredEvents = mockEvents.slice(0, 2);
 </script>
 
-<!-- Container for the whole page-->
-<div class ="mx-auto max-w-6xl px-4 py-6">
-    <!--Profile section-->
-    <section class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            {#if loading}
-                <!--Skeleton avatar-->
-                <div class="h-40 w-10 rounded bg-gray-200 animate-pulse"></div>
-                <!--Skeleton username-->
-                <div class="h-6 w-10 rounded bg-gray-200 animate-pulse"></div>
-            {:else}
-                <!--Real avatar(empty gray circle for now)-->
-                <div class="h-15 w-15 rounded-full bg-gray-100"></div>
-                <!--Real username-->
-                <h1 class="text-3xl font-semibold">{user.name}</h1>
-            {/if}
-        </div>
+<svelte:head>
+	<title>Home - Campus Events</title>
+	<meta
+		name="description"
+		content="Explore campus events, clubs, and opportunities at Cal Poly Pomona"
+	/>
+</svelte:head>
 
-        <!--Icons on the right-->
-        <div class="flex items-center gap-4 text-gray-500">
-            <!--Icon emoji palceholders for now-->
-            <button aria-label="Notifications">🔔</button>
-            <button aria-label="Settings">⚙️</button>
-        </div>
-    </section>
-    <!--Subscriptions preview-->
-    <section class="mt-12">
-        <!--Header row for this section-->
-        <div class="mb-2 flex items-center justify-between">
-            <!--Section title-->
-            <h2 class="text-xl font-semibold">Your Subscriptions →</h2>
-            <!--Link to a page that lists all subsriptions-->
-            <a href="/subscriptions" class="text-sm underline">See all</a>
-        </div>
-        <!--Horizontal scroll roll-->
-        <div class="flex gap-8 overflow-x-auto pb-2">
-            {#if loading}
-                <!--Render 8 skeleton "org chips" while loading, dont care about the value-->
-                {#each Array(8) as _}
-                    <div class="shrink-0 w-24">
-                        <!--Circular skeleton for the org logo-->
-                        <div class="mx-auto h-16 w-16 rounded bg-gray-200 animate-pulse"></div>
-                        <!--Small rectangle skeleton where the org names will show-->
-                        <div class="mx-auto mt-2 h-3 w-14 rounded bg-gray-200 animate-pulse"></div>
-                    </div>
-                {/each}
-            {:else}
-                <!--Loop through subscriptions array and render each item as 's'-->  
-                {#each subscriptions as s}
-                    <!--(Link to org page later)-->
-                    <!-- svelte-ignore a11y_invalid_attribute -->
-                    <a class="shrink-0 w-24" href="#">
-                        <!--Round logo container (empty for now put <img src ={s.logo})-->
-                        <div class="mx-auto h-26 w-26 rounded-full bg-gray-200 overflow-hidden"></div>
-                        <!--Org name centered; truncate prevents long name from wrapping-->
-                        <p class="mt-2 text-center text-sm truncate">{s.name}</p>
-                    </a>
-                {/each}
-            {/if}
-        </div>     
-    </section>
-    
-    <!--Events Preview-->
-    <section class="mt-12">
-        <!-- Header row for this section-->
-        <div class="mb-2 flex items-center justify-between">
-            <!--Section Title-->
-            <h2 class="text-xl font-semibold">Your Events →</h2>
-            <!--Link to all page of events-->
-            <a href="/events" class="text-sm underline">See all</a>
-        </div>
-
-        <!-- Event cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {#if loading}
-                <!-- Skeleton cards while loading -->
-                {#each Array(3) as _}
-                    <div class="h-40 rounded-2xl bg-gray-200 animate-pulse"> </div>
-                {/each}
-            {:else}
-                <!-- Actual events -->
-                {#each events as e}
-                    <div class="rounded-2xl bg-gray-100 p-4 shadow">
-                    <!-- Image placeholder -->
-                     <div class="h-24 w-full rounded-lg bg-gray-300 mb-3"></div>
-
-                    <!-- Event details -->
-                    <h3 class="font-semibold truncate">{e.title}</h3>
-                    <p class="text-sm text-gray-600">{e.date}</p>
-                    {#if e.location}
-                        <p class="text-xs text-gray-500">{e.location}</p>
-                    {/if}
-                </div>
-                {/each}
-            {/if}
-        </div>
-    </section>
+<div class="bg-black">
+	<Hero />
+	<FeaturedOrgs organizations={featuredOrgs} />
+	<FeaturedEvents events={featuredEvents} />
+	<CTA />
 </div>
