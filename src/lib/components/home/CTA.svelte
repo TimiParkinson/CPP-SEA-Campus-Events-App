@@ -11,7 +11,7 @@
 	let {
 		title = 'Sign up to track your involvement on campus',
 		buttonText = 'Sign Up',
-		buttonHref = '/auth/register'
+		buttonHref = '/register'
 	}: Props = $props();
 </script>
 
