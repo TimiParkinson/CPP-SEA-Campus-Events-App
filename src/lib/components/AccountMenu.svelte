@@ -90,15 +90,6 @@
 	{:else}
 		<!-- Logged Out Options -->
 		<div class="p-2">
-			<button
-				type="button"
-				onclick={() => handleNavigation('/auth/register')}
-				class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-left text-sm text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
-			>
-				<LogIn class="size-4" />
-				<span>Sign In</span>
-			</button>
-
 			<!-- Dark Mode Toggle -->
 			<button
 				type="button"
@@ -124,6 +115,19 @@
 							: 'translate-x-0.5'}"
 					></div>
 				</div>
+			</button>
+
+			<!-- Divider -->
+			<div class="my-2 h-px bg-white/10"></div>
+
+			<!-- Sign In -->
+			<button
+				type="button"
+				onclick={() => handleNavigation('/auth/register')}
+				class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-left text-sm text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
+			>
+				<LogIn class="size-4" />
+				<span>Sign In</span>
 			</button>
 		</div>
 	{/if}
