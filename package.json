@@ -19,7 +19,6 @@
 		"db:studio": "drizzle-kit studio",
 		"db:seed": "tsx src/lib/server/db/scripts/seed.ts",
 		"seed": "npm run db:seed"
-		
 	},
 	"files": [
 		"dist",
@@ -78,8 +77,10 @@
 		"svelte"
 	],
 	"dependencies": {
+		"@supabase/ssr": "^0.7.0",
+		"@supabase/supabase-js": "^2.83.0",
 		"dotenv": "^17.2.3",
-		"postgres": "^3.4.5"
-		
+		"postgres": "^3.4.5",
+		"supabase": "^2.58.5"
 	}
 }
