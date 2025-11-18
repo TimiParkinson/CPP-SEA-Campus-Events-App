@@ -35,31 +35,21 @@
 		organization.abbreviation || generateAbbreviation(organization.name)
 	);
 
-	// Font size calculation - AGGRESSIVE shrinking, NO truncation
+	// Font size calculation
 	let circleFontSize = $derived(() => {
 		const length = displayText.length;
 		if (isFeatured) {
-			// Featured circles are larger, more room for text
-			if (length <= 2) return 'text-7xl sm:text-8xl md:text-9xl tracking-tighter';
-			if (length <= 3) return 'text-6xl sm:text-7xl md:text-8xl tracking-tight';
-			if (length <= 4) return 'text-5xl sm:text-6xl md:text-7xl tracking-tight';
+			if (length <= 3) return 'text-6xl sm:text-7xl md:text-8xl tracking-tighter';
 			if (length <= 5) return 'text-4xl sm:text-5xl md:text-6xl tracking-tight';
-			if (length <= 6) return 'text-3xl sm:text-4xl md:text-5xl tracking-normal';
-			if (length <= 8) return 'text-2xl sm:text-3xl md:text-4xl tracking-normal';
-			if (length <= 10) return 'text-xl sm:text-2xl md:text-3xl tracking-normal';
-			if (length <= 12) return 'text-lg sm:text-xl md:text-2xl tracking-normal';
-			return 'text-base sm:text-lg md:text-xl tracking-normal';
+			if (length <= 8) return 'text-3xl sm:text-4xl md:text-5xl tracking-tight';
+			if (length <= 12) return 'text-2xl sm:text-3xl md:text-4xl tracking-normal';
+			return 'text-xl sm:text-2xl md:text-3xl tracking-normal';
 		} else {
-			// General cards - smaller circles, need aggressive shrinking
-			if (length <= 2) return 'text-3xl @[200px]:text-4xl @[280px]:text-5xl tracking-tighter';
-			if (length <= 3) return 'text-2xl @[200px]:text-3xl @[280px]:text-4xl tracking-tight';
-			if (length <= 4) return 'text-xl @[200px]:text-2xl @[280px]:text-3xl tracking-tight';
-			if (length <= 5) return 'text-lg @[200px]:text-xl @[280px]:text-2xl tracking-tight';
-			if (length <= 6) return 'text-base @[200px]:text-lg @[280px]:text-xl tracking-normal';
-			if (length <= 8) return 'text-sm @[200px]:text-base @[280px]:text-lg tracking-normal';
-			if (length <= 10) return 'text-xs @[200px]:text-sm @[280px]:text-base tracking-normal';
-			if (length <= 12) return 'text-[10px] @[200px]:text-xs @[280px]:text-sm tracking-normal';
-			return 'text-[9px] @[200px]:text-[10px] @[280px]:text-xs tracking-normal';
+			if (length <= 3) return 'text-2xl @[180px]:text-3xl @[240px]:text-4xl tracking-tighter';
+			if (length <= 5) return 'text-xl @[180px]:text-2xl @[240px]:text-3xl tracking-tight';
+			if (length <= 8) return 'text-base @[180px]:text-lg @[240px]:text-xl tracking-tight';
+			if (length <= 12) return 'text-sm @[180px]:text-base @[240px]:text-lg tracking-normal';
+			return 'text-xs @[180px]:text-sm @[240px]:text-base tracking-normal';
 		}
 	});
 
@@ -110,7 +100,7 @@
 				class="flex size-full flex-col items-center justify-center p-3 @[200px]:p-4 @[280px]:p-5"
 			>
 				<!-- Circular Logo (60% for better presence, increased margin below) -->
-				<div class="mb-2.5 aspect-square w-[60%] shrink-0 @[200px]:mb-3 @[280px]:mb-3.5">
+				<div class="mb-2.5 aspect-square w-[65%] shrink-0 @[200px]:mb-3 @[280px]:mb-3.5">
 					<div
 						class="size-full overflow-hidden rounded-full transition-transform group-hover:scale-105"
 					>
@@ -144,8 +134,8 @@
 						class="line-clamp-2 w-full text-center text-[10px] leading-tight font-semibold text-white @[200px]:text-xs @[280px]:text-sm @[320px]:text-base"
 					>
 						<!-- Show abbreviation below @[240px] to prevent wrapping, full name above -->
-						<span class="@[240px]:hidden">{displayAbbreviation}</span>
-						<span class="hidden @[240px]:inline">{organization.name}</span>
+						<span class="@[120px]:hidden">{displayAbbreviation}</span>
+						<span class="hidden @[120px]:inline">{organization.name}</span>
 					</h3>
 
 					<!-- Categories (PRIORITIZED - Show at @[180px]+) -->

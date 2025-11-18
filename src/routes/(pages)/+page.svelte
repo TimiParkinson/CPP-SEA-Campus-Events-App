@@ -1,8 +1,7 @@
 <script lang="ts">
 	import Hero from '$lib/components/home/Hero.svelte';
-	import FeaturedOrgs from '$lib/components/home/FeaturedOrgs.svelte';
-	import FeaturedEvents from '$lib/components/home/FeaturedEvents.svelte';
 	import CTA from '$lib/components/home/CTA.svelte';
+	import Featured from '$lib/components/cards/Featured.svelte';
 
 	const mockOrgs = [
 		{
@@ -103,16 +102,42 @@
 			imageUrl: null,
 			tags: [{ name: 'social', color: '#EC4899' }],
 			organization: { name: 'Latin Dance Society' }
+		},
+		{
+			id: 'event-3',
+			title: 'Salsa Night Social',
+			description:
+				"Join us for an evening of salsa dancing! Beginners welcome - we'll teach basic steps at the start.",
+			location: 'Student Center Ballroom',
+			startTime: '2025-11-22T19:00:00Z',
+			endTime: '2025-11-22T22:00:00Z',
+			attendeeCount: 127,
+			imageUrl: null,
+			tags: [{ name: 'social', color: '#EC4899' }],
+			organization: { name: 'Latin Dance Society' }
+		},
+		{
+			id: 'event-4',
+			title: 'Salsa Night Social',
+			description:
+				"Join us for an evening of salsa dancing! Beginners welcome - we'll teach basic steps at the start.",
+			location: 'Student Center Ballroom',
+			startTime: '2025-11-22T19:00:00Z',
+			endTime: '2025-11-22T22:00:00Z',
+			attendeeCount: 127,
+			imageUrl: null,
+			tags: [{ name: 'social', color: '#EC4899' }],
+			organization: { name: 'Latin Dance Society' }
 		}
 	];
 
 	// Featured content (choose from mock data for now)
 	const featuredOrgs = mockOrgs.slice(0, 5);
-	const featuredEvents = mockEvents.slice(0, 2);
+	const featuredEvents = mockEvents.slice(0, 4);
 </script>
 
 <svelte:head>
-	<title>Home - Campus Events</title>
+	<title>Campus Events</title>
 	<meta
 		name="description"
 		content="Explore campus events, clubs, and opportunities at Cal Poly Pomona"
@@ -121,7 +146,7 @@
 
 <div class="bg-black">
 	<Hero />
-	<FeaturedOrgs organizations={featuredOrgs} />
-	<FeaturedEvents events={featuredEvents} />
+	<Featured variant="orgs" organizations={featuredOrgs} />
+	<Featured variant="events" events={featuredEvents} />
 	<CTA />
 </div>

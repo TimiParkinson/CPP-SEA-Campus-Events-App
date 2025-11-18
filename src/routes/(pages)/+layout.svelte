@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import Navbar from '$lib/components/Navbar.svelte';
+	import Navbar from '$lib/components/navigation/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 
 	interface Route {
@@ -12,51 +12,34 @@
 
 	const currentPath = $derived($page.url.pathname);
 
-	// Get all routes dynamically
-	const routeModules = import.meta.glob('/src/routes/**/+page.svelte', { eager: true });
+	// Pages that should NOT show footer
+	const hideFooterPaths = ['/search'];
 
-	function normalizeKey(key: string): string {
-		return key
-			.replace(/^[./]+/, '')
-			.replace(/^src\/routes\/?/, '')
-			.replace(/\/\+page\.svelte$/, '')
-			.replace(/^\/+/, '');
-	}
+	const shouldShowFooter = $derived(!hideFooterPaths.some((path) => currentPath.startsWith(path)));
 
-	const routes: Route[] = Object.keys(routeModules)
-		.map((rawKey) => {
-			const key = normalizeKey(rawKey);
-			const pagesIndex = key.indexOf('(pages)');
+	// Hide navbar on mobile for search page
+	const hideNavbarOnMobile = $derived(currentPath.startsWith('/search'));
 
-			if (pagesIndex === -1) return null;
-
-			const after = key.slice(pagesIndex + '(pages)'.length).replace(/^\/+/, '');
-			const parts = after.split('/').filter(Boolean);
-
-			// Only include top-level routes in (pages)
-			if (parts.length !== 1) return null;
-
-			const segment = parts[0];
-			if (!segment || segment.startsWith('_') || segment === 'auth') return null;
-
-			const name = segment
-				.split('-')
-				.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-				.join(' ');
-
-			return { name, path: `/${segment}` };
-		})
-		.filter((route): route is Route => route !== null)
-		.sort((a, b) => a.name.localeCompare(b.name));
+	// Hardcoded routes (cleaner than dynamic discovery)
+	const routes: Route[] = [
+		{ name: 'Calendar', path: '/calendar' },
+		{ name: 'Discover', path: '/discover' }
+	];
 </script>
 
 <div class="flex min-h-screen flex-col bg-black">
+	<!-- Navbar (conditional on mobile for search page) -->
+	<div class:hidden={hideNavbarOnMobile} class="sm:block">
+		<Navbar {routes} {currentPath} />
+	</div>
 
-	<Navbar {routes} {currentPath} />
-
-	<main>
+	<!-- Main content area (no top margin - navbar overlays) -->
+	<main class="flex-1">
 		{@render children()}
 	</main>
 
-	<Footer />
+	<!-- Footer (conditional) -->
+	{#if shouldShowFooter}
+		<Footer />
+	{/if}
 </div>
