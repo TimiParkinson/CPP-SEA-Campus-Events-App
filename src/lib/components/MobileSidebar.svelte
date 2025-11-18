@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Search, User, ChevronUp, Calendar, Compass, Home, Bookmark } from '@lucide/svelte';
+	import { Search, User, ChevronUp, Calendar, Compass, House, Bookmark } from '@lucide/svelte';
 	import AccountMenu from './AccountMenu.svelte';
 
 	interface Route {
@@ -20,6 +20,22 @@
 
 	let searchQuery = $state('');
 	let accountMenuOpen = $state(false);
+
+	// Add icons to routes
+	const routesWithIcons = $derived(
+		routes.map((route) => {
+			let icon;
+			if (route.path === '/calendar') icon = 'Calendar';
+			else if (route.path === '/discover') icon = 'Compass';
+			return { ...route, icon };
+		})
+	);
+
+	// Additional links not in navbar
+	const quickLinks = [
+		{ name: 'Home', path: '/', icon: House },
+		{ name: 'Bookmarks', path: '/bookmarks', icon: Bookmark }
+	];
 
 	function handleSearchInput() {
 		if (searchQuery.trim()) {
@@ -42,15 +58,9 @@
 		if (iconName === 'Compass') return Compass;
 		return null;
 	}
-
-	// Additional quick links for mobile
-	const quickLinks = [
-		{ name: 'Home', path: '/', icon: Home },
-		{ name: 'Bookmarks', path: '/bookmarks', icon: Bookmark }
-	];
 </script>
 
-<!-- Backdrop Blur Background on menu open -->
+<!-- Blur background when menu is open -->
 <button
 	type="button"
 	onclick={onClose}
@@ -68,10 +78,10 @@
 
 	<div class="relative flex h-full flex-col">
 		<!-- Logo Section -->
-		<div class="shrink-0 border-b border-white/10 p-6">
+		<div class="shrink-0 p-6">
 			<a href="/" class="flex items-center gap-3" onclick={onClose}>
 				<div
-					class="flex size-14 items-center justify-center rounded-xl bg-linear-to-br from-purple-600 to-blue-600 shadow-lg"
+					class="flex size-14 items-center justify-center rounded-xl bg-linear-to-br from-slate-700 to-slate-800 shadow-lg"
 				>
 					<svg
 						viewBox="0 0 24 24"
@@ -110,7 +120,7 @@
 		</div>
 
 		<!-- Search Bar -->
-		<div class="shrink-0 border-b border-white/10 p-4">
+		<div class="shrink-0 border-y border-white/10 p-4">
 			<div class="relative">
 				<Search
 					class="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-gray-300"
@@ -154,7 +164,7 @@
 				Explore
 			</h3>
 			<nav class="space-y-1">
-				{#each routes as route}
+				{#each routesWithIcons as route}
 					{@const Icon = getIcon(route.icon)}
 					<button
 						type="button"
@@ -181,18 +191,18 @@
 				onclick={toggleAccountMenu}
 				class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left transition-all hover:bg-white/10"
 			>
-				<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-white/10">
+				<div class="flex size-12 shrink-0 items-center justify-center rounded-lg {isLoggedIn ? "" : "bg-white/10"}">
 					{#if isLoggedIn && userAvatar}
-						<img src={userAvatar} alt="User" class="size-10 rounded-full object-cover" />
+						<img src={userAvatar} alt="User" class="size-12 rounded-full object-cover" />
 					{:else}
 						<User class="size-6 text-gray-300" />
 					{/if}
 				</div>
 				<div class="min-w-0 flex-1">
-					<p class="truncate text-base font-semibold text-white">
+					<p class="text-base font-semibold text-white">
 						{isLoggedIn ? 'My Account' : 'Sign In'}
 					</p>
-					<p class="truncate text-xs text-gray-400">
+					<p class="text-xs text-gray-400">
 						{isLoggedIn ? 'Manage your profile' : 'Get started today'}
 					</p>
 				</div>

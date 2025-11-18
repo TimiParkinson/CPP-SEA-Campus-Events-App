@@ -16,16 +16,6 @@
 
 	let { routes = [], currentPath = '/' }: Props = $props();
 
-	// Add icons to routes (for mobile sidebar)
-	const routesWithIcons = $derived(
-		routes.map((route) => {
-			let icon;
-			if (route.path === '/calendar') icon = 'Calendar';
-			else if (route.path === '/discover') icon = 'Compass';
-			return { ...route, icon };
-		})
-	);
-
 	let accountMenuOpen = $state(false);
 	let mobileMenuOpen = $state(false);
 
@@ -158,7 +148,7 @@
 <!-- Mobile Sidebar -->
 {#if mobileMenuOpen}
 	<MobileSidebar
-		routes={routesWithIcons}
+		{routes}
 		{currentPath}
 		{isLoggedIn}
 		{userAvatar}
