@@ -4,8 +4,8 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Popover from '$lib/components/ui/popover/index.js';
-	import Detail from '$lib/components/Detail.svelte';
-	import BookmarkButton from '$lib/components/BookmarkBtn.svelte';
+	import Detail from '$lib/components/shared/Detail.svelte';
+	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
 	import { getRandomGradient } from '$lib/utils/gradients.js';
 	import { formatDateRange, formatTimeRange } from '$lib/utils/dateFormatters.js';
 	import { generateAbbreviation } from '$lib/utils/orgNameFormatters.js';

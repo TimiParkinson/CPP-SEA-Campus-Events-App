@@ -10,8 +10,8 @@
 		isMultiDayEvent
 	} from '$lib/utils/dateFormatters.js';
 	import { getRandomGradient } from '$lib/utils/gradients.js';
-	import BookmarkButton from '$lib/components/BookmarkBtn.svelte';
-	import Detail from '../Detail.svelte';
+	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
+	import Detail from '../shared/Detail.svelte';
 	import { formatMultipleOrgs } from '$lib/utils/orgNameFormatters.js';
 
 	interface Event {

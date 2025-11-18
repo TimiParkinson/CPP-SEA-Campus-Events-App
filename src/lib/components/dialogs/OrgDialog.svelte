@@ -6,8 +6,8 @@
 	import { getRandomGradient } from '$lib/utils/gradients.js';
 	import { generateAbbreviation } from '$lib/utils/orgNameFormatters.js';
 	import { formatFullDate } from '$lib/utils/dateFormatters.js';
-	import BookmarkButton from '$lib/components/BookmarkBtn.svelte';
-	import Detail from '$lib/components/Detail.svelte';
+	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
+	import Detail from '../shared/Detail.svelte';
 
 	interface Organization {
 		id: string;

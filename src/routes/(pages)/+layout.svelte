@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Navbar from '$lib/components/navigation/Navbar.svelte';
-	import Footer from '$lib/components/Footer.svelte';
+	import Footer from '$lib/components/shared/Footer.svelte';
 
 	interface Route {
 		name: string;

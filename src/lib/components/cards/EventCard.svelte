@@ -2,7 +2,7 @@
 	import { MapPin, Clock, Users } from '@lucide/svelte';
 	import { getRandomGradient } from '$lib/utils/gradients.js';
 	import { formatTime, getDayOfMonth, getMonthAbbr } from '$lib/utils/dateFormatters.js';
-	import BookmarkButton from '$lib/components/BookmarkBtn.svelte';
+	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
 
 	interface Event {
 		id: string;

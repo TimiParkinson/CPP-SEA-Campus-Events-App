@@ -3,8 +3,8 @@
 	import { ArrowLeft, Calendar, Globe, Mail, Users, Send, User } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import Detail from '$lib/components/Detail.svelte';
-	import BookmarkButton from '$lib/components/BookmarkBtn.svelte';
+	import Detail from '$lib/components/shared/Detail.svelte';
+	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
 	import EventCard from '$lib/components/cards/EventCard.svelte';
 	import EventDialog from '$lib/components/dialogs/EventDialog.svelte';
 	import CardGrid from '$lib/components/cards/CardGrid.svelte';
