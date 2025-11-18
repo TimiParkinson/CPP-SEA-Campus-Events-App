@@ -3,10 +3,11 @@
 
 	interface Props {
 		isLoggedIn: boolean;
+		toggleSignedIn: () => void;
 		onClose: () => void;
 	}
 
-	let { isLoggedIn, onClose }: Props = $props();
+	let { isLoggedIn, toggleSignedIn, onClose }: Props = $props();
 
 	// Mock dark mode state
 	let darkMode = $state(true);
@@ -31,7 +32,7 @@
 		<div class="p-2">
 			<button
 				type="button"
-				onclick={() => handleNavigation('/dashboard')}
+				onclick={() => handleNavigation('/')}
 				class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-left text-sm text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
 			>
 				<User class="size-4" />
@@ -40,7 +41,7 @@
 
 			<button
 				type="button"
-				onclick={() => handleNavigation('/settings')}
+				onclick={() => handleNavigation('/')}
 				class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-left text-sm text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
 			>
 				<Settings class="size-4" />
@@ -80,7 +81,7 @@
 			<!-- Logout -->
 			<button
 				type="button"
-				onclick={() => handleNavigation('/auth/logout')}
+				onclick={() => toggleSignedIn()}
 				class="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-left text-sm text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
 			>
 				<LogOut class="size-4" />

@@ -30,6 +30,10 @@
 	function toggleMobileMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
 	}
+
+	function toggleSignedIn() {
+		isLoggedIn = !isLoggedIn;
+	}
 </script>
 
 <!-- Navbar -->
@@ -137,7 +141,7 @@
 					</button>
 
 					{#if accountMenuOpen}
-						<AccountMenu {isLoggedIn} onClose={() => (accountMenuOpen = false)} />
+						<AccountMenu {isLoggedIn} {toggleSignedIn} onClose={() => (accountMenuOpen = false)} />
 					{/if}
 				</div>
 			</div>
@@ -152,6 +156,7 @@
 		{currentPath}
 		{isLoggedIn}
 		{userAvatar}
+		{toggleSignedIn}
 		onClose={() => (mobileMenuOpen = false)}
 	/>
 {/if}

@@ -13,10 +13,11 @@
 		currentPath: string;
 		isLoggedIn: boolean;
 		userAvatar: string | null;
+		toggleSignedIn: () => void;
 		onClose: () => void;
 	}
 
-	let { routes, currentPath, isLoggedIn, userAvatar, onClose }: Props = $props();
+	let { routes, currentPath, isLoggedIn, userAvatar, toggleSignedIn, onClose }: Props = $props();
 
 	let searchQuery = $state('');
 	let accountMenuOpen = $state(false);
@@ -216,7 +217,7 @@
 			<!-- Account Menu Dropdown -->
 			{#if accountMenuOpen}
 				<div class="absolute inset-x-11 {isLoggedIn ? "bottom-80" : "bottom-60"}">
-					<AccountMenu {isLoggedIn} onClose={() => (accountMenuOpen = false)} />
+					<AccountMenu {isLoggedIn} {toggleSignedIn} onClose={() => (accountMenuOpen = false)} />
 				</div>
 			{/if}
 		</div>
