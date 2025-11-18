@@ -27,8 +27,10 @@
 			if (cardType === 'org') {
 				const baseClasses =
 					'grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-5';
-				const centerLastClasses =
-					'[&>*:nth-child(5):nth-last-child(1)]:col-span-2 [&>*:nth-child(5):nth-last-child(1)]:justify-self-center [&>*:nth-child(5):nth-last-child(1)]:w-1/2 sm:[&>*:nth-child(5):nth-last-child(1)]:col-span-1 sm:[&>*:nth-child(5):nth-last-child(1)]:w-full';
+				const isOdd = itemCount % 2 === 1;
+				const centerLastClasses = isOdd
+					? '[&>*:last-child:nth-child(odd)]:col-span-2 [&>*:last-child:nth-child(odd)]:justify-self-center [&>*:last-child:nth-child(odd)]:w-1/2 sm:[&>*:last-child:nth-child(odd)]:col-span-1 sm:[&>*:last-child:nth-child(odd)]:w-full'
+					: '';
 				return `${baseClasses} ${centerLastClasses}`;
 			}
 		}
