@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { replaceState } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import { ArrowLeft, X } from '@lucide/svelte';
 	import SearchBar from '$lib/components/SearchBar.svelte';
 	import FilterDialog from '$lib/components/dialogs/FilterDialog.svelte';
@@ -114,18 +115,6 @@
 			imageUrl: null,
 			tags: [{ name: 'wellness', color: '#14B8A6' }],
 			organization: { name: 'Wellness Club' }
-		},
-		{
-			id: 'event-8',
-			title: 'Yoga & Meditation Session',
-			description: 'Relax and destress',
-			location: 'Campus Gym',
-			startTime: '2025-11-30T07:00:00Z',
-			endTime: '2025-11-30T08:00:00Z',
-			attendeeCount: 24,
-			imageUrl: null,
-			tags: [{ name: 'wellness', color: '#14B8A6' }],
-			organization: { name: 'Wellness Club' }
 		}
 	];
 
@@ -209,78 +198,6 @@
 			logoUrl: null,
 			categories: [{ name: 'business', color: '#F59E0B' }],
 			memberCount: 91
-		},
-		{
-			id: 'org-11',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
-		},
-		{
-			id: 'org-12',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
-		},
-		{
-			id: 'org-13',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
-		},
-		{
-			id: 'org-13',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
-		},
-		{
-			id: 'org-13',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
-		},
-		{
-			id: 'org-13',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
-		},
-		{
-			id: 'org-13',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
-		},
-		{
-			id: 'org-13',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
-		},
-		{
-			id: 'org-13',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
 		}
 	];
 
@@ -295,6 +212,16 @@
 		{ name: 'wellness', color: '#14B8A6' }
 	];
 
+	const allCategories = [
+		{ name: 'academic', color: '#3B82F6' },
+		{ name: 'technology', color: '#8B5CF6' },
+		{ name: 'arts', color: '#EC4899' },
+		{ name: 'service', color: '#10B981' },
+		{ name: 'social', color: '#EC4899' },
+		{ name: 'business', color: '#F59E0B' },
+		{ name: 'wellness', color: '#14B8A6' }
+	];
+
 	// State
 	let searchQuery = $state($page.url.searchParams.get('q') || '');
 	let debouncedQuery = $state($page.url.searchParams.get('q') || '');
@@ -304,6 +231,7 @@
 	let selectedView = $state<'all' | 'events' | 'organizations'>('all');
 	let selectedTimeFilter = $state<'all' | 'upcoming' | 'past' | 'thisMonth'>('all');
 	let selectedTags = $state<string[]>([]);
+	let selectedCategories = $state<string[]>([]);
 	let tagFilterMode = $state<'any' | 'all'>('any');
 
 	// Show more state
@@ -319,33 +247,50 @@
 	let bookmarkedEvents = $state<Set<string>>(new Set());
 	let bookmarkedOrgs = $state<Set<string>>(new Set());
 
+	// Read URL params on mount and apply filters
+	onMount(() => {
+		const params = $page.url.searchParams;
+
+		// Pre-apply tag filter from URL
+		const tagParam = params.get('tag');
+		if (tagParam) {
+			selectedTags = [tagParam];
+			selectedView = 'events';
+		}
+
+		// Pre-apply category filter from URL
+		const categoryParam = params.get('category');
+		if (categoryParam) {
+			selectedCategories = [categoryParam];
+			selectedView = 'organizations';
+		}
+	});
+
 	// Debounce search input - filter immediately, update URL after delay
 	let debounceTimeout: ReturnType<typeof setTimeout>;
 	function handleSearchInput(value: string) {
 		searchQuery = value;
-
-		// Update filtered results immediately (no debounce for filtering)
 		debouncedQuery = value;
 
-		// Debounce only the URL update
+		// Debounce URL update using SvelteKit's replaceState
 		clearTimeout(debounceTimeout);
 		debounceTimeout = setTimeout(() => {
-			const url = new URL(window.location.href);
+			const url = new URL($page.url);
 			if (value) {
 				url.searchParams.set('q', value);
 			} else {
 				url.searchParams.delete('q');
 			}
-			window.history.replaceState({}, '', url);
+			replaceState(url, {});
 		}, 500);
 	}
 
 	function handleSearchClear() {
 		searchQuery = '';
 		debouncedQuery = '';
-		const url = new URL(window.location.href);
+		const url = new URL($page.url);
 		url.searchParams.delete('q');
-		window.history.replaceState({}, '', url);
+		replaceState(url, {});
 	}
 
 	// Filter logic
@@ -363,15 +308,16 @@
 			);
 		}
 
+		// Tag filtering (fixed 'all' mode)
 		if (selectedTags.length > 0) {
 			if (tagFilterMode === 'all') {
+				// Event must have ALL selected tags
 				events = events.filter((e) =>
-					selectedTags.every((tag) => e.tags?.some((t) => t.name === tag))
+					selectedTags.every((selectedTag) => e.tags?.some((t) => t.name === selectedTag))
 				);
 			} else {
-				events = events.filter((e) =>
-					selectedTags.some((tag) => e.tags?.some((t) => t.name === tag))
-				);
+				// Event must have ANY of the selected tags
+				events = events.filter((e) => e.tags?.some((t) => selectedTags.includes(t.name)));
 			}
 		}
 
@@ -397,6 +343,11 @@
 					o.description?.toLowerCase().includes(query) ||
 					o.categories?.some((c) => c.name.toLowerCase().includes(query))
 			);
+		}
+
+		// Category filtering for orgs
+		if (selectedCategories.length > 0) {
+			orgs = orgs.filter((o) => o.categories?.some((c) => selectedCategories.includes(c.name)));
 		}
 
 		return orgs;
@@ -433,6 +384,10 @@
 			filters.push({ type: 'tag', value: tag, label: tag });
 		});
 
+		selectedCategories.forEach((cat) => {
+			filters.push({ type: 'category', value: cat, label: cat });
+		});
+
 		return filters;
 	});
 
@@ -443,6 +398,8 @@
 			selectedTimeFilter = 'all';
 		} else if (filter.type === 'tag') {
 			selectedTags = selectedTags.filter((t) => t !== filter.value);
+		} else if (filter.type === 'category') {
+			selectedCategories = selectedCategories.filter((c) => c !== filter.value);
 		}
 	}
 
@@ -450,13 +407,15 @@
 		selectedView = 'all';
 		selectedTimeFilter = 'all';
 		selectedTags = [];
+		selectedCategories = [];
 		tagFilterMode = 'any';
-		// Also clear search query
 		searchQuery = '';
 		debouncedQuery = '';
-		const url = new URL(window.location.href);
+		const url = new URL($page.url);
 		url.searchParams.delete('q');
-		window.history.replaceState({}, '', url);
+		url.searchParams.delete('tag');
+		url.searchParams.delete('category');
+		replaceState(url, {});
 	}
 
 	function openEvent(event: (typeof mockEvents)[0]) {
@@ -496,10 +455,10 @@
 	<title>Search - Campus Events</title>
 </svelte:head>
 
-<div class="min-h-screen bg-black pt-10 pb-16 sm:pt-24">
+<div class="min-h-screen bg-black pt-15 pb-16">
 	<div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-		<!-- Mobile: Back Button -->
-		<div class="mb-4 block sm:hidden">
+		<!-- Back Button (ALL screens) -->
+		<div class="mb-10">
 			<button
 				type="button"
 				onclick={handleBack}
@@ -583,7 +542,7 @@
 							<button
 								type="button"
 								onclick={() => (eventRowsShown += 2)}
-								class="cursor-pointer text-sm hover:underline"
+								class="cursor-pointer text-sm text-gray-400 transition-colors hover:text-white hover:underline"
 							>
 								View more events ({filteredEvents().length - displayedEvents.length} remaining)
 							</button>
@@ -607,7 +566,7 @@
 							<button
 								type="button"
 								onclick={() => (orgRowsShown += 2)}
-								class="cursor-pointer text-sm hover:underline"
+								class="cursor-pointer text-sm text-gray-400 transition-colors hover:text-white hover:underline"
 							>
 								View more organizations ({filteredOrgs().length - displayedOrgs.length} remaining)
 							</button>
@@ -653,14 +612,15 @@
 </div>
 
 <!-- Dialogs -->
-
 <FilterDialog
 	bind:open={filterDialogOpen}
 	bind:selectedView
 	bind:selectedTimeFilter
 	bind:selectedTags
+	bind:selectedCategories
 	bind:tagFilterMode
 	{allTags}
+	{allCategories}
 	onViewChange={(v) => (selectedView = v)}
 	onTimeFilterChange={(f) => (selectedTimeFilter = f)}
 	onTagToggle={(tag) => {
@@ -668,6 +628,13 @@
 			selectedTags = selectedTags.filter((t) => t !== tag);
 		} else {
 			selectedTags = [...selectedTags, tag];
+		}
+	}}
+	onCategoryToggle={(cat) => {
+		if (selectedCategories.includes(cat)) {
+			selectedCategories = selectedCategories.filter((c) => c !== cat);
+		} else {
+			selectedCategories = [...selectedCategories, cat];
 		}
 	}}
 	onTagModeChange={(mode) => (tagFilterMode = mode)}

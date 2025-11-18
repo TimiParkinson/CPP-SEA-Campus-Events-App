@@ -9,11 +9,14 @@
 		selectedView?: 'all' | 'events' | 'organizations';
 		selectedTimeFilter?: 'all' | 'upcoming' | 'past' | 'thisMonth';
 		allTags?: Array<{ name: string; color: string }>;
+		allCategories?: Array<{ name: string; color: string }>;
 		selectedTags?: string[];
+		selectedCategories?: string[];
 		tagFilterMode?: 'any' | 'all';
 		onViewChange?: (view: 'all' | 'events' | 'organizations') => void;
 		onTimeFilterChange?: (filter: 'all' | 'upcoming' | 'past' | 'thisMonth') => void;
 		onTagToggle?: (tag: string) => void;
+		onCategoryToggle?: (category: string) => void;
 		onTagModeChange?: (mode: 'any' | 'all') => void;
 		onReset?: () => void;
 	}
@@ -23,11 +26,14 @@
 		selectedView = $bindable('all'),
 		selectedTimeFilter = $bindable('all'),
 		allTags = [],
+		allCategories = [],
 		selectedTags = $bindable([]),
+		selectedCategories = $bindable([]),
 		tagFilterMode = $bindable('any'),
 		onViewChange,
 		onTimeFilterChange,
 		onTagToggle,
+		onCategoryToggle,
 		onTagModeChange,
 		onReset
 	}: Props = $props();
@@ -111,8 +117,8 @@
 				</div>
 			{/if}
 
-			<!-- Tags -->
-			{#if allTags.length > 0}
+			<!-- Tags (Only for Events) -->
+			{#if (selectedView === 'events' || selectedView === 'all') && allTags.length > 0}
 				<div class="mb-6">
 					<div class="mb-3 flex items-center justify-between">
 						<h3 class="text-sm font-semibold text-gray-300">Tags</h3>
@@ -154,6 +160,32 @@
 									style="background-color: {tag.color}20; border: 1px solid {tag.color}; color: {tag.color};"
 								>
 									{tag.name}
+								</Badge>
+							</button>
+						{/each}
+					</div>
+				</div>
+			{/if}
+
+			<!-- Categories (Only for Organizations) -->
+			{#if (selectedView === 'organizations' || selectedView === 'all') && allCategories.length > 0}
+				<div class="mb-6">
+					<h3 class="mb-3 text-sm font-semibold text-gray-300">Categories</h3>
+					<div class="flex flex-wrap gap-2">
+						{#each allCategories as category}
+							<button
+								type="button"
+								onclick={() => onCategoryToggle?.(category.name)}
+								class="cursor-pointer transition-all"
+							>
+								<Badge
+									variant="secondary"
+									class="transition-all {selectedCategories.includes(category.name)
+										? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-black'
+										: 'opacity-60 hover:opacity-100'}"
+									style="background-color: {category.color}20; border: 1px solid {category.color}; color: {category.color};"
+								>
+									{category.name}
 								</Badge>
 							</button>
 						{/each}
