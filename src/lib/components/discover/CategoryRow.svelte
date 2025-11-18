@@ -19,7 +19,7 @@
 	// Check scroll position to show/hide arrows
 	function updateScrollButtons() {
 		if (!scrollContainer) return;
-		canScrollLeft = scrollContainer.scrollLeft > 5; // 5px threshold
+		canScrollLeft = scrollContainer.scrollLeft > 5;
 		canScrollRight =
 			scrollContainer.scrollLeft < scrollContainer.scrollWidth - scrollContainer.clientWidth - 5;
 	}
@@ -52,13 +52,11 @@
 		onTitleClick();
 	}
 
-	// Grid classes for HORIZONTAL scrolling (no wrapping!)
+	// Grid classes for horizontal scrolling
 	const gridClasses = $derived(() => {
 		if (cardType === 'event') {
-			// Events: Fixed width cards in horizontal row
 			return 'grid auto-cols-[180px] grid-flow-col gap-3 sm:auto-cols-[200px] sm:gap-4 md:auto-cols-[220px] lg:auto-cols-[240px] lg:gap-6';
 		} else {
-			// Orgs: Fixed width cards in horizontal row
 			return 'grid auto-cols-[120px] grid-flow-col gap-3 sm:auto-cols-[140px] sm:gap-4 md:auto-cols-[160px] lg:auto-cols-[180px] lg:gap-6';
 		}
 	});
@@ -85,7 +83,7 @@
 			</h2>
 		</button>
 
-		<!-- Arrow Navigation (ALL screens now!) -->
+		<!-- Arrow Navigation -->
 		<div class="flex items-center gap-2">
 			<button
 				type="button"
@@ -108,7 +106,7 @@
 		</div>
 	</div>
 
-	<!-- Scrollable Container (horizontal scroll, NO WRAPPING) -->
+	<!-- Scrollable Container -->
 	<div
 		bind:this={scrollContainer}
 		onscroll={updateScrollButtons}
@@ -121,7 +119,6 @@
 </section>
 
 <style>
-	/* Hide scrollbar but keep functionality */
 	.scrollbar-hide::-webkit-scrollbar {
 		display: none;
 	}

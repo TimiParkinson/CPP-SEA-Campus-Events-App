@@ -10,7 +10,7 @@
 		showFilters?: boolean;
 		autofocus?: boolean;
 		activeFiltersCount?: number;
-		size?: 'default' | 'compact'; // Add size prop for navbar
+		size?: 'default' | 'compact';
 	}
 
 	let {
