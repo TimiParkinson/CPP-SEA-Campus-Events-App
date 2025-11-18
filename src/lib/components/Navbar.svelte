@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Menu, Search, User, X } from '@lucide/svelte';
+	import { Menu, Search, User } from '@lucide/svelte';
 	import AccountMenu from './AccountMenu.svelte';
 	import MobileSidebar from './MobileSidebar.svelte';
 
@@ -26,44 +26,12 @@
 		})
 	);
 
-	let searchExpanded = $state(false);
-	let searchQuery = $state('');
 	let accountMenuOpen = $state(false);
 	let mobileMenuOpen = $state(false);
 
 	// Mock auth state
-	let isLoggedIn = $state(false);
-	let userAvatar = $state<string | null>(null);
-
-	function toggleSearch() {
-		searchExpanded = !searchExpanded;
-		if (searchExpanded) {
-			setTimeout(() => document.getElementById('navbar-search-input')?.focus(), 50);
-		} else {
-			searchQuery = '';
-		}
-	}
-
-	function handleSearchInput() {
-		if (searchQuery.trim()) {
-			window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
-		}
-	}
-
-	function handleSearchKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') {
-			searchExpanded = false;
-			searchQuery = '';
-		}
-	}
-
-	function handleSearchBlur() {
-		if (!searchQuery.trim()) {
-			setTimeout(() => {
-				searchExpanded = false;
-			}, 150);
-		}
-	}
+	let isLoggedIn = $state(true);
+	let userAvatar = $state<string | null>("https://cdn-icons-png.flaticon.com/512/147/147142.png");
 
 	function toggleAccountMenu() {
 		accountMenuOpen = !accountMenuOpen;
@@ -75,9 +43,9 @@
 </script>
 
 <!-- Navbar -->
-<nav class="fixed top-0 right-0 left-0 z-50 backdrop-blur-xl">
-	<!-- Backdrop -->
-	<div class="absolute inset-0 bg-linear-to-b from-black/60 via-black/30 to-transparent"></div>
+<nav class="fixed top-0 right-0 left-0 z-50 backdrop-blur-xs">
+	<!-- Dark background behind nav -->
+	<div class="absolute inset-0 bg-linear-to-b from-black/50 via-black/30 to-transparent"></div>
 
 	<div class="relative mx-auto max-w-[1920px] px-6 lg:px-8">
 		<div class="flex h-20 items-center justify-between gap-4">
@@ -87,14 +55,10 @@
 				<button
 					type="button"
 					onclick={toggleMobileMenu}
-					class="shrink-0 cursor-pointer text-white transition-colors hover:text-gray-300 sm:hidden"
+					class="cursor-pointer text-white transition-colors hover:text-gray-300 sm:hidden"
 					aria-label="Menu"
 				>
-					{#if mobileMenuOpen}
-						<X class="size-6" />
-					{:else}
-						<Menu class="size-6" />
-					{/if}
+					<Menu class="size-6" />
 				</button>
 
 				<!-- Logo -->
@@ -103,7 +67,7 @@
 					class="hidden shrink-0 items-center gap-3 transition-opacity hover:opacity-80 sm:flex"
 				>
 					<div
-						class="flex size-10 items-center justify-center rounded-lg bg-linear-to-br from-purple-600 to-blue-600 shadow-lg"
+						class="flex size-10 items-center justify-center rounded-lg bg-linear-to-br from-slate-700 to-slate-800 shadow-lg"
 					>
 						<svg
 							viewBox="0 0 24 24"
@@ -138,14 +102,14 @@
 				</a>
 
 				<!-- Divider -->
-				<div class="hidden h-10 w-px shrink-0 bg-white/20 sm:block ml-3"></div>
+				<div class="hidden h-9 w-px ml-3 bg-white/20 sm:block"></div>
 
 				<!-- Nav Links -->
 				<div class="hidden min-w-0 sm:flex">
 					{#each routes as route}
 						<a
 							href={route.path}
-							class="shrink-0 rounded-lg px-3 py-2 text-base transition-all duration-200 {currentPath ===
+							class="rounded-lg px-3 py-2 text-base transition-all duration-200 {currentPath ===
 							route.path
 								? 'font-bold text-white'
 								: 'font-normal text-gray-300 hover:font-semibold hover:text-white'}"
@@ -157,36 +121,11 @@
 			</div>
 
 			<!-- Search + Account -->
-			<div class="flex shrink-0 items-center">
+			<div class="flex gap-1 items-center">
 				<!-- Search -->
-				<div class="hidden sm:block">
-					{#if searchExpanded}
-						<input
-							id="navbar-search-input"
-							type="text"
-							bind:value={searchQuery}
-							oninput={handleSearchInput}
-							onkeydown={handleSearchKeydown}
-							onblur={handleSearchBlur}
-							placeholder="Search..."
-							class="h-10 w-48 rounded-lg border border-white/10 bg-white/5 px-4 text-sm text-white placeholder-gray-400 backdrop-blur-2xl transition-all duration-300 ease-in-out focus:w-64 focus:border-white/20 focus:bg-white/10 focus:outline-none md:w-64"
-						/>
-					{:else}
-						<button
-							type="button"
-							onclick={toggleSearch}
-							class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white"
-							aria-label="Search"
-						>
-							<Search class="size-5" />
-						</button>
-					{/if}
-				</div>
-
-				<!-- Search Icon (Mobile -> Direct Link) -->
 				<a
 					href="/search"
-					class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white sm:hidden"
+					class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white"
 					aria-label="Search"
 				>
 					<Search class="size-5" />
