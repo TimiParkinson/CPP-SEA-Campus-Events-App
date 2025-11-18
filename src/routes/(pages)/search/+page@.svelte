@@ -3,7 +3,7 @@
 	import { replaceState } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { ArrowLeft, X } from '@lucide/svelte';
-	import SearchBar from '$lib/components/SearchBar.svelte';
+	import SearchBar from '$lib/components/shared/SearchBar.svelte';
 	import FilterDialog from '$lib/components/dialogs/FilterDialog.svelte';
 	import EventCard from '$lib/components/cards/EventCard.svelte';
 	import OrgCard from '$lib/components/cards/OrgCard.svelte';
