@@ -2,28 +2,55 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		minCardWidth?: number;
-		gap?: number;
-		emptyMessage?: string;
 		itemCount: number;
+		emptyMessage?: string;
+		variant?: 'featured' | 'general';
+		columns?: 3 | 4 | 5;
+		cardType?: 'event' | 'org';
 		children: Snippet;
 	}
 
 	let {
-		minCardWidth = 160,
-		gap = 4,
-		emptyMessage = 'No items found',
 		itemCount,
+		emptyMessage = 'No items found',
+		variant = 'general',
+		columns = 4,
+		cardType = 'event',
 		children
 	}: Props = $props();
+
+	const gridClasses = $derived(() => {
+		if (variant === 'featured') {
+			if (cardType === 'event') {
+				return 'grid grid-cols-1 gap-6 md:grid-cols-2';
+			}
+			if (cardType === 'org') {
+				const baseClasses =
+					'grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-5';
+				const isOdd = itemCount % 2 === 1;
+				const centerLastClasses = isOdd
+					? '[&>*:last-child:nth-child(odd)]:col-span-2 [&>*:last-child:nth-child(odd)]:justify-self-center [&>*:last-child:nth-child(odd)]:w-1/2 sm:[&>*:last-child:nth-child(odd)]:col-span-1 sm:[&>*:last-child:nth-child(odd)]:w-full'
+					: '';
+				return `${baseClasses} ${centerLastClasses}`;
+			}
+		}
+
+		if (columns === 3) {
+			return 'grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3';
+		} else if (columns === 5) {
+			return 'grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5';
+		} else {
+			return 'grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+		}
+	});
 </script>
 
 {#if itemCount === 0}
-	<div class="py-16 text-center">
+	<div class="flex items-center justify-center py-12">
 		<p class="text-lg text-muted-foreground">{emptyMessage}</p>
 	</div>
 {:else}
-	<div class="grid gap-{gap} grid-cols-[repeat(auto-fill,minmax({minCardWidth}px,1fr))]">
+	<div class={gridClasses()}>
 		{@render children()}
 	</div>
 {/if}
