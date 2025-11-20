@@ -5,6 +5,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { ArrowLeft } from '@lucide/svelte';
+	import { supabaseBrowser } from '$lib/supabaseClient';
 
 	let step = $state<'email' | 'password'>('email');
 	let email = $state('');
@@ -38,6 +39,15 @@
 		
 		error = '';
 		loading = true;
+
+		const { error: authError } =
+    	await supabaseBrowser.auth.signInWithPassword({ email, password });
+
+  	if (authError) {
+    	error = authError.message;
+   		loading = false;
+    	return; // do NOT redirect
+ 	}
 		
 		// Supabase integration:
 		// const { data, error: authError } = await supabase.auth.signInWithPassword({ 
@@ -49,7 +59,13 @@
 		//   loading = false;
 		//   return;
 		// }
-		
+	async function signIn() {
+		error = '';
+		const { error: err } = await supabaseBrowser.auth.signInWithPassword({ email, password });
+		if (err) error = err.message;
+		else goto('/');
+	}
+
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		loading = false;
 		goto('/');
@@ -66,7 +82,8 @@
 		//     redirectTo: `${window.location.origin}/callback`
 		//   }
 		// });
-		
+  	
+	
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		loading = false;
 	}
