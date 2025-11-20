@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Menu, Search, User } from '@lucide/svelte';
+	import * as DropdownMenu from '../ui/dropdown-menu/index.js';
+	import * as Sheet from '../ui/sheet/index.js';
 	import AccountMenu from './AccountMenu.svelte';
 	import MobileSidebar from './MobileSidebar.svelte';
 
@@ -16,20 +18,11 @@
 
 	let { routes = [], currentPath = '/' }: Props = $props();
 
-	let accountMenuOpen = $state(false);
 	let mobileMenuOpen = $state(false);
 
 	// Mock auth state
 	let isLoggedIn = $state(true);
 	let userAvatar = $state<string | null>("https://cdn-icons-png.flaticon.com/512/147/147142.png");
-
-	function toggleAccountMenu() {
-		accountMenuOpen = !accountMenuOpen;
-	}
-
-	function toggleMobileMenu() {
-		mobileMenuOpen = !mobileMenuOpen;
-	}
 
 	function toggleSignedIn() {
 		isLoggedIn = !isLoggedIn;
@@ -48,7 +41,7 @@
 				<!-- Hamburger -->
 				<button
 					type="button"
-					onclick={toggleMobileMenu}
+					onclick={() => (mobileMenuOpen = true)}
 					class="cursor-pointer text-white transition-colors hover:text-gray-300 sm:hidden"
 					aria-label="Menu"
 				>
@@ -96,7 +89,7 @@
 				</a>
 
 				<!-- Divider -->
-				<div class="hidden h-9 w-px ml-3 bg-white/20 sm:block"></div>
+				<div class="ml-3 hidden h-9 w-px bg-white/20 sm:block"></div>
 
 				<!-- Nav Links -->
 				<div class="hidden min-w-0 sm:flex">
@@ -115,7 +108,7 @@
 			</div>
 
 			<!-- Search + Account -->
-			<div class="flex gap-1 items-center">
+			<div class="flex items-center gap-1">
 				<!-- Search -->
 				<a
 					href="/search"
@@ -125,49 +118,42 @@
 					<Search class="size-5" />
 				</a>
 
-				<!-- Account -->
-				<div class="relative">
-					<button
-						type="button"
-						onclick={toggleAccountMenu}
-						class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white"
-						aria-label="Account"
+				<!-- Account Dropdown -->
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger
+						class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white focus:outline-none"
 					>
 						{#if isLoggedIn && userAvatar}
 							<img src={userAvatar} alt="User" class="size-8 rounded-full object-cover" />
 						{:else}
 							<User class="size-5" />
 						{/if}
-					</button>
-
-					{#if accountMenuOpen}
-						<AccountMenu {isLoggedIn} {toggleSignedIn} onClose={() => (accountMenuOpen = false)} />
-					{/if}
-				</div>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content
+						class="w-56 border-white/10 bg-black/70 backdrop-blur-md"
+						align="end"
+					>
+						<AccountMenu {isLoggedIn} {toggleSignedIn} />
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
 			</div>
 		</div>
 	</div>
 </nav>
 
 <!-- Mobile Sidebar -->
-{#if mobileMenuOpen}
-	<MobileSidebar
-		{routes}
-		{currentPath}
-		{isLoggedIn}
-		{userAvatar}
-		{toggleSignedIn}
-		onClose={() => (mobileMenuOpen = false)}
-	/>
-{/if}
-
-<!-- Click outside to close account menu -->
-{#if accountMenuOpen}
-	<button
-		type="button"
-		onclick={() => (accountMenuOpen = false)}
-		class="fixed inset-0 z-40 cursor-default"
-		aria-label="Close menu"
-		tabindex="-1"
-	></button>
-{/if}
+<Sheet.Root bind:open={mobileMenuOpen}>
+	<Sheet.Content
+		side="left"
+		class="w-80 overflow-visible border-white/10 bg-black/50 p-0 backdrop-blur-2xl"
+	>
+		<MobileSidebar
+			{routes}
+			{currentPath}
+			{isLoggedIn}
+			{userAvatar}
+			{toggleSignedIn}
+			onClose={() => (mobileMenuOpen = false)}
+		/>
+	</Sheet.Content>
+</Sheet.Root>
