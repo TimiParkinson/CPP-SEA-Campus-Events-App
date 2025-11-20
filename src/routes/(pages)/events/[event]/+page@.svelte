@@ -10,54 +10,28 @@
 	import { formatDateRange, formatTimeRange } from '$lib/utils/dateFormatters.js';
 	import { generateAbbreviation } from '$lib/utils/orgNameFormatters.js';
 
-	const eventId = $page.params.event;
+	// Import types and mock data
+	import type { Event } from '$lib/types/index.js';
+	import { getEvent } from '$lib/mock/index.js';
 
-	const mockEvent = {
-		id: eventId as string,
-		title: 'This is an example event',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-		location: 'Insert a longer than usual location name',
-		startTime: '2025-11-03T12:00:00Z',
-		endTime: '2025-11-07T16:00:00Z',
-		attendeeCount: 127,
-		imageUrl:
-			'https://educationsnapshots.com/wp-content/uploads/sites/4/2020/07/cal-poly-pomona-student-housing-phase-i-dining-commons-1-700x467.jpg',
-		tags: [
-			{ name: 'Upcoming', color: '#8B5CF6' },
-			{ name: 'Upcoming', color: '#3B82F6' },
-			{ name: 'Upcoming', color: '#10B981' }
-		],
-		organizations: [
-			{
-				id: 'org-1',
-				name: 'Software Engineering Association',
-				abbreviation: 'SEA',
-				logoUrl: null
-			},
-			{
-				id: 'org-2',
-				name: 'Computer Science Society',
-				abbreviation: 'CSS',
-				logoUrl: 'https://cppcss.club/images/logo_for_web_2_2025.png'
-			},
-			{
-				id: 'org-3',
-				name: 'Cal Poly Pomona',
-				abbreviation: 'CPP',
-				logoUrl: 'https://logos-world.net/wp-content/uploads/2025/02/Cal-Poly-Pomona-Symbol.png'
-			}
-		],
-		rsvpUrl: null,
-		feedbackUrl: null
-	};
+	const eventId = $page.params.event ?? 'event-1';
+
+	// Try to get the event from mock data, fallback to example co-hosted event
+	const mockEvent: Event = (() => {
+		try {
+			return getEvent(eventId);
+		} catch {
+			// If event not found, use the example co-hosted event
+			return getEvent('event-example-cohost');
+		}
+	})();
 
 	let gradient = $derived(getRandomGradient(mockEvent.id));
 	let isBookmarked = $state(false);
 	let hostsMenuOpen = $state(false);
 
 	const hostsDisplay = $derived(() => {
-		const orgs = mockEvent.organizations;
+		const orgs = mockEvent.organizations || [];
 		if (orgs.length === 0) return 'No host';
 		if (orgs.length === 1) {
 			const orgName = orgs[0].name;
@@ -184,26 +158,26 @@
 			<div class="flex -translate-y-5 items-end justify-between gap-3 sm:gap-4">
 				<!-- Hosts -->
 				<div class="relative">
-					{#if mockEvent.organizations.length === 1}
+					{#if mockEvent.organizations && mockEvent.organizations.length === 1}
 						<!-- Single Organization -->
 						<button
 							type="button"
-							onclick={() => handleOrgClick(mockEvent.organizations[0].id)}
+							onclick={() => handleOrgClick(mockEvent.organizations![0].id)}
 							class="group flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/20 bg-black/80 px-3 shadow-lg backdrop-blur-sm transition-colors hover:bg-black/90 sm:h-11 sm:gap-3 sm:px-4"
 						>
-							{#if mockEvent.organizations[0].logoUrl}
+							{#if mockEvent.organizations![0].logoUrl}
 								<img
-									src={mockEvent.organizations[0].logoUrl}
-									alt={mockEvent.organizations[0].name}
+									src={mockEvent.organizations![0].logoUrl}
+									alt={mockEvent.organizations![0].name}
 									class="size-7 shrink-0 rounded-full object-cover"
 								/>
 							{:else}
 								<div
 									class="flex size-7 shrink-0 items-center justify-center rounded-full"
-									style="background: {getRandomGradient(mockEvent.organizations[0].id)};"
+									style="background: {getRandomGradient(mockEvent.organizations![0].id)};"
 								>
 									<span class="text-[10px] font-bold text-white">
-										{generateAbbreviation(mockEvent.organizations[0].name)}
+										{generateAbbreviation(mockEvent.organizations![0].name)}
 									</span>
 								</div>
 							{/if}
@@ -213,7 +187,7 @@
 								{hostsDisplay()}
 							</span>
 						</button>
-					{:else}
+					{:else if mockEvent.organizations && mockEvent.organizations.length > 1}
 						<!-- Multiple Organizations -->
 						<Popover.Root bind:open={hostsMenuOpen}>
 							<Popover.Trigger

@@ -2,17 +2,7 @@
 	import { Users } from '@lucide/svelte';
 	import { getRandomGradient } from '$lib/utils/gradients.js';
 	import { generateAbbreviation } from '$lib/utils/orgNameFormatters.js';
-
-	interface Organization {
-		id: string;
-		name: string;
-		description?: string | null;
-		logoUrl?: string | null;
-		abbreviation?: string;
-		categories?: Array<{ name: string; color: string }>;
-		memberCount?: number | null;
-		upcomingEventCount?: number | null;
-	}
+	import type { Organization } from '$lib/types/index.js';
 
 	interface Props {
 		organization: Organization;
@@ -60,7 +50,7 @@
 
 <div class="@container">
 	{#if isFeatured}
-		<!-- Featured: Just a circular logo, no card background -->
+		<!-- Featured -->
 		<button
 			type="button"
 			{onclick}
@@ -71,7 +61,7 @@
 				<!-- Image logo -->
 				<img src={organization.logoUrl} alt={organization.name} class="size-full object-cover" />
 			{:else}
-				<!-- Gradient circle with text - ALWAYS SINGLE LINE, NO TRUNCATION -->
+				<!-- Gradient fallback -->
 				<div class="flex size-full items-center justify-center" style="background: {gradient};">
 					<span
 						class="font-bold text-white {circleFontSize()} max-w-full text-center leading-none whitespace-nowrap select-none"
@@ -82,7 +72,7 @@
 			{/if}
 		</button>
 	{:else}
-		<!-- General: Card with solid background, circular logo at top -->
+		<!-- General -->
 		<div
 			role="button"
 			tabindex="0"
@@ -95,11 +85,11 @@
 			}}
 			class="group relative aspect-square w-full cursor-pointer overflow-hidden rounded-xl bg-neutral-900 transition-all hover:scale-[1.02] hover:shadow-xl focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
 		>
-			<!-- Inner container with padding - CENTERED VERTICALLY -->
+			<!-- Inner container -->
 			<div
 				class="flex size-full flex-col items-center justify-center p-3 @[200px]:p-4 @[280px]:p-5"
 			>
-				<!-- Circular Logo (60% for better presence, increased margin below) -->
+				<!-- Circular Logo -->
 				<div class="mb-2.5 aspect-square w-[65%] shrink-0 @[200px]:mb-3 @[280px]:mb-3.5">
 					<div
 						class="size-full overflow-hidden rounded-full transition-transform group-hover:scale-105"
@@ -112,9 +102,9 @@
 								class="size-full object-cover"
 							/>
 						{:else}
-							<!-- Gradient circle with text - ALWAYS SINGLE LINE, NO TRUNCATION -->
+							<!-- Gradient fallback -->
 							<div
-								class="flex size-full items-center justify-center p-2 @[200px]:p-2.5 @[280px]:p-3"
+								class="flex size-full items-center justify-center"
 								style="background: {gradient};"
 							>
 								<span
@@ -127,18 +117,18 @@
 					</div>
 				</div>
 
-				<!-- Content below logo (matching EventCard pattern) -->
+				<!-- Content -->
 				<div class="pointer-events-none flex w-full flex-col items-center gap-1 @[200px]:gap-1.5">
-					<!-- Title: Show full name on wide cards, abbreviation on narrow -->
+					<!-- Title -->
 					<h3
-						class="line-clamp-2 w-full text-center text-[10px] leading-tight font-semibold text-white @[200px]:text-xs @[280px]:text-sm @[320px]:text-base"
+						class="w-full text-center text-[10px] leading-tight font-semibold text-white @[200px]:text-xs @[280px]:text-sm @[320px]:text-base"
 					>
-						<!-- Show abbreviation below @[240px] to prevent wrapping, full name above -->
-						<span class="@[120px]:hidden">{displayAbbreviation}</span>
-						<span class="hidden @[120px]:inline">{organization.name}</span>
+						<!-- Show abbreviation below @[200px] -->
+						<span class="block @[200px]:hidden">{displayAbbreviation}</span>
+						<span class="hidden truncate @[200px]:block">{organization.name}</span>
 					</h3>
 
-					<!-- Categories (PRIORITIZED - Show at @[180px]+) -->
+					<!-- Categories -->
 					{#if organization.categories && organization.categories.length > 0}
 						<div class="hidden flex-wrap justify-center gap-1 @[180px]:flex @[280px]:gap-1.5">
 							{#each organization.categories.slice(0, 2) as category}
@@ -161,7 +151,7 @@
 						</div>
 					{/if}
 
-					<!-- Member Count (Show at @[200px]+ - MORE room after abbreviation) -->
+					<!-- Member Count -->
 					{#if organization.memberCount !== null && organization.memberCount !== undefined}
 						<div
 							class="hidden items-center gap-1 text-[9px] text-white/90 @[200px]:flex @[280px]:text-[10px]"

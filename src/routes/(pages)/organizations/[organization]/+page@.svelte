@@ -12,101 +12,34 @@
 	import { formatFullDate } from '$lib/utils/dateFormatters.js';
 	import { generateAbbreviation } from '$lib/utils/orgNameFormatters.js';
 
-	const orgId = $page.params.organization;
+	// Import types and mock data
+	import type { Organization, Event } from '$lib/types/index.js';
+	import { getOrganization, mockEvents } from '$lib/mock/index.js';
 
-	const mockOrg = {
-		id: orgId as string,
-		name: 'Computer Science Society',
-		abbreviation: 'CSS',
-		description:
-			'A community for students interested in software development, algorithms, and tech careers. We host weekly coding sessions, tech talks, hackathons, and networking events with industry professionals. Join us to enhance your technical skills and connect with like-minded peers!',
-		logoUrl: 'https://cppcss.club/images/logo_for_web_2_2025.png',
-		imageUrl: null,
-		categories: [
-			{ name: 'Academic', color: '#3B82F6' },
-			{ name: 'Technology', color: '#8B5CF6' }
-		],
-		memberCount: 156,
-		establishedDate: new Date('2020-11-02'),
-		websiteUrl: 'https://cppcss.club',
-		contactEmail: 'contact@cppcss.club',
-		boardMembers: [
-			{ name: 'John Doe', role: 'President' },
-			{ name: 'Jane Smith', role: 'Vice President' },
-			{ name: 'Mike Johnson', role: 'Treasurer' },
-			{ name: 'Sarah Williams', role: 'Secretary' },
-			{ name: 'Alex Chen', role: 'Project Manager' },
-			{ name: 'Emily Davis', role: 'Marketing Lead' },
-			{ name: 'Chris Brown', role: 'Outreach' },
-			{ name: 'Taylor Garcia', role: 'Advisor' }
-		],
-		feedbackUrl: null
-	};
+	const orgId = $page.params.organization ?? 'org-1';
 
-	const upcomingEvents = [
-		{
-			id: 'event-1',
-			title: 'Intro to Web Development Workshop',
-			description: 'Learn the basics of HTML, CSS, and JavaScript. Perfect for beginners!',
-			location: 'Engineering Building, Room 205',
-			startTime: '2025-11-20T14:00:00Z',
-			endTime: '2025-11-20T16:00:00Z',
-			attendeeCount: 45,
-			imageUrl: null,
-			tags: [
-				{ name: 'workshop', color: '#8B5CF6' },
-				{ name: 'free-food', color: '#EF4444' }
-			],
-			organization: { name: mockOrg.name }
-		},
-		{
-			id: 'event-2',
-			title: 'Tech Career Fair Prep',
-			description: 'Get ready for the career fair with resume reviews and interview tips.',
-			location: 'Library, Study Room 3A',
-			startTime: '2025-11-25T17:00:00Z',
-			endTime: '2025-11-25T18:30:00Z',
-			attendeeCount: 67,
-			imageUrl: null,
-			tags: [
-				{ name: 'networking', color: '#3B82F6' },
-				{ name: 'workshop', color: '#8B5CF6' }
-			],
-			organization: { name: mockOrg.name }
+	// Try to get the organization from mock data, fallback to org-8 (CSS)
+	const mockOrg: Organization = (() => {
+		try {
+			return getOrganization(orgId);
+		} catch {
+			// If org not found, use CSS as default
+			return getOrganization('org-8');
 		}
-	];
+	})();
 
-	const pastEvents = [
-		{
-			id: 'event-4',
-			title: 'Fall Semester Welcome Social',
-			description: 'Meet fellow members and learn about upcoming events this semester.',
-			location: 'Student Center',
-			startTime: '2025-09-10T18:00:00Z',
-			endTime: '2025-09-10T20:00:00Z',
-			attendeeCount: 78,
-			imageUrl: null,
-			tags: [{ name: 'social', color: '#EC4899' }],
-			organization: { name: mockOrg.name }
-		},
-		{
-			id: 'event-5',
-			title: 'Git & GitHub Workshop',
-			description: 'Learn version control basics for collaborative coding.',
-			location: 'Engineering Building, Room 205',
-			startTime: '2025-09-20T15:00:00Z',
-			endTime: '2025-09-20T17:00:00Z',
-			attendeeCount: 52,
-			imageUrl: null,
-			tags: [{ name: 'workshop', color: '#8B5CF6' }],
-			organization: { name: mockOrg.name }
-		}
-	];
+	// Filter events by this organization (use first 2 for upcoming)
+	const upcomingEvents: Event[] = mockEvents
+		.filter((e) => e.organizations?.some(o => o.name === mockOrg.name))
+		.slice(0, 2);
+
+	// Mock past events (empty for now, could be filtered from mockEvents by date)
+	const pastEvents: Event[] = [];
 
 	let gradient = $derived(getRandomGradient(mockOrg.id));
 	let isBookmarked = $state(false);
 	let bookmarkedEvents = $state<Set<string>>(new Set());
-	let selectedEvent = $state<any>(null);
+	let selectedEvent = $state<Event | null>(null);
 	let eventDialogOpen = $state(false);
 
 	function handleBack() {
@@ -172,8 +105,8 @@
 	<!-- Banner -->
 	<div class="relative h-64 overflow-hidden sm:h-80 md:h-96">
 		<!-- Background Image/Gradient -->
-		{#if mockOrg.imageUrl}
-			<img src={mockOrg.imageUrl} alt={mockOrg.name} class="size-full object-cover object-center" />
+		{#if mockOrg.bannerImageUrl}
+			<img src={mockOrg.bannerImageUrl} alt={mockOrg.name} class="size-full object-cover object-center" />
 		{:else}
 			<div class="size-full" style="background: {gradient};"></div>
 		{/if}
