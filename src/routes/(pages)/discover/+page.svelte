@@ -7,12 +7,15 @@
 	import EventDialog from '$lib/components/dialogs/EventDialog.svelte';
 	import OrgDialog from '$lib/components/dialogs/OrgDialog.svelte';
 
-	// Import types and mock data from centralized location
+	// Import types
 	import type { Event, Organization } from '$lib/types/index.js';
-	import { mockEvents, mockOrganizations, mockEventTags, mockOrganizationCategories } from '$lib/mock/index.js';
 
-	// Replace mockOrganizations with data prop when backend-ready
-	const orgs = mockOrganizations;
+	// Receive data from +page.server.ts
+	let { data } = $props();
+	const orgsData = data.organizations;
+	const eventData = data.events;
+	const eventTagsData = data.eventTags;
+	const orgCategoriesData = data.organizationCategories;
 
 	// Tab state
 	let selectedTab = $state('events');
@@ -29,7 +32,7 @@
 	const eventsByTag = $derived(() => {
 		const map = new Map<string, Event[]>();
 
-		mockEvents.forEach((event) => {
+		eventData.forEach((event) => {
 			event.tags?.forEach((tag) => {
 				if (!map.has(tag.name)) {
 					map.set(tag.name, []);
@@ -45,7 +48,7 @@
 	const orgsByCategory = $derived(() => {
 		const map = new Map<string, Organization[]>();
 
-		orgs.forEach((org) => {
+		orgsData.forEach((org) => {
 			org.categories?.forEach((category) => {
 				const key = category.name.toLowerCase().replace(/\s+/g, '_');
 				if (!map.has(key)) {
@@ -59,19 +62,19 @@
 	});
 
 	// Featured items (first 2 events, first 5 orgs)
-	const featuredEvents = $derived(mockEvents.slice(0, 2));
-	const featuredOrgs = $derived(orgs.slice(0, 5));
+	const featuredEvents = $derived(eventData.slice(0, 2));
+	const featuredOrgs = $derived(orgsData.slice(0, 5));
 
 	// Helper to get display labels for event tags
 	function getEventTagLabel(tagName: string): string {
 		const labels: Record<string, string> = {
-			'workshop': 'Workshops',
-			'social': 'Social Events',
-			'networking': 'Networking',
-			'competition': 'Competitions',
-			'volunteer': 'Volunteer',
-			'lecture': 'Lectures',
-			'fundraiser': 'Fundraisers',
+			workshop: 'Workshops',
+			social: 'Social Events',
+			networking: 'Networking',
+			competition: 'Competitions',
+			volunteer: 'Volunteer',
+			lecture: 'Lectures',
+			fundraiser: 'Fundraisers',
 			'free-food': 'Free Food'
 		};
 		return labels[tagName] || tagName;
@@ -79,8 +82,8 @@
 
 	// Event categories to display (from consolidated mock data)
 	const eventCategories = $derived(() => {
-		return mockEventTags
-			.map(tag => ({
+		return eventTagsData
+			.map((tag) => ({
 				key: tag.name,
 				label: getEventTagLabel(tag.name),
 				color: tag.color
@@ -90,8 +93,8 @@
 
 	// Org categories to display (from consolidated mock data)
 	const orgCategories = $derived(() => {
-		return mockOrganizationCategories
-			.map(category => ({
+		return orgCategoriesData
+			.map((category) => ({
 				key: category.name.toLowerCase().replace(/\s+/g, '_'),
 				label: category.name,
 				color: category.color

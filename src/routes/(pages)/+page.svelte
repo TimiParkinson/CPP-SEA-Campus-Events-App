@@ -3,12 +3,10 @@
 	import CTA from '$lib/components/home/CTA.svelte';
 	import Featured from '$lib/components/cards/Featured.svelte';
 
-	// Import mock data from centralized location
-	import { mockEvents, mockOrganizations } from '$lib/mock/index.js';
-
-	// What is considered "Featured" is yet to be confirmed
-	const featuredOrgs = mockOrganizations.slice(0, 5);
-	const featuredEvents = mockEvents.slice(0, 4);
+	// Receive data from +page.server.ts
+	let { data } = $props();
+	const featuredOrgs = data.featuredOrgs;
+	const featuredEvents = data.featuredEvents;
 </script>
 
 <svelte:head>

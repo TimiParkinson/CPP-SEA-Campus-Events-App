@@ -12,31 +12,16 @@
 	import { formatFullDate } from '$lib/utils/dateFormatters.js';
 	import { generateAbbreviation } from '$lib/utils/orgNameFormatters.js';
 
-	// Import types and mock data
+	// Import types
 	import type { Organization, Event } from '$lib/types/index.js';
-	import { getOrganization, mockEvents } from '$lib/mock/index.js';
 
-	const orgId = $page.params.organization ?? 'org-1';
+	// Receive data from +page.server.ts
+	let { data } = $props();
+	const org: Organization = data.organization;
+	const upcomingEvents: Event[] = data.upcomingEvents;
+	const pastEvents: Event[] = data.pastEvents;
 
-	// Try to get the organization from mock data, fallback to org-8 (CSS)
-	const mockOrg: Organization = (() => {
-		try {
-			return getOrganization(orgId);
-		} catch {
-			// If org not found, use CSS as default
-			return getOrganization('org-8');
-		}
-	})();
-
-	// Filter events by this organization (use first 2 for upcoming)
-	const upcomingEvents: Event[] = mockEvents
-		.filter((e) => e.organizations?.some(o => o.name === mockOrg.name))
-		.slice(0, 2);
-
-	// Mock past events (empty for now, could be filtered from mockEvents by date)
-	const pastEvents: Event[] = [];
-
-	let gradient = $derived(getRandomGradient(mockOrg.id));
+	let gradient = $derived(getRandomGradient(org.id));
 	let isBookmarked = $state(false);
 	let bookmarkedEvents = $state<Set<string>>(new Set());
 	let selectedEvent = $state<Event | null>(null);
@@ -55,8 +40,8 @@
 	}
 
 	function handleFeedback() {
-		if (mockOrg.feedbackUrl) {
-			window.open(mockOrg.feedbackUrl, '_blank');
+		if (org.feedbackUrl) {
+			window.open(org.feedbackUrl, '_blank');
 		} else {
 			console.log('Send Feedback clicked - not yet implemented');
 		}
@@ -67,14 +52,14 @@
 	}
 
 	function handleWebsiteClick() {
-		if (mockOrg.websiteUrl) {
-			window.open(mockOrg.websiteUrl, '_blank');
+		if (org.websiteUrl) {
+			window.open(org.websiteUrl, '_blank');
 		}
 	}
 
 	function handleEmailClick() {
-		if (mockOrg.contactEmail) {
-			window.location.href = `mailto:${mockOrg.contactEmail}`;
+		if (org.contactEmail) {
+			window.location.href = `mailto:${org.contactEmail}`;
 		}
 	}
 
@@ -98,15 +83,19 @@
 </script>
 
 <svelte:head>
-	<title>{mockOrg.name} - Campus Events</title>
+	<title>{org.name} - Campus Events</title>
 </svelte:head>
 
 <div class="min-h-screen bg-black">
 	<!-- Banner -->
 	<div class="relative h-64 overflow-hidden sm:h-80 md:h-96">
 		<!-- Background Image/Gradient -->
-		{#if mockOrg.bannerImageUrl}
-			<img src={mockOrg.bannerImageUrl} alt={mockOrg.name} class="size-full object-cover object-center" />
+		{#if org.bannerImageUrl}
+			<img
+				src={org.bannerImageUrl}
+				alt={org.name}
+				class="size-full object-cover object-center"
+			/>
 		{:else}
 			<div class="size-full" style="background: {gradient};"></div>
 		{/if}
@@ -127,13 +116,13 @@
 		</div>
 
 		<!-- Member Count -->
-		{#if mockOrg.memberCount}
+		{#if org.memberCount}
 			<div class="absolute top-4 right-4 sm:top-6 sm:right-6">
 				<div
 					class="flex items-center gap-2 rounded-lg border border-white/20 bg-black/60 px-3 py-2 text-white backdrop-blur-sm sm:px-4"
 				>
 					<Users size="17" />
-					<span class="text-sm font-semibold">{mockOrg.memberCount} members</span>
+					<span class="text-sm font-semibold">{org.memberCount} members</span>
 				</div>
 			</div>
 		{/if}
@@ -145,10 +134,10 @@
 			<div class="shift-content-up | flex items-center justify-between gap-3 sm:gap-4">
 				<!-- Logo - Increased size with inline width/height -->
 				<div class="relative">
-					{#if mockOrg.logoUrl}
+					{#if org.logoUrl}
 						<img
-							src={mockOrg.logoUrl}
-							alt={mockOrg.name}
+							src={org.logoUrl}
+							alt={org.name}
 							class="rounded-full border-4 border-black object-cover shadow-lg"
 							style="width: 120px; height: 120px;"
 						/>
@@ -161,7 +150,7 @@
 								<span
 									class="text-center text-2xl leading-none font-bold tracking-tight whitespace-nowrap text-white select-none"
 								>
-									{mockOrg.abbreviation || generateAbbreviation(mockOrg.name)}
+									{org.abbreviation || generateAbbreviation(org.name)}
 								</span>
 							</div>
 						</div>
@@ -192,16 +181,19 @@
 	</div>
 
 	<!-- Content -->
-	<div class="container mx-auto max-w-4xl px-4 pb-12 sm:px-6 lg:px-8" style="transform: translateY(-40px);">
+	<div
+		class="container mx-auto max-w-4xl px-4 pb-12 sm:px-6 lg:px-8"
+		style="transform: translateY(-40px);"
+	>
 		<!-- Organization Header -->
 		<div class="mb-8">
 			<h1 class="mb-3 text-3xl leading-tight font-bold text-white sm:text-4xl md:text-5xl">
-				{mockOrg.name}
+				{org.name}
 			</h1>
 
-			{#if mockOrg.categories && mockOrg.categories.length > 0}
+			{#if org.categories && org.categories.length > 0}
 				<div class="flex flex-wrap gap-2">
-					{#each mockOrg.categories as category}
+					{#each org.categories as category}
 						<button
 							type="button"
 							onclick={() => handleCategoryClick(category.name)}
@@ -222,30 +214,30 @@
 
 		<!-- Quick Details -->
 		<div class="mb-8 space-y-4">
-			<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-				{#if mockOrg.establishedDate}
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+				{#if org.establishedDate}
 					<Detail
 						icon={Calendar}
 						label="Established"
-						value={formatFullDate(mockOrg.establishedDate)}
+						value={formatFullDate(org.establishedDate)}
 					/>
 				{/if}
 
-				{#if mockOrg.contactEmail}
+				{#if org.contactEmail}
 					<Detail
 						icon={Mail}
 						label="Contact"
-						value={mockOrg.contactEmail}
+						value={org.contactEmail}
 						clickable={true}
 						onclick={handleEmailClick}
 					/>
 				{/if}
 
-				{#if mockOrg.websiteUrl}
+				{#if org.websiteUrl}
 					<Detail
 						icon={Globe}
 						label="Website"
-						value={mockOrg.websiteUrl}
+						value={org.websiteUrl}
 						clickable={true}
 						onclick={handleWebsiteClick}
 					/>
@@ -257,16 +249,16 @@
 		<div class="mb-8">
 			<h2 class="mb-4 text-xl font-bold text-white sm:text-2xl">About Organization</h2>
 			<p class="text-sm leading-relaxed text-gray-300 sm:text-base">
-				{mockOrg.description}
+				{org.description}
 			</p>
 		</div>
 
 		<!-- Meet the Board -->
-		{#if mockOrg.boardMembers && mockOrg.boardMembers.length > 0}
+		{#if org.boardMembers && org.boardMembers.length > 0}
 			<div class="mb-8">
 				<h2 class="mb-4 text-xl font-bold text-white sm:text-2xl">Meet the Board</h2>
 				<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-					{#each mockOrg.boardMembers as member}
+					{#each org.boardMembers as member}
 						<Detail icon={User} label={member.role} value={member.name} />
 					{/each}
 				</div>
@@ -290,7 +282,7 @@
 		{#if upcomingEvents && upcomingEvents.length > 0}
 			<div class="mb-8">
 				<a
-					href="/search?org={encodeURIComponent(mockOrg.name)}&time=upcoming"
+					href="/search?org={encodeURIComponent(org.name)}&time=upcoming"
 					class="group mb-4 inline-flex items-center gap-2 transition-colors hover:opacity-80"
 				>
 					<h2 class="text-xl font-bold text-white group-hover:underline sm:text-2xl">

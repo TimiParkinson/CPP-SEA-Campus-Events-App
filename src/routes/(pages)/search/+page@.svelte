@@ -10,14 +10,15 @@
 	import EventDialog from '$lib/components/dialogs/EventDialog.svelte';
 	import OrgDialog from '$lib/components/dialogs/OrgDialog.svelte';
 
-	// Import types and mock data from centralized location
+	// Import types
 	import type { Event, Organization } from '$lib/types/index.js';
-	import { mockEvents, mockOrganizations, mockEventTags, mockOrganizationCategories } from '$lib/mock/index.js';
 
-	// Replace with data prop when backend-ready
-	const orgs = mockOrganizations;
-	const allTags = mockEventTags;
-	const allCategories = mockOrganizationCategories;
+	// Receive data from +page.server.ts
+	let { data } = $props();
+	const eventData = data.events;
+	const orgData = data.organizations;
+	const allTags = data.eventTags;
+	const allCategories = data.organizationCategories;
 
 	// State
 	let searchQuery = $state($page.url.searchParams.get('q') || '');
@@ -69,7 +70,7 @@
 		searchQuery = value;
 		debouncedQuery = value;
 
-		// Debounce URL update using SvelteKit's replaceState
+		// Debounce URL via replaceState
 		clearTimeout(debounceTimeout);
 		debounceTimeout = setTimeout(() => {
 			const url = new URL($page.url);
@@ -93,7 +94,7 @@
 	// Filter logic
 	const filteredEvents = $derived(() => {
 		const query = debouncedQuery.toLowerCase();
-		let events = mockEvents;
+		let events = eventData;
 
 		if (query) {
 			events = events.filter(
@@ -131,7 +132,7 @@
 
 	const filteredOrgs = $derived(() => {
 		const query = debouncedQuery.toLowerCase();
-		let filterOrgs = orgs;
+		let filterOrgs = orgData;
 
 		if (query) {
 			filterOrgs = filterOrgs.filter(
@@ -144,7 +145,9 @@
 
 		// Category filtering for filterOrgs
 		if (selectedCategories.length > 0) {
-			filterOrgs = filterOrgs.filter((o) => o.categories?.some((c) => selectedCategories.includes(c.name)));
+			filterOrgs = filterOrgs.filter((o) =>
+				o.categories?.some((c) => selectedCategories.includes(c.name))
+			);
 		}
 
 		return filterOrgs;
