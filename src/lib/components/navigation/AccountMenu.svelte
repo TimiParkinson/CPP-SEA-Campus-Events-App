@@ -3,10 +3,10 @@
 
 	interface Props {
 		isLoggedIn: boolean;
-		toggleSignedIn: () => void;
+		handleLogout: () => void;
 	}
 
-	let { isLoggedIn, toggleSignedIn }: Props = $props();
+	let { isLoggedIn, handleLogout }: Props = $props();
 
 	// Mock dark mode state
 	let darkMode = $state(true);
@@ -20,10 +20,6 @@
 
 	function handleNavigation(path: string) {
 		window.location.href = path;
-	}
-
-	function handleLogout() {
-		toggleSignedIn();
 	}
 </script>
 
