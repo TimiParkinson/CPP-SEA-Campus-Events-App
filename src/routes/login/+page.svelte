@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabaseBrowser } from '$lib/supabaseClient';
+	import { supabaseBrowser } from '$lib/supabaseClient.js';
 	import { goto } from '$app/navigation';
 	let email = '';
 	let password = '';

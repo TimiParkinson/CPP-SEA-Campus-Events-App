@@ -10,217 +10,15 @@
 	import EventDialog from '$lib/components/dialogs/EventDialog.svelte';
 	import OrgDialog from '$lib/components/dialogs/OrgDialog.svelte';
 
-	const mockEvents = [
-		{
-			id: 'event-1',
-			title: 'Intro to Web Development Workshop',
-			description: 'Learn HTML, CSS, and JavaScript basics',
-			location: 'Engineering Building',
-			startTime: '2025-11-20T14:00:00Z',
-			endTime: '2025-11-20T16:00:00Z',
-			attendeeCount: 45,
-			imageUrl: null,
-			tags: [
-				{ name: 'workshop', color: '#8B5CF6' },
-				{ name: 'technology', color: '#3B82F6' }
-			],
-			organization: { name: 'Computer Science Club' }
-		},
-		{
-			id: 'event-2',
-			title: 'Campus Cleanup Day',
-			description: 'Help make our campus beautiful',
-			location: 'Main Quad',
-			startTime: '2025-11-22T09:00:00Z',
-			endTime: '2025-11-22T12:00:00Z',
-			attendeeCount: 78,
-			imageUrl: null,
-			tags: [
-				{ name: 'volunteer', color: '#10B981' },
-				{ name: 'service', color: '#14B8A6' }
-			],
-			organization: { name: 'Environmental Club' }
-		},
-		{
-			id: 'event-3',
-			title: 'Salsa Night Social',
-			description: 'Dance the night away',
-			location: 'Student Center',
-			startTime: '2025-11-23T19:00:00Z',
-			endTime: '2025-11-23T22:00:00Z',
-			attendeeCount: 92,
-			imageUrl: null,
-			tags: [{ name: 'social', color: '#EC4899' }],
-			organization: { name: 'Dance Society' }
-		},
-		{
-			id: 'event-4',
-			title: 'Hackathon 2025',
-			description: '24-hour coding marathon',
-			location: 'Engineering Building',
-			startTime: '2025-11-25T09:00:00Z',
-			endTime: '2025-11-26T09:00:00Z',
-			attendeeCount: 156,
-			imageUrl: null,
-			tags: [
-				{ name: 'competition', color: '#F59E0B' },
-				{ name: 'technology', color: '#3B82F6' }
-			],
-			organization: { name: 'Computer Science Club' }
-		},
-		{
-			id: 'event-5',
-			title: 'Career Fair',
-			description: 'Meet potential employers',
-			location: 'Main Hall',
-			startTime: '2025-11-27T10:00:00Z',
-			endTime: '2025-11-27T16:00:00Z',
-			attendeeCount: 234,
-			imageUrl: null,
-			tags: [{ name: 'networking', color: '#6366F1' }],
-			organization: { name: 'Career Center' }
-		},
-		{
-			id: 'event-6',
-			title: 'Photography Workshop',
-			description: 'Learn the basics of photography',
-			location: 'Arts Building',
-			startTime: '2025-11-28T14:00:00Z',
-			endTime: '2025-11-28T17:00:00Z',
-			attendeeCount: 32,
-			imageUrl: null,
-			tags: [{ name: 'workshop', color: '#8B5CF6' }],
-			organization: { name: 'Photography Club' }
-		},
-		{
-			id: 'event-7',
-			title: 'Movie Night: Sci-Fi Marathon',
-			description: 'Back-to-back science fiction classics',
-			location: 'Student Theater',
-			startTime: '2025-11-29T18:00:00Z',
-			endTime: '2025-11-29T23:00:00Z',
-			attendeeCount: 87,
-			imageUrl: null,
-			tags: [{ name: 'social', color: '#EC4899' }],
-			organization: { name: 'Film Society' }
-		},
-		{
-			id: 'event-8',
-			title: 'Yoga & Meditation Session',
-			description: 'Relax and destress',
-			location: 'Campus Gym',
-			startTime: '2025-11-30T07:00:00Z',
-			endTime: '2025-11-30T08:00:00Z',
-			attendeeCount: 24,
-			imageUrl: null,
-			tags: [{ name: 'wellness', color: '#14B8A6' }],
-			organization: { name: 'Wellness Club' }
-		}
-	];
+	// Import types
+	import type { Event, Organization } from '$lib/types/index.js';
 
-	const mockOrgs = [
-		{
-			id: 'org-1',
-			name: 'Computer Science Club',
-			description: 'Students interested in tech',
-			logoUrl: null,
-			categories: [{ name: 'technology', color: '#8B5CF6' }],
-			memberCount: 156
-		},
-		{
-			id: 'org-2',
-			name: 'Environmental Club',
-			description: 'Sustainability focused',
-			logoUrl: null,
-			categories: [{ name: 'service', color: '#10B981' }],
-			memberCount: 89
-		},
-		{
-			id: 'org-3',
-			name: 'Dance Society',
-			description: 'All styles welcome',
-			logoUrl: null,
-			categories: [{ name: 'arts', color: '#EC4899' }],
-			memberCount: 67
-		},
-		{
-			id: 'org-4',
-			name: 'Photography Club',
-			description: 'Capture moments',
-			logoUrl: null,
-			categories: [{ name: 'arts', color: '#EC4899' }],
-			memberCount: 43
-		},
-		{
-			id: 'org-5',
-			name: 'Film Society',
-			description: 'Cinema enthusiasts',
-			logoUrl: null,
-			categories: [{ name: 'arts', color: '#EC4899' }],
-			memberCount: 52
-		},
-		{
-			id: 'org-6',
-			name: 'Wellness Club',
-			description: 'Health and mindfulness',
-			logoUrl: null,
-			categories: [{ name: 'wellness', color: '#14B8A6' }],
-			memberCount: 38
-		},
-		{
-			id: 'org-7',
-			name: 'Robotics Team',
-			description: 'Build and compete',
-			logoUrl: null,
-			categories: [{ name: 'technology', color: '#8B5CF6' }],
-			memberCount: 72
-		},
-		{
-			id: 'org-8',
-			name: 'Debate Club',
-			description: 'Sharpen your arguments',
-			logoUrl: null,
-			categories: [{ name: 'academic', color: '#3B82F6' }],
-			memberCount: 34
-		},
-		{
-			id: 'org-9',
-			name: 'Gaming Society',
-			description: 'All platforms welcome',
-			logoUrl: null,
-			categories: [{ name: 'social', color: '#EC4899' }],
-			memberCount: 128
-		},
-		{
-			id: 'org-10',
-			name: 'Entrepreneurship Club',
-			description: 'Start your venture',
-			logoUrl: null,
-			categories: [{ name: 'business', color: '#F59E0B' }],
-			memberCount: 91
-		}
-	];
-
-	const allTags = [
-		{ name: 'workshop', color: '#8B5CF6' },
-		{ name: 'technology', color: '#3B82F6' },
-		{ name: 'volunteer', color: '#10B981' },
-		{ name: 'service', color: '#14B8A6' },
-		{ name: 'social', color: '#EC4899' },
-		{ name: 'competition', color: '#F59E0B' },
-		{ name: 'networking', color: '#6366F1' },
-		{ name: 'wellness', color: '#14B8A6' }
-	];
-
-	const allCategories = [
-		{ name: 'academic', color: '#3B82F6' },
-		{ name: 'technology', color: '#8B5CF6' },
-		{ name: 'arts', color: '#EC4899' },
-		{ name: 'service', color: '#10B981' },
-		{ name: 'social', color: '#EC4899' },
-		{ name: 'business', color: '#F59E0B' },
-		{ name: 'wellness', color: '#14B8A6' }
-	];
+	// Receive data from +page.server.ts
+	let { data } = $props();
+	const eventData = data.events;
+	const orgData = data.organizations;
+	const allTags = data.eventTags;
+	const allCategories = data.organizationCategories;
 
 	// State
 	let searchQuery = $state($page.url.searchParams.get('q') || '');
@@ -240,8 +38,8 @@
 	const ITEMS_PER_ROW = 5;
 
 	// Dialog state
-	let selectedEvent = $state<(typeof mockEvents)[0] | null>(null);
-	let selectedOrg = $state<(typeof mockOrgs)[0] | null>(null);
+	let selectedEvent = $state<Event | null>(null);
+	let selectedOrg = $state<Organization | null>(null);
 	let eventDialogOpen = $state(false);
 	let orgDialogOpen = $state(false);
 	let bookmarkedEvents = $state<Set<string>>(new Set());
@@ -272,7 +70,7 @@
 		searchQuery = value;
 		debouncedQuery = value;
 
-		// Debounce URL update using SvelteKit's replaceState
+		// Debounce URL via replaceState
 		clearTimeout(debounceTimeout);
 		debounceTimeout = setTimeout(() => {
 			const url = new URL($page.url);
@@ -296,14 +94,14 @@
 	// Filter logic
 	const filteredEvents = $derived(() => {
 		const query = debouncedQuery.toLowerCase();
-		let events = mockEvents;
+		let events = eventData;
 
 		if (query) {
 			events = events.filter(
 				(e) =>
 					e.title.toLowerCase().includes(query) ||
 					e.description?.toLowerCase().includes(query) ||
-					e.organization?.name.toLowerCase().includes(query) ||
+					e.organizations?.some((org) => org.name.toLowerCase().includes(query)) ||
 					e.tags?.some((t) => t.name.toLowerCase().includes(query))
 			);
 		}
@@ -334,10 +132,10 @@
 
 	const filteredOrgs = $derived(() => {
 		const query = debouncedQuery.toLowerCase();
-		let orgs = mockOrgs;
+		let filterOrgs = orgData;
 
 		if (query) {
-			orgs = orgs.filter(
+			filterOrgs = filterOrgs.filter(
 				(o) =>
 					o.name.toLowerCase().includes(query) ||
 					o.description?.toLowerCase().includes(query) ||
@@ -345,12 +143,14 @@
 			);
 		}
 
-		// Category filtering for orgs
+		// Category filtering for filterOrgs
 		if (selectedCategories.length > 0) {
-			orgs = orgs.filter((o) => o.categories?.some((c) => selectedCategories.includes(c.name)));
+			filterOrgs = filterOrgs.filter((o) =>
+				o.categories?.some((c) => selectedCategories.includes(c.name))
+			);
 		}
 
-		return orgs;
+		return filterOrgs;
 	});
 
 	const displayedOrgs = $derived(filteredOrgs().slice(0, orgRowsShown * ITEMS_PER_ROW));
@@ -418,12 +218,12 @@
 		replaceState(url, {});
 	}
 
-	function openEvent(event: (typeof mockEvents)[0]) {
+	function openEvent(event: Event) {
 		selectedEvent = event;
 		eventDialogOpen = true;
 	}
 
-	function openOrg(org: (typeof mockOrgs)[0]) {
+	function openOrg(org: Organization) {
 		selectedOrg = org;
 		orgDialogOpen = true;
 	}

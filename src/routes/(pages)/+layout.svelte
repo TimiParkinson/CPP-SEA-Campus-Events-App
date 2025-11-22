@@ -8,7 +8,7 @@
 		path: string;
 	}
 
-	let { children } = $props();
+	let { children, data } = $props();
 
 	const currentPath = $derived($page.url.pathname);
 
@@ -20,7 +20,7 @@
 </script>
 
 <div class="flex min-h-screen flex-col bg-black">
-	<Navbar {routes} {currentPath} />
+	<Navbar {routes} {currentPath} session={data.session} />
 
 	<main class="flex-1">
 		{@render children()}

@@ -13,19 +13,7 @@
 	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
 	import Detail from '../shared/Detail.svelte';
 	import { formatMultipleOrgs } from '$lib/utils/orgNameFormatters.js';
-
-	interface Event {
-		id: string;
-		title: string;
-		description?: string | null;
-		location: string;
-		startTime: string;
-		endTime: string;
-		attendeeCount?: number | null;
-		imageUrl?: string | null;
-		tags?: Array<{ name: string; color: string }>;
-		organization?: { name: string };
-	}
+	import type { Event } from '$lib/types/index.js';
 
 	interface Props {
 		event: Event | null;
@@ -54,8 +42,7 @@
 
 	let hostsDisplay = $derived(() => {
 		if (!event) return '';
-		const orgs = event.organization ? [event.organization] : [];
-		return formatMultipleOrgs(orgs as any, 60);
+		return formatMultipleOrgs(event.organizations || [], 60);
 	});
 
 	function handleViewFullEvent() {
@@ -65,9 +52,9 @@
 	}
 
 	function handleOrgClick() {
-		if (event?.organization) {
-			// Navigate to org page
-			console.log('Navigate to org:', event.organization.name);
+		if (event?.organizations && event.organizations.length > 0) {
+			// TODO
+			console.log('Navigate to org:', event.organizations[0].name);
 		}
 	}
 
@@ -216,14 +203,15 @@
 						onclick={handleLocationClick}
 					/>
 
-					<!-- Organization (Clickable) -->
-					<Detail
-						icon={Users}
-						label="Organization"
-						value={hostsDisplay()}
-						clickable={true}
-						onclick={handleOrgClick}
-					/>
+					{#if event.organizations && event.organizations.length > 0}
+						<Detail
+							icon={Users}
+							label="Organization"
+							value={hostsDisplay()}
+							clickable={true}
+							onclick={handleOrgClick}
+						/>
+					{/if}
 				</div>
 
 				<!-- View Full Event Page -->

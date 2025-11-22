@@ -15,11 +15,11 @@
 		currentPath: string;
 		isLoggedIn: boolean;
 		userAvatar: string | null;
-		toggleSignedIn: () => void;
+		handleLogout: () => void;
 		onClose: () => void;
 	}
 
-	let { routes, currentPath, isLoggedIn, userAvatar, toggleSignedIn, onClose }: Props = $props();
+	let { routes, currentPath, isLoggedIn, userAvatar, handleLogout, onClose }: Props = $props();
 
 	let searchQuery = $state('');
 	let accountMenuOpen = $state(false);
@@ -212,7 +212,7 @@
 				sideOffset={8}
 			>
 				<button onclick={(e) => e.stopPropagation()}>
-					<AccountMenu {isLoggedIn} {toggleSignedIn} />
+					<AccountMenu {isLoggedIn} {handleLogout} />
 				</button>
 			</Popover.Content>
 		</Popover.Root>

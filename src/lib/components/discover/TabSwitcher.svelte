@@ -14,7 +14,7 @@
 
 	let { tabs, selected, onSelect }: Props = $props();
 
-	let tabRefs: HTMLButtonElement[] = [];
+	let tabRefs = $state<HTMLButtonElement[]>([]);
 	let indicatorStyle = $state({ left: '0px', width: '0px' });
 
 	// Calculate the position and width of the sliding indicator

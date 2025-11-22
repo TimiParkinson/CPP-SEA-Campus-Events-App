@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { supabaseBrowser } from '$lib/supabaseClient'; // Broswer side Supabase client
+	import { supabaseBrowser } from '$lib/supabaseClient.js'; // Broswer side Supabase client
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';

@@ -5,7 +5,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { ArrowLeft } from '@lucide/svelte';
-	import { supabaseBrowser } from '$lib/supabaseClient';
+	import { supabaseBrowser } from '$lib/supabaseClient.js';
 
 	let step = $state<'email' | 'password'>('email');
 	let email = $state('');
@@ -36,39 +36,24 @@
 	async function handlePasswordSubmit(e: Event) {
 		e.preventDefault();
 		if (!password) return;
-		
+
 		error = '';
 		loading = true;
 
-		const { error: authError } =
-    	await supabaseBrowser.auth.signInWithPassword({ email, password });
+		const { error: authError } = await supabaseBrowser.auth.signInWithPassword({
+			email,
+			password
+		});
 
-  	if (authError) {
-    	error = authError.message;
-   		loading = false;
-    	return; // do NOT redirect
- 	}
-		
-		// Supabase integration:
-		// const { data, error: authError } = await supabase.auth.signInWithPassword({ 
-		//   email, 
-		//   password 
-		// });
-		// if (authError) {
-		//   error = authError.message;
-		//   loading = false;
-		//   return;
-		// }
-	async function signIn() {
-		error = '';
-		const { error: err } = await supabaseBrowser.auth.signInWithPassword({ email, password });
-		if (err) error = err.message;
-		else goto('/');
-	}
+		if (authError) {
+			error = authError.message;
+			loading = false;
+			return;
+		}
 
-		await new Promise(resolve => setTimeout(resolve, 1000));
+		// Success - redirect to home with full page reload to refresh session
 		loading = false;
-		goto('/');
+		window.location.href = '/';
 	}
 
 	async function handleOAuthSignIn(provider: 'google' | 'microsoft') {
