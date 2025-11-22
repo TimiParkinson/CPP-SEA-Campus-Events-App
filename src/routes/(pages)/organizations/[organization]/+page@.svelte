@@ -138,12 +138,12 @@
 						<img
 							src={org.logoUrl}
 							alt={org.name}
-							class="rounded-full border-4 border-black object-cover shadow-lg"
+							class="rounded-full object-cover shadow-lg"
 							style="width: 120px; height: 120px;"
 						/>
 					{:else}
 						<div
-							class="overflow-hidden rounded-full border-4 border-black shadow-lg"
+							class="overflow-hidden rounded-full shadow-lg"
 							style="width: 96px; height: 96px; background: {gradient};"
 						>
 							<div class="flex size-full items-center justify-center">
@@ -335,6 +335,6 @@
 
 <style>
 	.shift-content-up {
-		transform: translateY(-60px);
+		transform: translateY(-50px);
 	}
 </style>
