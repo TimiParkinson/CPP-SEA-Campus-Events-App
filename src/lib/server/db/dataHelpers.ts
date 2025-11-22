@@ -2,6 +2,7 @@
  * Helper functions to transform database rows to match required frontend types.
  * Currently, with mock data, only simulates JOINs between tables (events ↔ orgs, events ↔ tags, orgs ↔ categories).
  * Logic to grab data will need to be slightly modified when real database query results are connected.
+ * Some fields may also need to be changed from null to a value when implemented.
  *
  * /api/../+server.ts will need to call these helpers when database is connected to transform
  * database DB data into frontend types -> also handles missing data.
@@ -186,6 +187,8 @@ export function getAllOrganizations(): Organization[] {
 			name: org.name,
 			description: org.description,
 			contactEmail: org.contactEmail,
+			abbreviation: null,
+			logoUrl: null,
 			// Categories array (simulates join)
 			categories: categoryAssignments.map((assignment) => {
 				const cat = seedMock.organizationCategories.find((c) => c.name === assignment.cat);
@@ -215,6 +218,8 @@ export function getOrganizationById(id: string): Organization | null {
 		name: org.name,
 		description: org.description,
 		contactEmail: org.contactEmail,
+		abbreviation: null, // TODO: Add to mockData when available
+		logoUrl: null, // TODO: Add to mockData when available
 		categories: categoryAssignments.map((assignment) => {
 			const cat = seedMock.organizationCategories.find((c) => c.name === assignment.cat);
 			return {

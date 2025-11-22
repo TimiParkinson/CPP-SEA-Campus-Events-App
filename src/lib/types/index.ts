@@ -1,3 +1,6 @@
+// note that not all types are used, but may be used in the future 
+// (ex: User/UserRole when admin-side is implemented)
+
 // ============================================================================
 // ENUMS & CONSTANTS
 // ============================================================================
@@ -39,14 +42,14 @@ export function getGradientForId(id: string): string {
 /**
  * Event
  * Represents event data with all joined/computed fields.
- * Used everywhere: cards, lists, detail pages, dialogs.
  *
  * BACKEND TODO:
+ * - Add 'image_url' column to events table
  * - Add 'rsvp_url' column to events table
  * - Add 'feedback_url' column to events table
  * - Create 'event_organization_assignments' junction table for many-to-many relationship
  *   (supports co-hosted events with multiple organizations)
- * - Create 'event_tag_assignments' junction table for many-to-many relationship
+ *   Currently only supports single organization via organization_id foreign key
  * - Ensure queries join organizations and tags for enriched data
  */
 export interface Event {
@@ -59,7 +62,7 @@ export interface Event {
 	endTime: string; // ISO string
 
 	// Optional fields
-	imageUrl?: string | null;
+	imageUrl?: string | null; // BACKEND TODO: Add this column
 	attendeeCount?: number | null; // Computed from event_registrations table
 	rsvpUrl?: string | null; // BACKEND TODO: Add this column
 	feedbackUrl?: string | null; // BACKEND TODO: Add this column
@@ -69,14 +72,14 @@ export interface Event {
 	organizations?: Array<{
 		id: string;
 		name: string;
-		abbreviation?: string | null;
-		logoUrl?: string | null;
-	}>; // BACKEND TODO: Join via event_organization_assignments
+		abbreviation?: string | null; // BACKEND TODO: Add this column to organizations table
+		logoUrl?: string | null; // BACKEND TODO: Add this column to organizations table
+	}>; // BACKEND TODO: Join via event_organization_assignments (currently single org via organization_id)
 	tags?: Array<{
 		id: string;
 		name: string;
-		color: string; // BACKEND TODO: Add 'color' column to event_tags table
-	}>; // BACKEND TODO: Join via event_tag_assignments
+		color: string; 
+	}>; 
 }
 
 /**
@@ -85,12 +88,14 @@ export interface Event {
  * Used everywhere: cards, lists, detail pages, dialogs.
  *
  * BACKEND TODO:
+ * - Add 'logo_url' column to organizations table
+ * - Add 'abbreviation' column to organizations table
  * - Add 'banner_image_url' column to organizations table
  * - Add 'established_date' column to organizations table
+ * - Add 'website_url' column to organizations table
  * - Add 'feedback_url' column to organizations table
- * - Create 'organization_category_assignments' junction table for many-to-many relationship
+ * - Add 'role' column to organization_members table for board member tracking
  * - Ensure queries join categories and compute member count
- * - Board members should be derived from organization_members where role = 'board_member' or 'president'
  */
 export interface Organization {
 	// Core fields
@@ -98,13 +103,13 @@ export interface Organization {
 	name: string;
 
 	// Optional fields
-	description?: string | null;
-	logoUrl?: string | null;
+	description?: string | null; 
+	logoUrl?: string | null; // BACKEND TODO: Add this column
 	bannerImageUrl?: string | null; // BACKEND TODO: Add this column
-	abbreviation?: string | null;
+	abbreviation?: string | null; // BACKEND TODO: Add this column
 	memberCount?: number | null; // Computed from organization_members table
 	establishedDate?: Date | null; // BACKEND TODO: Add this column
-	websiteUrl?: string | null;
+	websiteUrl?: string | null; // BACKEND TODO: Add this column
 	contactEmail?: string | null;
 	feedbackUrl?: string | null; // BACKEND TODO: Add this column
 
@@ -113,12 +118,12 @@ export interface Organization {
 	categories?: Array<{
 		id: string;
 		name: string;
-		color: string; // BACKEND TODO: Add 'color' column to organization_categories table
-	}>; // BACKEND TODO: Join via organization_category_assignments
+		color: string; 
+	}>; 
 	boardMembers?: Array<{
 		name: string; // Denormalized from users table
 		role: string; // e.g., "President", "Vice President"
-	}>; // BACKEND TODO: Join organization_members where role IN ('board_member', 'president')
+	}>; // BACKEND TODO: Add 'role' column to organization_members, then join where role IN ('board_member', 'president')
 }
 
 // ============================================================================
@@ -128,27 +133,21 @@ export interface Organization {
 /**
  * Event Tag
  * Used to categorize events (e.g., "workshop", "social", "networking")
- *
- * BACKEND TODO:
- * - Add 'color' column to event_tags table (hex color string)
  */
 export interface EventTag {
 	id: string;
 	name: string;
-	color: string; // Hex color - BACKEND TODO: Add this column
+	color: string; 
 }
 
 /**
  * Organization Category
  * Used to categorize organizations (e.g., "Academic", "Cultural", "Sports")
- *
- * BACKEND TODO:
- * - Add 'color' column to organization_categories table (hex color string)
  */
 export interface OrganizationCategory {
 	id: string;
 	name: string;
-	color: string; // Hex color - BACKEND TODO: Add this column
+	color: string; 
 }
 
 // ============================================================================
