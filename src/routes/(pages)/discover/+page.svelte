@@ -91,12 +91,24 @@
 			.filter((cat) => eventsByTag().has(cat.key));
 	});
 
+	// Helper to format organization category labels
+	function getOrgCategoryLabel(categoryName: string): string {
+		const labels: Record<string, string> = {
+			academic: 'Academic',
+			cultural: 'Cultural',
+			sports: 'Sports',
+			service: 'Service',
+			special_interest: 'Special Interest'
+		};
+		return labels[categoryName] || categoryName;
+	}
+
 	// Org categories to display (from consolidated mock data)
 	const orgCategories = $derived(() => {
 		return orgCategoriesData
 			.map((category) => ({
 				key: category.name.toLowerCase().replace(/\s+/g, '_'),
-				label: category.name,
+				label: getOrgCategoryLabel(category.name),
 				color: category.color
 			}))
 			.filter((cat) => orgsByCategory().has(cat.key));
