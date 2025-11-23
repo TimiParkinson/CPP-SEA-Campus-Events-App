@@ -5,32 +5,7 @@
 	import OrgCard from '$lib/components/cards/OrgCard.svelte';
 	import OrgDialog from '$lib/components/dialogs/OrgDialog.svelte';
 	import { ArrowRight } from '@lucide/svelte';
-
-	interface Event {
-		id: string;
-		title: string;
-		description?: string | null;
-		location: string;
-		startTime: string;
-		endTime: string;
-		imageUrl?: string | null;
-		attendeeCount?: number | null;
-		tags?: Array<{ name: string; color: string }>;
-		organization?: { name: string };
-	}
-
-	interface Organization {
-		id: string;
-		name: string;
-		description?: string | null;
-		logoUrl?: string | null;
-		abbreviation?: string;
-		categories?: Array<{ name: string; color: string }>;
-		memberCount?: number | null;
-		establishedDate?: Date | null;
-		websiteUrl?: string | null;
-		contactEmail?: string;
-	}
+	import type { Event, Organization } from '$lib/types/index.js';
 
 	interface Props {
 		events?: Event[] | null;
@@ -38,7 +13,7 @@
 		title?: string;
 		subtitle?: string;
 		variant: 'events' | 'orgs';
-		minimal?: boolean; // NEW: Skip section wrapper for custom layouts
+		minimal?: boolean; // Skip section wrapper
 	}
 
 	let { events, organizations, title, subtitle, variant, minimal = false }: Props = $props();
@@ -91,7 +66,6 @@
 </script>
 
 {#if minimal}
-	<!-- Minimal variant: Just the cards, no wrapper -->
 	{#if variant === 'events' && events !== null && events !== undefined}
 		<CardGrid itemCount={events.length} variant="featured" cardType="event">
 			{#each events as event (event.id)}
@@ -112,7 +86,6 @@
 		</CardGrid>
 	{/if}
 {:else}
-	<!-- Default variant: Full section wrapper -->
 	<section class="bg-black py-10 sm:py-12 lg:py-16">
 		<div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 			<!-- Section Header -->

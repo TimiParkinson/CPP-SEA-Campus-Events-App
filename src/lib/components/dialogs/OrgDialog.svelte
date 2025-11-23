@@ -8,19 +8,7 @@
 	import { formatFullDate } from '$lib/utils/dateFormatters.js';
 	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
 	import Detail from '../shared/Detail.svelte';
-
-	interface Organization {
-		id: string;
-		name: string;
-		description?: string | null;
-		logoUrl?: string | null;
-		abbreviation?: string;
-		categories?: Array<{ name: string; color: string }>;
-		memberCount?: number | null;
-		establishedDate?: Date | null;
-		websiteUrl?: string | null;
-		contactEmail?: string;
-	}
+	import type { Organization } from '$lib/types/index.js';
 
 	interface Props {
 		organization: Organization | null;
@@ -58,7 +46,7 @@
 		return organization.description.slice(0, MAX_DESCRIPTION_LENGTH) + '...';
 	});
 
-	// Calculate font size for dialog logo based on abbreviation length - AGGRESSIVE shrinking
+	// Calculate font size for dialog logo based on abbreviation length
 	let dialogLogoFontSize = $derived(() => {
 		const length = displayAbbreviation.length;
 		if (length <= 2) return 'text-5xl sm:text-6xl md:text-7xl tracking-tighter';
@@ -112,20 +100,19 @@
 		class="max-h-[85vh] w-[calc(100vw-2rem)] max-w-2xl gap-0 overflow-hidden overflow-y-auto p-0 sm:max-h-[90vh] sm:w-full"
 	>
 		{#if organization}
-			<!-- Organization Header with Gradient Background -->
+			<!-- Organization Header with Gradient Fallback -->
 			<div
 				class="relative h-48 shrink-0 overflow-hidden sm:h-56 md:h-64"
 				style="background: {gradient};"
 			>
 				{#if !organization.logoUrl}
-					<!-- Circular Logo ONLY when no image logo provided -->
+					<!-- Logo Fallback -->
 					<div class="absolute inset-0 flex items-center justify-center">
 						<div
 							class="size-36 overflow-hidden rounded-full border-4 border-white/20 bg-black/10 backdrop-blur-sm sm:size-40 md:size-44"
 						>
-							<!-- Circle with club name/abbreviation - ALWAYS SINGLE LINE, NO TRUNCATION -->
-							<!-- PADDING: Adjust p-5/p-6/p-7 to control spacing around text -->
-							<div class="flex size-full items-center justify-center p-5 sm:p-6 md:p-7">
+							<!-- Circle with club name/abbreviation -->
+							<div class="flex size-full items-center justify-center">
 								<span
 									class="w-full text-center leading-none font-bold whitespace-nowrap text-white select-none {dialogLogoFontSize()}"
 								>
@@ -135,7 +122,7 @@
 						</div>
 					</div>
 				{:else}
-					<!-- Image logo directly on gradient background (no circle) -->
+					<!-- Logo -->
 					<div class="absolute inset-0 flex items-center justify-center">
 						<div class="size-36 sm:size-40 md:size-44">
 							<img
@@ -148,14 +135,14 @@
 				{/if}
 			</div>
 
-			<!-- CTAs positioned on border between header and content -->
+			<!-- CTAs -->
 			<div class="relative px-4 sm:px-5 md:px-8">
 				<div
 					class="absolute inset-x-4 -top-5 flex flex-wrap items-center justify-between gap-2 sm:inset-x-5 md:inset-x-8"
 				>
-					<!-- Left: Join & Bookmark -->
+					<!-- Join & Bookmark -->
 					<div class="flex items-center gap-2 sm:gap-3">
-						<!-- Join (Primary) -->
+						<!-- Join -->
 						<Button
 							onclick={handleJoinClick}
 							class="h-9 cursor-pointer px-3 text-xs shadow-lg sm:h-10 sm:px-4 sm:text-sm"
@@ -172,7 +159,7 @@
 						/>
 					</div>
 
-					<!-- Right: Member Count -->
+					<!-- Member Count -->
 					{#if organization.memberCount !== null && organization.memberCount !== undefined}
 						<div
 							class="flex h-9 items-center gap-1 rounded-lg border bg-black px-2 text-xs font-medium whitespace-nowrap shadow-lg sm:h-10 sm:gap-1.5 sm:px-2.5 sm:text-sm md:px-4"
@@ -240,7 +227,7 @@
 						/>
 					{/if}
 
-					<!-- Website (Clickable) -->
+					<!-- Website -->
 					{#if organization.websiteUrl}
 						<Detail
 							icon={Globe}
@@ -251,7 +238,7 @@
 						/>
 					{/if}
 
-					<!-- Contact Email (Clickable) -->
+					<!-- Contact Email -->
 					{#if organization.contactEmail}
 						<Detail
 							icon={Mail}

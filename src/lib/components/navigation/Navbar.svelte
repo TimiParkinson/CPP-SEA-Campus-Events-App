@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { Menu, Search, User } from '@lucide/svelte';
+	import { supabaseBrowser } from '$lib/supabaseClient.js';
 	import * as DropdownMenu from '../ui/dropdown-menu/index.js';
 	import * as Sheet from '../ui/sheet/index.js';
 	import AccountMenu from './AccountMenu.svelte';
 	import MobileSidebar from './MobileSidebar.svelte';
+	import type { Session } from '@supabase/supabase-js';
 
 	interface Route {
 		name: string;
@@ -14,18 +16,20 @@
 	interface Props {
 		routes?: Route[];
 		currentPath?: string;
+		session: Session | null;
 	}
 
-	let { routes = [], currentPath = '/' }: Props = $props();
+	let { routes = [], currentPath = '/', session }: Props = $props();
 
 	let mobileMenuOpen = $state(false);
 
-	// Mock auth state
-	let isLoggedIn = $state(true);
-	let userAvatar = $state<string | null>("https://cdn-icons-png.flaticon.com/512/147/147142.png");
+	// Derive auth state from Supabase session
+	const isLoggedIn = $derived(!!session?.user);
+	const userAvatar = $derived(session?.user?.user_metadata?.avatar_url || null);
 
-	function toggleSignedIn() {
-		isLoggedIn = !isLoggedIn;
+	async function handleLogout() {
+		await supabaseBrowser.auth.signOut();
+		window.location.href = '/';
 	}
 </script>
 
@@ -124,8 +128,15 @@
 						class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white focus:outline-none"
 					>
 						{#if isLoggedIn && userAvatar}
+							<!-- User has profile picture from OAuth -->
 							<img src={userAvatar} alt="User" class="size-8 rounded-full object-cover" />
+						{:else if isLoggedIn}
+							<!-- Logged in but no avatar - show colored circle with initials fallback -->
+							<div class="flex size-8 items-center justify-center rounded-full bg-purple-600 text-xs font-semibold text-white">
+								{session?.user?.email?.charAt(0).toUpperCase() || 'U'}
+							</div>
 						{:else}
+							<!-- Logged out - show generic icon -->
 							<User class="size-5" />
 						{/if}
 					</DropdownMenu.Trigger>
@@ -133,7 +144,7 @@
 						class="w-56 border-white/10 bg-black/70 backdrop-blur-md"
 						align="end"
 					>
-						<AccountMenu {isLoggedIn} {toggleSignedIn} />
+						<AccountMenu {isLoggedIn} {handleLogout} />
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
 			</div>
@@ -152,7 +163,7 @@
 			{currentPath}
 			{isLoggedIn}
 			{userAvatar}
-			{toggleSignedIn}
+			{handleLogout}
 			onClose={() => (mobileMenuOpen = false)}
 		/>
 	</Sheet.Content>

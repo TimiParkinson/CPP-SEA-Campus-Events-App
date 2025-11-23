@@ -10,54 +10,19 @@
 	import { formatDateRange, formatTimeRange } from '$lib/utils/dateFormatters.js';
 	import { generateAbbreviation } from '$lib/utils/orgNameFormatters.js';
 
-	const eventId = $page.params.event;
+	// Import types
+	import type { Event } from '$lib/types/index.js';
 
-	const mockEvent = {
-		id: eventId as string,
-		title: 'This is an example event',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-		location: 'Insert a longer than usual location name',
-		startTime: '2025-11-03T12:00:00Z',
-		endTime: '2025-11-07T16:00:00Z',
-		attendeeCount: 127,
-		imageUrl:
-			'https://educationsnapshots.com/wp-content/uploads/sites/4/2020/07/cal-poly-pomona-student-housing-phase-i-dining-commons-1-700x467.jpg',
-		tags: [
-			{ name: 'Upcoming', color: '#8B5CF6' },
-			{ name: 'Upcoming', color: '#3B82F6' },
-			{ name: 'Upcoming', color: '#10B981' }
-		],
-		organizations: [
-			{
-				id: 'org-1',
-				name: 'Software Engineering Association',
-				abbreviation: 'SEA',
-				logoUrl: null
-			},
-			{
-				id: 'org-2',
-				name: 'Computer Science Society',
-				abbreviation: 'CSS',
-				logoUrl: 'https://cppcss.club/images/logo_for_web_2_2025.png'
-			},
-			{
-				id: 'org-3',
-				name: 'Cal Poly Pomona',
-				abbreviation: 'CPP',
-				logoUrl: 'https://logos-world.net/wp-content/uploads/2025/02/Cal-Poly-Pomona-Symbol.png'
-			}
-		],
-		rsvpUrl: null,
-		feedbackUrl: null
-	};
+	// Receive data from +page.server.ts
+	let { data } = $props();
+	const event: Event = data.event;
 
-	let gradient = $derived(getRandomGradient(mockEvent.id));
+	let gradient = $derived(getRandomGradient(event.id));
 	let isBookmarked = $state(false);
 	let hostsMenuOpen = $state(false);
 
 	const hostsDisplay = $derived(() => {
-		const orgs = mockEvent.organizations;
+		const orgs = event.organizations || [];
 		if (orgs.length === 0) return 'No host';
 		if (orgs.length === 1) {
 			const orgName = orgs[0].name;
@@ -70,9 +35,9 @@
 		return `Hosted by ${orgs.length} Organizations`;
 	});
 
-	const isLocationLong = $derived(mockEvent.location.length > 35);
+	const isLocationLong = $derived(event.location.length > 35);
 	const isMultiDayEvent = $derived(
-		new Date(mockEvent.startTime).toDateString() !== new Date(mockEvent.endTime).toDateString()
+		new Date(event.startTime).toDateString() !== new Date(event.endTime).toDateString()
 	);
 
 	const detailsLayout = $derived(() => {
@@ -106,16 +71,16 @@
 	}
 
 	function handleRSVP() {
-		if (mockEvent.rsvpUrl) {
-			window.open(mockEvent.rsvpUrl, '_blank');
+		if (event.rsvpUrl) {
+			window.open(event.rsvpUrl, '_blank');
 		} else {
 			console.log('RSVP clicked - not yet implemented');
 		}
 	}
 
 	function handleFeedback() {
-		if (mockEvent.feedbackUrl) {
-			window.open(mockEvent.feedbackUrl, '_blank');
+		if (event.feedbackUrl) {
+			window.open(event.feedbackUrl, '_blank');
 		} else {
 			console.log('Send Feedback clicked - not yet implemented');
 		}
@@ -133,19 +98,15 @@
 </script>
 
 <svelte:head>
-	<title>{mockEvent.title} - Campus Events</title>
+	<title>{event.title} - Campus Events</title>
 </svelte:head>
 
 <div class="min-h-screen bg-black">
 	<!-- Banner -->
 	<div class="relative h-64 overflow-hidden sm:h-80 md:h-96">
 		<!-- Background Image/Gradient -->
-		{#if mockEvent.imageUrl}
-			<img
-				src={mockEvent.imageUrl}
-				alt={mockEvent.title}
-				class="size-full object-cover object-center"
-			/>
+		{#if event.imageUrl}
+			<img src={event.imageUrl} alt={event.title} class="size-full object-cover object-center" />
 		{:else}
 			<div class="size-full" style="background: {gradient};"></div>
 		{/if}
@@ -166,13 +127,13 @@
 		</div>
 
 		<!-- Attendee Count -->
-		{#if mockEvent.attendeeCount}
+		{#if event.attendeeCount}
 			<div class="absolute top-4 right-4 sm:top-6 sm:right-6">
 				<div
 					class="flex items-center gap-2 rounded-lg border border-white/20 bg-black/60 px-3 py-2 text-white backdrop-blur-sm sm:px-4"
 				>
 					<UsersRound size="17" />
-					<span class="text-sm font-semibold">{mockEvent.attendeeCount} attending</span>
+					<span class="text-sm font-semibold">{event.attendeeCount} attending</span>
 				</div>
 			</div>
 		{/if}
@@ -184,26 +145,26 @@
 			<div class="flex -translate-y-5 items-end justify-between gap-3 sm:gap-4">
 				<!-- Hosts -->
 				<div class="relative">
-					{#if mockEvent.organizations.length === 1}
+					{#if event.organizations && event.organizations.length === 1}
 						<!-- Single Organization -->
 						<button
 							type="button"
-							onclick={() => handleOrgClick(mockEvent.organizations[0].id)}
+							onclick={() => handleOrgClick(event.organizations![0].id)}
 							class="group flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/20 bg-black/80 px-3 shadow-lg backdrop-blur-sm transition-colors hover:bg-black/90 sm:h-11 sm:gap-3 sm:px-4"
 						>
-							{#if mockEvent.organizations[0].logoUrl}
+							{#if event.organizations![0].logoUrl}
 								<img
-									src={mockEvent.organizations[0].logoUrl}
-									alt={mockEvent.organizations[0].name}
+									src={event.organizations![0].logoUrl}
+									alt={event.organizations![0].name}
 									class="size-7 shrink-0 rounded-full object-cover"
 								/>
 							{:else}
 								<div
 									class="flex size-7 shrink-0 items-center justify-center rounded-full"
-									style="background: {getRandomGradient(mockEvent.organizations[0].id)};"
+									style="background: {getRandomGradient(event.organizations![0].id)};"
 								>
 									<span class="text-[10px] font-bold text-white">
-										{generateAbbreviation(mockEvent.organizations[0].name)}
+										{generateAbbreviation(event.organizations![0].name)}
 									</span>
 								</div>
 							{/if}
@@ -213,7 +174,7 @@
 								{hostsDisplay()}
 							</span>
 						</button>
-					{:else}
+					{:else if event.organizations && event.organizations.length > 1}
 						<!-- Multiple Organizations -->
 						<Popover.Root bind:open={hostsMenuOpen}>
 							<Popover.Trigger
@@ -221,7 +182,7 @@
 							>
 								<!-- Logos -->
 								<div class="flex shrink-0 -space-x-4">
-									{#each mockEvent.organizations.slice(0, 3) as org, i}
+									{#each event.organizations.slice(0, 3) as org, i}
 										{#if org.logoUrl}
 											<img
 												src={org.logoUrl}
@@ -254,7 +215,7 @@
 								sideOffset={8}
 							>
 								<div class="space-y-1">
-									{#each mockEvent.organizations as org}
+									{#each event.organizations as org}
 										<button
 											type="button"
 											onclick={() => handleOrgClick(org.id)}
@@ -316,13 +277,13 @@
 		<div class="mb-6">
 			<!-- Title -->
 			<h1 class="mb-3 text-3xl leading-tight font-bold text-white sm:text-4xl md:text-5xl">
-				{mockEvent.title}
+				{event.title}
 			</h1>
 
 			<!-- Tags -->
-			{#if mockEvent.tags && mockEvent.tags.length > 0}
+			{#if event.tags && event.tags.length > 0}
 				<div class="flex flex-wrap gap-2">
-					{#each mockEvent.tags as tag}
+					{#each event.tags as tag}
 						<button
 							type="button"
 							onclick={() => handleTagClick(tag.name)}
@@ -356,21 +317,21 @@
 							<Detail
 								icon={Calendar}
 								label="Date"
-								value={formatDateRange(mockEvent.startTime, mockEvent.endTime)}
+								value={formatDateRange(event.startTime, event.endTime)}
 							/>
 						{:else if detail === 'time'}
 							<Detail
 								icon={Clock}
 								label="Time"
-								value={formatTimeRange(mockEvent.startTime, mockEvent.endTime)}
+								value={formatTimeRange(event.startTime, event.endTime)}
 							/>
 						{:else if detail === 'location'}
 							<Detail
 								icon={MapPin}
 								label="Location"
-								value={mockEvent.location}
+								value={event.location}
 								clickable={true}
-								onclick={() => console.log('Open map for:', mockEvent.location)}
+								onclick={() => console.log('Open map for:', event.location)}
 							/>
 						{/if}
 					{/each}
@@ -388,15 +349,15 @@
 							<Detail
 								icon={Clock}
 								label="Time"
-								value={formatTimeRange(mockEvent.startTime, mockEvent.endTime)}
+								value={formatTimeRange(event.startTime, event.endTime)}
 							/>
 						{:else if detail === 'location'}
 							<Detail
 								icon={MapPin}
 								label="Location"
-								value={mockEvent.location}
+								value={event.location}
 								clickable={true}
-								onclick={() => console.log('Open map for:', mockEvent.location)}
+								onclick={() => console.log('Open map for:', event.location)}
 							/>
 						{/if}
 					{/each}
@@ -408,7 +369,7 @@
 		<div class="mb-8">
 			<h2 class="mb-4 text-xl font-bold text-white sm:text-2xl">About Event</h2>
 			<p class="text-sm leading-relaxed text-gray-300 sm:text-base">
-				{mockEvent.description}
+				{event.description}
 			</p>
 		</div>
 

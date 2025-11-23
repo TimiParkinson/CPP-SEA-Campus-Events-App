@@ -2,10 +2,10 @@
  * Organization name and abbreviation utilities
  */
 
-interface Organization {
+interface OrgLike {
 	id: string;
 	name: string;
-	abbreviation?: string;
+	abbreviation?: string | null;
 }
 
 /**
@@ -32,7 +32,7 @@ export function generateAbbreviation(name: string): string {
 /**
  * Get display name for organization (full name or abbreviation).
  */
-export function getOrgDisplayName(org: Organization, preferAbbreviation = false): string {
+export function getOrgDisplayName(org: OrgLike, preferAbbreviation = false): string {
 	if (preferAbbreviation && org.abbreviation) {
 		return org.abbreviation;
 	}
@@ -49,7 +49,7 @@ export function getOrgDisplayName(org: Organization, preferAbbreviation = false)
  * @param maxLength - Maximum total character length
  * @returns Formatted string (e.g., "SEA, SheCodes" or "Hosted by 3 Organizations")
  */
-export function formatMultipleOrgs(orgs: Organization[], maxLength = 50): string {
+export function formatMultipleOrgs(orgs: OrgLike[], maxLength = 50): string {
 	if (orgs.length === 0) return '';
 	if (orgs.length === 1) return orgs[0].name;
 
@@ -91,7 +91,7 @@ export function formatMultipleOrgs(orgs: Organization[], maxLength = 50): string
  * Returns object with display text and whether to show icon
  */
 export function formatOrgDisplay(
-	orgs: Organization[],
+	orgs: OrgLike[],
 	maxLength = 50
 ): {
 	text: string;

@@ -3,19 +3,7 @@
 	import { getRandomGradient } from '$lib/utils/gradients.js';
 	import { formatTime, getDayOfMonth, getMonthAbbr } from '$lib/utils/dateFormatters.js';
 	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
-
-	interface Event {
-		id: string;
-		title: string;
-		description?: string | null;
-		location: string;
-		startTime: string;
-		endTime: string;
-		imageUrl?: string | null;
-		attendeeCount?: number | null;
-		tags?: Array<{ name: string; color: string }>;
-		organization?: { name: string };
-	}
+	import type { Event } from '$lib/types/index.js';
 
 	interface Props {
 		event: Event;

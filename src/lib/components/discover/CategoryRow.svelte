@@ -110,7 +110,7 @@
 	<div
 		bind:this={scrollContainer}
 		onscroll={updateScrollButtons}
-		class="scrollbar-hide overflow-x-auto"
+		class="scrollbar-hide overflow-x-auto py-2"
 	>
 		<div class={gridClasses()}>
 			{@render children()}
