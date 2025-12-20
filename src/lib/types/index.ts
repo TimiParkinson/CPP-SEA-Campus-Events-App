@@ -1,4 +1,4 @@
-// note that not all types are used, but may be used in the future 
+// note that not all types are used, but may be used in the future
 // (ex: User/UserRole when admin-side is implemented)
 
 // ============================================================================
@@ -78,8 +78,8 @@ export interface Event {
 	tags?: Array<{
 		id: string;
 		name: string;
-		color: string; 
-	}>; 
+		color: string;
+	}>;
 }
 
 /**
@@ -103,7 +103,7 @@ export interface Organization {
 	name: string;
 
 	// Optional fields
-	description?: string | null; 
+	description?: string | null;
 	logoUrl?: string | null; // BACKEND TODO: Add this column
 	bannerImageUrl?: string | null; // BACKEND TODO: Add this column
 	abbreviation?: string | null; // BACKEND TODO: Add this column
@@ -118,8 +118,8 @@ export interface Organization {
 	categories?: Array<{
 		id: string;
 		name: string;
-		color: string; 
-	}>; 
+		color: string;
+	}>;
 	boardMembers?: Array<{
 		name: string; // Denormalized from users table
 		role: string; // e.g., "President", "Vice President"
@@ -137,7 +137,7 @@ export interface Organization {
 export interface EventTag {
 	id: string;
 	name: string;
-	color: string; 
+	color: string;
 }
 
 /**
@@ -147,7 +147,7 @@ export interface EventTag {
 export interface OrganizationCategory {
 	id: string;
 	name: string;
-	color: string; 
+	color: string;
 }
 
 // ============================================================================
@@ -166,6 +166,46 @@ export interface User {
 	age?: number | null;
 	createdAt: Date;
 	updatedAt: Date;
+}
+
+/**
+ * UserProfile
+ * Shape of the logged-in user's profile data as used on the profile page
+ * (Slightly simpler than the full User entity.
+ */
+export interface UserProfile {
+	id: string;
+	name: string;
+	email: string;
+	role: UserRole;
+	age?: number | null;
+}
+
+/**
+ * UserOrganizationSummary
+ * Organization + the user's role in that org, for the profile pagee
+ */
+export interface UserOrganizationSummary {
+	id: string;
+	name: string;
+	description?: string | null;
+	role: OrgMemberRole;
+}
+
+/**
+ * UserUpcomingEvent
+ * Minimal event shape for "upcoming events" on the profile page
+ */
+export interface UserUpcomingEvent {
+	id: string;
+	title: string;
+	location: string;
+	startTime: string; // ISO string
+	endTime: string; // ISO string
+	organization: {
+		id: string;
+		name: string;
+	};
 }
 
 // ============================================================================
