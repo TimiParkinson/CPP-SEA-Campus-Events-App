@@ -80,6 +80,7 @@
 		"@supabase/ssr": "^0.7.0",
 		"@supabase/supabase-js": "^2.83.0",
 		"dotenv": "^17.2.3",
+		"mode-watcher": "^1.1.0",
 		"postgres": "^3.4.5",
 		"supabase": "^2.58.5"
 	}
