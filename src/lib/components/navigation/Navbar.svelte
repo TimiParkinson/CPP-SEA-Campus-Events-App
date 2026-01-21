@@ -141,7 +141,7 @@
 						{/if}
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content
-						class="w-56 border-white/10 bg-black/70 backdrop-blur-md"
+						class="w-56 bg-background/60 border backdrop-blur-md"
 						align="end"
 					>
 						<AccountMenu {isLoggedIn} {handleLogout} />
