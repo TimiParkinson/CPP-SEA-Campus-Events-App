@@ -19,7 +19,7 @@
 	];
 </script>
 
-<div class="flex min-h-screen flex-col bg-black">
+<div class="flex min-h-screen flex-col">
 	<Navbar {routes} {currentPath} session={data.session} />
 
 	<main class="flex-1">
