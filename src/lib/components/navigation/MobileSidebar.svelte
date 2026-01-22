@@ -97,47 +97,41 @@
 				</svg>
 			</div>
 			<div class="flex flex-col">
-				<span class="text-xl font-bold text-white">Campus Events</span>
-				<span class="text-sm text-gray-400">Your Campus Hub</span>
+				<span class="text-xl font-bold">Campus Events</span>
+				<span class="text-sm text-accent-foreground">Your Campus Hub</span>
 			</div>
 		</a>
 	</div>
 
-	<Separator class="bg-white/10" />
+	<Separator class="bg-accent-foreground/10" />
 
 	<!-- Search Bar -->
 	<div class="shrink-0 p-4">
 		<div class="relative">
-			<Search
-				class="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-gray-300"
-			/>
+			<Search class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
 			<input
 				type="text"
 				bind:value={searchQuery}
 				oninput={handleSearchInput}
 				placeholder="Search events, clubs..."
-				class="w-full rounded-lg border border-white/10 bg-white/5 py-3 pr-4 pl-10 text-sm text-white placeholder-gray-400 backdrop-blur-xl transition-all focus:border-white/20 focus:bg-white/10 focus:outline-none"
+				class="w-full rounded-lg border border-accent-foreground/10 bg-accent/25 py-3 pr-4 pl-9 text-sm placeholder-accent-foreground transition-all focus:border-accent-foreground/20 focus:bg-accent/60 focus:outline-none"
 			/>
 		</div>
 	</div>
 
-	<Separator class="bg-white/10" />
+	<Separator class="bg-accent-foreground/10" />
 
 	<!-- Quick Links -->
-	<div class="shrink-0 p-4">
-		<h3 class="mb-2 px-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
-			Quick Links
-		</h3>
+	<div class="shrink-0 px-4 py-6">
+		<h3 class="text-md mb-2 px-2 font-semibold tracking-wider uppercase">Quick Links</h3>
 		<nav class="space-y-1">
 			{#each quickLinks as link}
 				{@const Icon = link.icon}
 				<button
 					type="button"
 					onclick={() => handleNavigation(link.path)}
-					class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-white/10 {currentPath ===
-					link.path
-						? 'bg-white/10 font-bold text-white'
-						: 'font-normal text-gray-300 hover:text-white'}"
+					class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-accent/45
+					{currentPath === link.path && 'bg-accent/45 font-semibold'}"
 				>
 					<Icon class="size-5 shrink-0" />
 					<span>{link.name}</span>
@@ -146,21 +140,19 @@
 		</nav>
 	</div>
 
-	<Separator class="bg-white/10" />
+	<Separator class="bg-accent-foreground/10" />
 
 	<!-- Main Navigation Links -->
-	<div class="min-h-0 flex-1 overflow-y-auto p-4">
-		<h3 class="mb-2 px-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">Explore</h3>
+	<div class="min-h-0 flex-1 overflow-y-auto px-4 py-6">
+		<h3 class="text-md mb-2 px-2 font-semibold tracking-wider uppercase">Explore</h3>
 		<nav class="space-y-1">
 			{#each routesWithIcons as route}
 				{@const Icon = getIcon(route.icon)}
 				<button
 					type="button"
 					onclick={() => handleNavigation(route.path)}
-					class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-white/10 {currentPath ===
-					route.path
-						? 'bg-white/10 font-bold text-white'
-						: 'font-normal text-gray-300 hover:text-white'}"
+					class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-accent/45
+					{currentPath === route.path && 'bg-accent/45 font-semibold'}"
 				>
 					{#if Icon}
 						<Icon class="size-5 shrink-0" />
@@ -171,42 +163,38 @@
 		</nav>
 	</div>
 
-	<Separator class="bg-white/10" />
+	<Separator class="bg-accent-foreground/10" />
 
 	<!-- Account Section -->
 	<div class="shrink-0 p-4">
 		<Popover.Root bind:open={accountMenuOpen}>
 			<Popover.Trigger
-				class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left transition-all hover:bg-white/10 focus:outline-none"
+				class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left transition-all hover:bg-accent/40 focus:outline-none"
 			>
-				<div
-					class="flex size-12 shrink-0 items-center justify-center rounded-lg {isLoggedIn
-						? ''
-						: 'bg-white/10'}"
-				>
+				<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-accent/50">
 					{#if isLoggedIn && userAvatar}
 						<img src={userAvatar} alt="User" class="size-12 rounded-full object-cover" />
 					{:else}
-						<User class="size-6 text-gray-300" />
+						<User class="size-6" />
 					{/if}
 				</div>
 				<div class="min-w-0 flex-1">
-					<p class="text-base font-semibold text-white">
+					<p class="text-base font-semibold">
 						{isLoggedIn ? 'My Account' : 'Sign In'}
 					</p>
-					<p class="text-xs text-gray-400">
+					<p class="text-xs text-accent-foreground">
 						{isLoggedIn ? 'Manage your profile' : 'Get started today'}
 					</p>
 				</div>
 				<ChevronUp
-					class="size-4 shrink-0 text-gray-400 transition-transform duration-200 {accountMenuOpen
+					class="size-4 shrink-0 transition-transform duration-200 {accountMenuOpen
 						? 'rotate-180'
 						: ''}"
 				/>
 			</Popover.Trigger>
 
 			<Popover.Content
-				class="z-100 w-56 border-white/10 bg-black/70 backdrop-blur-md"
+				class="z-100 w-56 border-accent/10 bg-accent/25 backdrop-blur-xl"
 				side="top"
 				align="start"
 				sideOffset={8}
