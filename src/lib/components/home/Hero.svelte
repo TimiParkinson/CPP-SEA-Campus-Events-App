@@ -37,7 +37,7 @@
 				onload={() => (imageLoaded = true)}
 				onerror={() => (imageLoaded = false)}
 			/>
-			<div class="absolute inset-0 bg-black/40"></div>
+			<div class="absolute inset-0 bg-black/20 dark:bg-black/40"></div>
 		</div>
 
 		<!-- Gradient Fallback -->
@@ -46,7 +46,7 @@
 				class="absolute inset-0 transition-opacity duration-700"
 				style="background: {fallbackGradient};"
 			>
-				<div class="absolute inset-0 bg-black/20"></div>
+				<div class="absolute inset-0 bg-black/20 dark:bg-black/40"></div>
 			</div>
 		{/if}
 
@@ -60,7 +60,7 @@
 						{title}
 					</h1>
 
-					<p class="mb-8 text-base font-semibold text-white/90 sm:text-lg md:text-xl lg:max-w-2xl">
+					<p class="mb-8 text-base font-semibold text-white/90 sm:text-lg md:text-2xl lg:max-w-2xl">
 						{subtitle}
 					</p>
 
@@ -68,7 +68,7 @@
 						<Button
 							href="/discover"
 							size="lg"
-							class="h-12 cursor-pointer gap-2 px-8 text-base sm:h-14 sm:px-10 sm:text-lg"
+							class="px-8 sm:h-14 sm:px-10 sm:text-lg"
 						>
 							<Compass class="size-5 sm:size-6" />
 							Discover
@@ -76,8 +76,7 @@
 						<Button
 							href="/search"
 							size="lg"
-							variant="secondary"
-							class="h-12 cursor-pointer gap-2 px-8 text-base sm:h-14 sm:px-10 sm:text-lg"
+							class="px-8 sm:h-14 sm:px-10 sm:text-lg"
 						>
 							<Calendar class="size-5 sm:size-6" />
 							Browse
