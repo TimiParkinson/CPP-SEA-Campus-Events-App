@@ -31,7 +31,7 @@
 	{onclick}
 	{size}
 	{variant}
-	class={cn('relative cursor-pointer border-0 backdrop-blur-sm', size === 'lg' ? 'py-7' : 'py-5', className)}
+	class={cn('relative cursor-pointer border-0 shadow-lg backdrop-blur-sm', size === 'lg' ? 'py-7' : 'py-5', className)}
 	aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
 >
 	<Bookmark
