@@ -36,9 +36,9 @@
 <!-- Navbar -->
 <nav class="fixed top-0 right-0 left-0 z-50 backdrop-blur-xs">
 	<!-- Dark background behind nav -->
-	<div class="absolute inset-0 bg-linear-to-b from-black/50 via-black/30 to-transparent"></div>
+	<div class="absolute inset-0 bg-linear-to-b from-black/40 via-black/30 to-transparent"></div>
 
-	<div class="relative mx-auto max-w-[1920px] px-6 lg:px-8">
+	<div class="relative mx-auto max-w-[1920px] px-6 text-white lg:px-8">
 		<div class="flex h-20 items-center justify-between gap-4">
 			<!-- Logo + Links + Hamburger -->
 			<div class="flex min-w-0 flex-1 items-center gap-3">
@@ -46,13 +46,13 @@
 				<button
 					type="button"
 					onclick={() => (mobileMenuOpen = true)}
-					class="cursor-pointer text-white transition-colors hover:text-gray-300 sm:hidden"
+					class="sm:hidden"
 					aria-label="Menu"
 				>
 					<Menu class="size-6" />
 				</button>
 
-				<!-- Logo -->
+				<!-- Logo (PLACEHOLDER) -->
 				<a
 					href="/"
 					class="hidden shrink-0 items-center gap-3 transition-opacity hover:opacity-80 sm:flex"
@@ -89,7 +89,7 @@
 							/>
 						</svg>
 					</div>
-					<span class="text-lg font-bold text-white">Campus Events</span>
+					<span class="text-lg font-bold">Campus Events</span>
 				</a>
 
 				<!-- Divider -->
@@ -102,8 +102,8 @@
 							href={route.path}
 							class="rounded-lg px-3 py-2 text-base transition-all duration-200 {currentPath ===
 							route.path
-								? 'font-bold text-white'
-								: 'font-normal text-gray-300 hover:font-semibold hover:text-white'}"
+								? 'font-bold'
+								: 'hover:font-bold'}"
 						>
 							{route.name}
 						</a>
@@ -116,7 +116,7 @@
 				<!-- Search -->
 				<a
 					href="/search"
-					class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white"
+					class="flex size-10 cursor-pointer items-center justify-center rounded-lg duration-200"
 					aria-label="Search"
 				>
 					<Search class="size-5" />
@@ -125,14 +125,16 @@
 				<!-- Account Dropdown -->
 				<DropdownMenu.Root>
 					<DropdownMenu.Trigger
-						class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white focus:outline-none"
+						class="flex size-10 cursor-pointer items-center justify-center rounded-lg duration-200 focus:outline-none"
 					>
 						{#if isLoggedIn && userAvatar}
 							<!-- User has profile picture from OAuth -->
 							<img src={userAvatar} alt="User" class="size-8 rounded-full object-cover" />
 						{:else if isLoggedIn}
 							<!-- Logged in but no avatar - show colored circle with initials fallback -->
-							<div class="flex size-8 items-center justify-center rounded-full bg-purple-600 text-xs font-semibold text-white">
+							<div
+								class="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold"
+							>
 								{session?.user?.email?.charAt(0).toUpperCase() || 'U'}
 							</div>
 						{:else}
@@ -141,7 +143,7 @@
 						{/if}
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content
-						class="w-56 border-white/10 bg-black/70 backdrop-blur-md"
+						class="w-56 border-accent/10 bg-border/50 backdrop-blur-sm"
 						align="end"
 					>
 						<AccountMenu {isLoggedIn} {handleLogout} />
@@ -156,7 +158,7 @@
 <Sheet.Root bind:open={mobileMenuOpen}>
 	<Sheet.Content
 		side="left"
-		class="w-80 overflow-visible border-white/10 bg-black/50 p-0 backdrop-blur-2xl"
+		class="w-80 overflow-visible border-accent/10 bg-background/50 p-0 backdrop-blur-xl"
 	>
 		<MobileSidebar
 			{routes}

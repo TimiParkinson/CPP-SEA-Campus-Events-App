@@ -4,6 +4,7 @@
 	import { formatTime, getDayOfMonth, getMonthAbbr } from '$lib/utils/dateFormatters.js';
 	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
 	import type { Event } from '$lib/types/index.js';
+	import Button from '../ui/button/button.svelte';
 
 	interface Props {
 		event: Event;
@@ -44,7 +45,7 @@
 				onclick?.();
 			}
 		}}
-		class="group relative w-full overflow-hidden rounded-xl transition-all hover:scale-[1.01] hover:shadow-xl focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none
+		class="group relative w-full overflow-hidden rounded-xl shadow-lg transition-all hover:scale-[1.01] hover:shadow-xl focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none
 		       {isFeatured ? 'h-80' : 'aspect-16/10'}"
 	>
 		<!-- Event Image/Gradient -->
@@ -58,24 +59,24 @@
 			{:else}
 				<div class="size-full" style="background: {gradient};"></div>
 			{/if}
-			<div class="absolute inset-0 bg-linear-to-t from-black via-black/55 to-black/10"></div>
+			<div class="absolute inset-0 bg-linear-to-t from-card via-card/55 to-card/10"></div>
 		</div>
 
 		<!-- Date Badge -->
 		<div
-			class="pointer-events-none absolute rounded-lg bg-black/80 text-center backdrop-blur-sm
+			class="pointer-events-none absolute rounded-lg bg-background text-center backdrop-blur-sm
 			       {isFeatured
 				? 'top-4 left-4 min-w-14 px-2.5 py-2'
 				: 'top-2 left-2 min-w-9 px-1.5 py-1 @[200px]:top-3 @[200px]:left-3 @[200px]:min-w-11 @[200px]:px-2 @[200px]:py-1.5 @[280px]:min-w-[50px] @[280px]:px-2.5 @[280px]:py-2'}"
 		>
 			<p
-				class="leading-none font-bold text-white
+				class="leading-none font-bold
 			          {isFeatured ? 'text-xl' : 'text-[11px] @[200px]:text-xs @[280px]:text-sm'}"
 			>
 				{getDayOfMonth(event.startTime)}
 			</p>
 			<p
-				class="mt-0.5 font-medium text-white/80 uppercase
+				class="mt-0.5 font-medium uppercase
 			          {isFeatured ? 'mt-1 text-[10px]' : 'text-[8px] @[200px]:text-[9px] @[280px]:text-[10px]'}"
 			>
 				{getMonthAbbr(event.startTime)}
@@ -91,7 +92,8 @@
 			<BookmarkButton
 				{isBookmarked}
 				onclick={handleBookmarkClick}
-				size={isFeatured ? 'featured' : 'general'}
+				variant="outline"
+				size={isFeatured ? 'lg' : 'default'}
 			/>
 		</div>
 
@@ -101,24 +103,24 @@
 		>
 			{#if isFeatured}
 				<!-- Featured Layout: Two column on md+, single column on mobile -->
-				<div class="flex flex-col gap-3 md:flex-row md:items-end md:gap-4">
+				<div class="flex flex-col gap-3 md:flex-row md:items-end md:gap-6">
 					<div class="min-w-0 flex-1">
-						<h3 class="mb-1.5 text-xl leading-tight font-bold text-white">
+						<h3 class="mb-1.5 text-xl leading-tight font-bold">
 							{event.title}
 						</h3>
 						{#if event.description}
-							<p class="line-clamp-2 text-sm text-white/80 md:max-w-md">
+							<p class="line-clamp-2 text-sm md:max-w-md">
 								{event.description}
 							</p>
 						{/if}
 					</div>
-					<button
-						type="button"
+					<Button
 						{onclick}
-						class="w-full shrink-0 cursor-pointer rounded-lg bg-white/90 px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-white md:w-auto"
+						variant="outline"
+						class="w-full shrink-0 cursor-pointer rounded-lg px-5 py-2 text-sm font-medium transition-colors md:w-auto"
 					>
 						View More Info
-					</button>
+					</Button>
 				</div>
 			{:else}
 				<!-- General Layout: Tags → Title → Quick Details -->
@@ -129,7 +131,7 @@
 							<button
 								type="button"
 								onclick={handleTagClick}
-								class="cursor-pointer rounded-full px-1.5 py-0.5 text-[9px] font-medium text-white transition-opacity hover:opacity-80 @[280px]:px-2 @[280px]:text-[10px]"
+								class="cursor-pointer rounded-full px-1.5 py-0.5 text-[9px] font-medium transition-opacity hover:opacity-80 @[280px]:px-2 @[280px]:text-[10px]"
 								style="background-color: {tag.color}40; border: 1px solid {tag.color}80;"
 							>
 								{tag.name}
@@ -137,7 +139,7 @@
 						{/each}
 						{#if event.tags.length > 2}
 							<span
-								class="rounded-full bg-white/20 px-1.5 py-0.5 text-[9px] text-white @[280px]:px-2 @[280px]:text-[10px]"
+								class="rounded-full bg-white/20 px-1.5 py-0.5 text-[9px] @[280px]:px-2 @[280px]:text-[10px]"
 							>
 								+{event.tags.length - 2}
 							</span>
@@ -152,7 +154,7 @@
 					class="mb-1 w-full cursor-pointer rounded text-left hover:underline focus:ring-2 focus:ring-white/50 focus:outline-none @[200px]:mb-1.5"
 				>
 					<h3
-						class="truncate text-[11px] font-semibold text-white @[200px]:text-xs @[280px]:text-sm @[320px]:text-base"
+						class="truncate text-[11px] font-semibold @[200px]:text-xs @[280px]:text-sm @[320px]:text-base"
 					>
 						{event.title}
 					</h3>
@@ -160,7 +162,7 @@
 
 				<!-- Quick Details -->
 				<div
-					class="pointer-events-none hidden items-start gap-1.5 text-[8px] text-white/90 @[180px]:flex @[200px]:gap-2 @[200px]:text-[9px] @[280px]:gap-3 @[280px]:text-[10px] @[320px]:text-xs"
+					class="pointer-events-none hidden items-start gap-1.5 text-[8px] @[180px]:flex @[200px]:gap-2 @[200px]:text-[9px] @[280px]:gap-3 @[280px]:text-[10px] @[320px]:text-xs"
 				>
 					<span
 						class="flex min-w-0 flex-1 items-start gap-0.5 @[200px]:gap-1"

@@ -86,16 +86,12 @@
 	<title>{org.name} - Campus Events</title>
 </svelte:head>
 
-<div class="min-h-screen bg-black">
+<div class="min-h-screen">
 	<!-- Banner -->
 	<div class="relative h-64 overflow-hidden sm:h-80 md:h-96">
 		<!-- Background Image/Gradient -->
 		{#if org.bannerImageUrl}
-			<img
-				src={org.bannerImageUrl}
-				alt={org.name}
-				class="size-full object-cover object-center"
-			/>
+			<img src={org.bannerImageUrl} alt={org.name} class="size-full object-cover object-center" />
 		{:else}
 			<div class="size-full" style="background: {gradient};"></div>
 		{/if}
@@ -160,18 +156,13 @@
 				<!-- Actions -->
 				<div class="flex shrink-0 items-center gap-2 sm:gap-3">
 					<!-- Bookmark -->
-					<BookmarkButton
-						{isBookmarked}
-						onclick={toggleBookmark}
-						size="dialog"
-						class="size-10 border border-white/20 bg-background shadow-lg sm:size-11"
-					/>
+					<BookmarkButton {isBookmarked} onclick={toggleBookmark} variant="secondary" />
 
 					<!-- Join -->
 					<Button
 						onclick={handleJoin}
 						size="lg"
-						class="h-10 cursor-pointer px-4 text-sm shadow-lg sm:h-11 sm:px-6 sm:text-base"
+						class="cursor-pointer px-4 text-sm shadow-lg sm:px-6 sm:text-base"
 					>
 						Join
 					</Button>
@@ -186,8 +177,8 @@
 		style="transform: translateY(-40px);"
 	>
 		<!-- Organization Header -->
-		<div class="mb-8">
-			<h1 class="mb-3 text-3xl leading-tight font-bold text-white sm:text-4xl md:text-5xl">
+		<div class="my-8">
+			<h1 class="mb-3 text-3xl leading-tight font-bold sm:text-4xl md:text-5xl">
 				{org.name}
 			</h1>
 
@@ -216,11 +207,7 @@
 		<div class="mb-8 space-y-4">
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
 				{#if org.establishedDate}
-					<Detail
-						icon={Calendar}
-						label="Established"
-						value={formatFullDate(org.establishedDate)}
-					/>
+					<Detail icon={Calendar} label="Established" value={formatFullDate(org.establishedDate)} />
 				{/if}
 
 				{#if org.contactEmail}
@@ -247,8 +234,8 @@
 
 		<!-- About Organization -->
 		<div class="mb-8">
-			<h2 class="mb-4 text-xl font-bold text-white sm:text-2xl">About Organization</h2>
-			<p class="text-sm leading-relaxed text-gray-300 sm:text-base">
+			<h2 class="mb-4 text-xl font-bold sm:text-2xl">About Organization</h2>
+			<p class="text-sm leading-relaxed sm:text-base">
 				{org.description}
 			</p>
 		</div>
@@ -256,7 +243,7 @@
 		<!-- Meet the Board -->
 		{#if org.boardMembers && org.boardMembers.length > 0}
 			<div class="mb-8">
-				<h2 class="mb-4 text-xl font-bold text-white sm:text-2xl">Meet the Board</h2>
+				<h2 class="mb-4 text-xl font-bold sm:text-2xl">Meet the Board</h2>
 				<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
 					{#each org.boardMembers as member}
 						<Detail icon={User} label={member.role} value={member.name} />
@@ -266,17 +253,15 @@
 		{/if}
 
 		<!-- Send Feedback -->
-		<div class="mb-8">
-			<Button
-				onclick={handleFeedback}
-				variant="outline"
-				size="lg"
-				class="w-full cursor-pointer gap-2 sm:w-auto"
-			>
-				<Send class="size-4" />
-				Send Feedback
-			</Button>
-		</div>
+		<Button
+			onclick={handleFeedback}
+			variant="secondary"
+			size="lg"
+			class="mb-8 w-full gap-2 sm:w-auto"
+		>
+			<Send class="size-4" />
+			Send Feedback
+		</Button>
 
 		<!-- Upcoming Events -->
 		{#if upcomingEvents && upcomingEvents.length > 0}
@@ -285,9 +270,7 @@
 					href="/search?org={encodeURIComponent(org.name)}&time=upcoming"
 					class="group mb-4 inline-flex items-center gap-2 transition-colors hover:opacity-80"
 				>
-					<h2 class="text-xl font-bold text-white group-hover:underline sm:text-2xl">
-						Upcoming Events
-					</h2>
+					<h2 class="text-xl font-bold group-hover:underline sm:text-2xl">Upcoming Events</h2>
 				</a>
 				<CardGrid itemCount={upcomingEvents.length} variant="featured" cardType="event">
 					{#each upcomingEvents as event (event.id)}
@@ -306,7 +289,7 @@
 		<!-- Past Events -->
 		{#if pastEvents && pastEvents.length > 0}
 			<div class="mb-8">
-				<h2 class="mb-4 text-xl font-bold text-white sm:text-2xl">Past Events</h2>
+				<h2 class="mb-4 text-xl font-bold sm:text-2xl">Past Events</h2>
 				<CardGrid itemCount={pastEvents.length} variant="general" cardType="event">
 					{#each pastEvents as event (event.id)}
 						<EventCard

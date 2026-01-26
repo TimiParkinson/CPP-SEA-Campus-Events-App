@@ -17,9 +17,7 @@
 	/>
 </svelte:head>
 
-<div class="bg-black">
-	<Hero />
-	<Featured variant="orgs" organizations={featuredOrgs} />
-	<Featured variant="events" events={featuredEvents} />
-	<CTA />
-</div>
+<Hero />
+<Featured variant="orgs" organizations={featuredOrgs} />
+<Featured variant="events" events={featuredEvents} />
+<CTA />

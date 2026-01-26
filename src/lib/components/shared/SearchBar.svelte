@@ -57,9 +57,7 @@
 <div class="relative w-full">
 	<div class="relative flex items-center">
 		<!-- Search Icon -->
-		<Search
-			class="pointer-events-none absolute size-5 text-gray-400 left-4 z-1"
-		/>
+		<Search class="pointer-events-none absolute left-4 z-1 size-5" />
 
 		<!-- Input -->
 		<input
@@ -69,7 +67,8 @@
 			oninput={handleInput}
 			onkeydown={handleKeydown}
 			{placeholder}
-			class="w-full rounded-lg border border-white/10 bg-white/5 text-white placeholder-gray-400 backdrop-blur-xl transition-all focus:border-white/20 focus:bg-white/10 focus:outline-none {isCompact
+			class="w-full rounded-lg border-2 border-card bg-card placeholder-current/60 shadow backdrop-blur-xl transition-all
+			{isCompact
 				? 'h-10 py-2 pr-10 pl-12 text-sm'
 				: 'h-12 py-3 pr-20 pl-12 text-base sm:pr-28 sm:pl-12 sm:text-sm'}"
 		/>
@@ -81,9 +80,8 @@
 				<button
 					type="button"
 					onclick={handleClear}
-					class="flex cursor-pointer items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-white/10 hover:text-white {isCompact
-						? 'size-6'
-						: 'size-8'}"
+					class="flex cursor-pointer items-center justify-center rounded-md transition-colors
+					 {isCompact ? 'size-6' : 'size-8'}"
 					aria-label="Clear search"
 				>
 					<X class="size-4" />
@@ -95,15 +93,14 @@
 				<button
 					type="button"
 					onclick={onFilterClick}
-					class="relative flex cursor-pointer items-center justify-center rounded-md text-gray-400 transition-colors hover:bg-white/10 hover:text-white {isCompact
-						? 'size-6'
-						: 'size-8'}"
+					class="relative flex cursor-pointer items-center justify-center rounded-md transition-colors
+					 {isCompact ? 'size-6' : 'size-8'}"
 					aria-label="Open filters"
 				>
 					<SlidersHorizontal class="size-4" />
 					{#if activeFiltersCount > 0}
 						<span
-							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-purple-600 text-[10px] font-bold text-white"
+							class="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold"
 						>
 							{activeFiltersCount}
 						</span>

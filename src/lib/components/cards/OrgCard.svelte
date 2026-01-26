@@ -55,7 +55,7 @@
 			type="button"
 			{onclick}
 			title={organization.name}
-			class="group relative aspect-square w-full cursor-pointer overflow-hidden rounded-full transition-all hover:scale-105 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+			class="group relative aspect-square w-full cursor-pointer shadow-2xl overflow-hidden rounded-full transition-all hover:scale-105 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
 		>
 			{#if organization.logoUrl}
 				<!-- Image logo -->
@@ -83,7 +83,7 @@
 					onclick?.();
 				}
 			}}
-			class="group relative aspect-square w-full cursor-pointer overflow-hidden rounded-xl bg-neutral-900 transition-all hover:scale-[1.02] hover:shadow-xl focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+			class="group relative aspect-square w-full cursor-pointer overflow-hidden rounded-xl bg-card shadow-2xl transition-all hover:scale-[1.02] hover:shadow-xl focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
 		>
 			<!-- Inner container -->
 			<div
@@ -121,7 +121,7 @@
 				<div class="pointer-events-none flex w-full flex-col items-center gap-1 @[200px]:gap-1.5">
 					<!-- Title -->
 					<h3
-						class="w-full text-center text-[10px] leading-tight font-semibold text-white @[200px]:text-xs @[280px]:text-sm @[320px]:text-base"
+						class="w-full text-center text-[10px] leading-tight font-semibold @[200px]:text-xs @[280px]:text-sm @[320px]:text-base"
 					>
 						<!-- Show abbreviation below @[200px] -->
 						<span class="block @[200px]:hidden">{displayAbbreviation}</span>
@@ -135,7 +135,7 @@
 								<button
 									type="button"
 									onclick={handleCategoryClick}
-									class="pointer-events-auto cursor-pointer rounded-full px-1.5 py-0.5 text-[8px] font-medium text-white transition-opacity hover:opacity-80 @[280px]:px-2 @[280px]:text-[9px]"
+									class="pointer-events-auto cursor-pointer rounded-full px-1.5 py-0.5 text-[8px] font-medium transition-opacity hover:opacity-80 @[280px]:px-2 @[280px]:text-[9px]"
 									style="background-color: {category.color}40; border: 1px solid {category.color}80;"
 								>
 									{category.name}

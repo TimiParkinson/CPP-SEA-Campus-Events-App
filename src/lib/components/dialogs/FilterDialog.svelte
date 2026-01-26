@@ -63,34 +63,32 @@
 
 <Dialog.Root bind:open>
 	<Dialog.Content
-		class="max-h-[90vh] w-[calc(100vw-2rem)] max-w-md gap-0 overflow-hidden p-0 sm:w-full"
+		class="max-h-[90vh] w-[calc(100vw-4rem)] max-w-md gap-0 overflow-hidden p-0 sm:w-full"
 	>
 		<!-- Header -->
-		<div class="border-b border-white/10 px-6 py-4">
+		<div class="px-6 py-4">
 			<Dialog.Title class="text-xl font-bold">Filters</Dialog.Title>
-			<Dialog.Description class="mt-1 text-sm text-gray-400">
-				Refine your search results
-			</Dialog.Description>
+			<Dialog.Description class="mt-1 text-sm">Refine your search results</Dialog.Description>
 		</div>
 
 		<!-- Content -->
 		<div class="max-h-[60vh] overflow-y-auto px-6 py-4">
 			<!-- View Type -->
 			<div class="mb-6">
-				<h3 class="mb-3 text-sm font-semibold text-gray-300">View</h3>
+				<h3 class="mb-3 text-sm font-semibold">View</h3>
 				<div class="grid grid-cols-3 gap-2">
 					{#each viewOptions as option}
 						{@const Icon = option.icon}
 						<button
 							type="button"
 							onclick={() => onViewChange?.(option.value)}
-							class="flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-3 text-center transition-all hover:bg-white/10 {selectedView ===
-							option.value
-								? 'border-purple-500 bg-purple-500/20'
-								: ''}"
+							class="flex cursor-pointer flex-col items-center gap-2 rounded-lg border px-3 py-3 text-center transition-all
+							{selectedView === option.value
+								? 'bg-secondary font-semibold text-accent'
+								: 'bg-card text-secondary/50 hover:bg-secondary/50'}"
 						>
-							<Icon class="size-5 text-gray-300" />
-							<span class="text-xs font-medium text-gray-300">{option.label}</span>
+							<Icon class="size-5" />
+							<span class="text-xs font-medium">{option.label}</span>
 						</button>
 					{/each}
 				</div>
@@ -99,16 +97,16 @@
 			<!-- Time Filter (Only for Events) -->
 			{#if selectedView === 'events' || selectedView === 'all'}
 				<div class="mb-6">
-					<h3 class="mb-3 text-sm font-semibold text-gray-300">Time</h3>
+					<h3 class="mb-3 text-sm font-semibold">Time</h3>
 					<div class="grid grid-cols-2 gap-2">
 						{#each timeFilters as filter}
 							<button
 								type="button"
 								onclick={() => onTimeFilterChange?.(filter.value)}
-								class="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-sm transition-all hover:bg-white/10 {selectedTimeFilter ===
-								filter.value
-									? 'border-purple-500 bg-purple-500/20 font-semibold text-white'
-									: 'text-gray-300'}"
+								class="cursor-pointer rounded-lg border px-4 py-2.5 text-sm transition-all
+								{selectedTimeFilter === filter.value
+									? 'bg-secondary font-semibold text-accent'
+									: 'bg-card text-secondary/50 hover:bg-secondary/50'}"
 							>
 								{filter.label}
 							</button>
@@ -121,25 +119,25 @@
 			{#if (selectedView === 'events' || selectedView === 'all') && allTags.length > 0}
 				<div class="mb-6">
 					<div class="mb-3 flex items-center justify-between">
-						<h3 class="text-sm font-semibold text-gray-300">Tags</h3>
-						<div class="flex gap-1 rounded-lg border border-white/10 bg-white/5 p-1">
+						<h3 class="text-sm font-semibold">Tags</h3>
+						<div class="flex gap-1 rounded-lg border bg-card p-1">
 							<button
 								type="button"
 								onclick={() => onTagModeChange?.('any')}
-								class="cursor-pointer rounded px-2 py-1 text-xs transition-all {tagFilterMode ===
-								'any'
-									? 'bg-purple-600 font-semibold text-white'
-									: 'text-gray-400 hover:text-white'}"
+								class="cursor-pointer rounded px-2 py-1 text-xs transition-all
+								{tagFilterMode === 'any'
+									? 'bg-secondary font-semibold text-accent'
+									: 'bg-card text-secondary/50 hover:bg-secondary/50'}"
 							>
 								Any
 							</button>
 							<button
 								type="button"
 								onclick={() => onTagModeChange?.('all')}
-								class="cursor-pointer rounded px-2 py-1 text-xs transition-all {tagFilterMode ===
-								'all'
-									? 'bg-purple-600 font-semibold text-white'
-									: 'text-gray-400 hover:text-white'}"
+								class="cursor-pointer rounded px-2 py-1 text-xs transition-all
+								{tagFilterMode === 'all'
+									? 'bg-secondary font-semibold text-card-foreground'
+									: 'bg-card text-card-foreground/50 hover:bg-secondary/50'}"
 							>
 								All
 							</button>
@@ -155,7 +153,7 @@
 								<Badge
 									variant="secondary"
 									class="transition-all {selectedTags.includes(tag.name)
-										? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-black'
+										? 'ring-2'
 										: 'opacity-60 hover:opacity-100'}"
 									style="background-color: {tag.color}20; border: 1px solid {tag.color}; color: {tag.color};"
 								>
@@ -170,7 +168,7 @@
 			<!-- Categories (Only for Organizations) -->
 			{#if (selectedView === 'organizations' || selectedView === 'all') && allCategories.length > 0}
 				<div class="mb-6">
-					<h3 class="mb-3 text-sm font-semibold text-gray-300">Categories</h3>
+					<h3 class="mb-3 text-sm font-semibold">Categories</h3>
 					<div class="flex flex-wrap gap-2">
 						{#each allCategories as category}
 							<button
@@ -181,7 +179,7 @@
 								<Badge
 									variant="secondary"
 									class="transition-all {selectedCategories.includes(category.name)
-										? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-black'
+										? 'ring-2'
 										: 'opacity-60 hover:opacity-100'}"
 									style="background-color: {category.color}20; border: 1px solid {category.color}; color: {category.color};"
 								>
@@ -195,12 +193,14 @@
 		</div>
 
 		<!-- Footer -->
-		<div class="flex items-center gap-3 border-t border-white/10 px-6 py-4">
-			<Button onclick={handleApply} class="cursor-pointer">Apply Filters</Button>
+		<div class="flex items-center justify-center gap-3 border-t px-6 py-4">
+			<Button onclick={handleApply} class="flex-1 font-semibold text-card-foreground"
+				>Apply Filters</Button
+			>
 			<Button
-				variant="ghost"
+				variant="outline"
 				onclick={handleReset}
-				class="cursor-pointer text-gray-400 hover:text-white"
+				class="flex-1 text-current hover:text-secondary-foreground"
 			>
 				Reset All
 			</Button>

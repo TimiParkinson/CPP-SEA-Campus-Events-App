@@ -71,7 +71,7 @@
 			class="group cursor-pointer text-left transition-colors focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-black focus:outline-none"
 		>
 			<h2
-				class="text-xl font-bold text-white transition-colors group-hover:text-gray-300 sm:text-2xl"
+				class="text-xl font-bold transition-colors group-hover:text-accent-foreground sm:text-2xl"
 			>
 				{title}
 				<span
@@ -89,7 +89,7 @@
 				type="button"
 				onclick={() => scrollByPage('left')}
 				disabled={!canScrollLeft}
-				class="flex size-9 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-white/90 hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-black/60 disabled:hover:text-white sm:size-10"
+				class="flex size-9 cursor-pointer items-center justify-center rounded-lg bg-accent-foreground/20 backdrop-blur-sm transition-all hover:bg-accent disabled:cursor-not-allowed disabled:opacity-30"
 				aria-label="Scroll left"
 			>
 				<ChevronLeft class="size-4 sm:size-5" />
@@ -98,7 +98,7 @@
 				type="button"
 				onclick={() => scrollByPage('right')}
 				disabled={!canScrollRight}
-				class="flex size-9 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-white/90 hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-black/60 disabled:hover:text-white sm:size-10"
+				class="flex size-9 cursor-pointer items-center justify-center rounded-lg bg-accent-foreground/20 backdrop-blur-sm transition-all hover:bg-accent disabled:cursor-not-allowed disabled:opacity-30"
 				aria-label="Scroll right"
 			>
 				<ChevronRight class="size-4 sm:size-5" />
@@ -110,7 +110,7 @@
 	<div
 		bind:this={scrollContainer}
 		onscroll={updateScrollButtons}
-		class="scrollbar-hide overflow-x-auto py-2"
+		class="scrollbar-hide -mx-4 overflow-x-auto px-4 py-2 md:-mx-6 md:px-6 lg:-mx-8 lg:px-8"
 	>
 		<div class={gridClasses()}>
 			{@render children()}

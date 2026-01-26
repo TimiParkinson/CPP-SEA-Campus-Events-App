@@ -162,108 +162,98 @@
 	<meta name="description" content="Discover events and organizations on campus" />
 </svelte:head>
 
-<div class="min-h-screen bg-black pt-24 pb-16">
-	<div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-		<!-- Page Header with Tab Switcher -->
-		<div
-			class="mb-8 flex flex-col items-start gap-6 sm:mb-12 sm:flex-row sm:items-center sm:justify-between"
-		>
-			<div>
-				<h1 class="mb-2 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">Discover</h1>
-				<p class="text-sm text-gray-400 sm:text-base">Explore campus events and organizations</p>
-			</div>
-
-			<!-- Tab Switcher -->
-			<TabSwitcher
-				tabs={[
-					{ value: 'events', label: 'Events' },
-					{ value: 'organizations', label: 'Organizations' }
-				]}
-				selected={selectedTab}
-				onSelect={(value) => (selectedTab = value)}
-			/>
+<div class="pt-24">
+	<!-- Page Header with Tab Switcher -->
+	<div
+		class="mb-8 flex flex-col items-start gap-6 sm:mb-12 sm:flex-row sm:items-center sm:justify-between"
+	>
+		<div>
+			<h1 class="mb-2 text-3xl font-bold sm:text-4xl lg:text-5xl">Discover</h1>
+			<p class="text-sm sm:text-base">Explore campus events and organizations</p>
 		</div>
 
-		<!-- Events Tab -->
-		{#if selectedTab === 'events'}
-			<!-- Featured Events -->
-			<section class="mb-10 sm:mb-12">
-				<div class="mb-6 flex items-center justify-between sm:mb-8">
-					<h2 class="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">Featured Events</h2>
-					<a
-						href="/search"
-						class="group flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white"
-					>
-						<span>View all</span>
-						<span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
-					</a>
-				</div>
-				<Featured variant="events" events={featuredEvents} minimal={true} />
-			</section>
-
-			<!-- Event Categories -->
-			{#each eventCategories() as category}
-				{@const categoryEvents = eventsByTag().get(category.key) || []}
-				{#if categoryEvents.length > 0}
-					<div class="mb-10 sm:mb-12">
-						<CategoryRow
-							title={category.label}
-							cardType="event"
-							onTitleClick={() => navigateToSearchWithFilter('tag', category.key)}
-						>
-							{#each categoryEvents as event (event.id)}
-								<EventCard
-									{event}
-									variant="general"
-									onclick={() => openEvent(event)}
-									onBookmark={() => toggleEventBookmark(event.id)}
-									isBookmarked={bookmarkedEvents.has(event.id)}
-								/>
-							{/each}
-						</CategoryRow>
-					</div>
-				{/if}
-			{/each}
-		{/if}
-
-		<!-- Organizations Tab -->
-		{#if selectedTab === 'organizations'}
-			<!-- Featured Organizations -->
-			<section class="mb-10 sm:mb-12">
-				<div class="mb-6 flex items-center justify-between sm:mb-8">
-					<h2 class="text-2xl font-bold text-white sm:text-3xl lg:text-4xl">
-						Featured Organizations
-					</h2>
-					<a
-						href="/search"
-						class="group flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white"
-					>
-						<span>View all</span>
-						<span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
-					</a>
-				</div>
-				<Featured variant="orgs" organizations={featuredOrgs} minimal={true} />
-			</section>
-
-			<!-- Org Categories -->
-			{#each orgCategories() as category}
-				{@const categoryOrgs = orgsByCategory().get(category.key) || []}
-				{#if categoryOrgs.length > 0}
-					<div class="mb-10 sm:mb-12">
-						<CategoryRow
-							title={category.label}
-							cardType="org"
-							onTitleClick={() => navigateToSearchWithFilter('category', category.key)}
-						>
-							{#each categoryOrgs as org (org.id)}
-								<OrgCard organization={org} variant="general" onclick={() => openOrg(org)} />
-							{/each}
-						</CategoryRow>
-					</div>
-				{/if}
-			{/each}
-		{/if}
+		<!-- Tab Switcher -->
+		<TabSwitcher
+			tabs={[
+				{ value: 'events', label: 'Events' },
+				{ value: 'organizations', label: 'Organizations' }
+			]}
+			selected={selectedTab}
+			onSelect={(value) => (selectedTab = value)}
+		/>
 	</div>
+
+	<!-- Events Tab -->
+	{#if selectedTab === 'events'}
+		<!-- Featured Events -->
+		<section class="mb-10 sm:mb-12">
+			<div class="mb-6 flex items-center justify-between sm:mb-8">
+				<h2 class="text-2xl font-bold sm:text-3xl lg:text-4xl">Featured Events</h2>
+				<a href="/search" class="group flex items-center gap-2 text-sm transition-colors">
+					<span>View all</span>
+					<span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+				</a>
+			</div>
+			<Featured variant="events" events={featuredEvents} minimal={true} />
+		</section>
+
+		<!-- Event Categories -->
+		{#each eventCategories() as category}
+			{@const categoryEvents = eventsByTag().get(category.key) || []}
+			{#if categoryEvents.length > 0}
+				<div class="mb-10 sm:mb-12">
+					<CategoryRow
+						title={category.label}
+						cardType="event"
+						onTitleClick={() => navigateToSearchWithFilter('tag', category.key)}
+					>
+						{#each categoryEvents as event (event.id)}
+							<EventCard
+								{event}
+								variant="general"
+								onclick={() => openEvent(event)}
+								onBookmark={() => toggleEventBookmark(event.id)}
+								isBookmarked={bookmarkedEvents.has(event.id)}
+							/>
+						{/each}
+					</CategoryRow>
+				</div>
+			{/if}
+		{/each}
+	{/if}
+
+	<!-- Organizations Tab -->
+	{#if selectedTab === 'organizations'}
+		<!-- Featured Organizations -->
+		<section class="mb-10 sm:mb-12">
+			<div class="mb-6 flex items-center justify-between sm:mb-8">
+				<h2 class="text-2xl font-bold sm:text-3xl lg:text-4xl">Featured Organizations</h2>
+				<a href="/search" class="group flex items-center gap-2 text-sm transition-colors">
+					<span>View all</span>
+					<span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+				</a>
+			</div>
+			<Featured variant="orgs" organizations={featuredOrgs} minimal={true} />
+		</section>
+
+		<!-- Org Categories -->
+		{#each orgCategories() as category}
+			{@const categoryOrgs = orgsByCategory().get(category.key) || []}
+			{#if categoryOrgs.length > 0}
+				<div class="mb-10 sm:mb-12">
+					<CategoryRow
+						title={category.label}
+						cardType="org"
+						onTitleClick={() => navigateToSearchWithFilter('category', category.key)}
+					>
+						{#each categoryOrgs as org (org.id)}
+							<OrgCard organization={org} variant="general" onclick={() => openOrg(org)} />
+						{/each}
+					</CategoryRow>
+				</div>
+			{/if}
+		{/each}
+	{/if}
 </div>
 
 <!-- Dialogs -->

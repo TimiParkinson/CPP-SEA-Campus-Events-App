@@ -255,160 +255,146 @@
 	<title>Search - Campus Events</title>
 </svelte:head>
 
-<div class="min-h-screen bg-black pt-15 pb-16">
-	<div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-		<!-- Back Button (ALL screens) -->
-		<div class="mb-10">
+<div class="pt-24">
+	<!-- Page Header -->
+	<div class="mb-3 flex items-center justify-between gap-4">
+		<div class="min-w-0 flex-1">
+			{#if debouncedQuery}
+				<h1 class="text-4xl leading-tight font-bold">
+					Results for "<span class="text-primary">{debouncedQuery}</span>"
+				</h1>
+				<p class="mt-1 text-sm">
+					{filteredEvents().length} event{filteredEvents().length !== 1 ? 's' : ''} · {filteredOrgs()
+						.length} organization{filteredOrgs().length !== 1 ? 's' : ''}
+				</p>
+			{:else}
+				<h1 class="text-4xl leading-tight font-bold">Explore</h1>
+				<p class="mt-1 text-sm">Browse all events and organizations</p>
+			{/if}
+		</div>
+	</div>
+
+	<!-- Filter Pills -->
+	{#if activeFilters().length > 0}
+		<div class="mb-4 flex flex-wrap items-center gap-2">
+			{#each activeFilters() as filter}
+				<button
+					type="button"
+					onclick={() => removeFilter(filter)}
+					class="group flex items-center gap-1.5 rounded-full bg-primary/80 px-3 py-1.5 text-sm transition-all hover:bg-primary"
+				>
+					<span>{filter.label}</span>
+					<X class="size-3 transition-transform group-hover:scale-110" />
+				</button>
+			{/each}
 			<button
 				type="button"
-				onclick={handleBack}
-				class="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-white/10 backdrop-blur-sm transition-colors hover:bg-white/20"
-				aria-label="Go back"
+				onclick={clearAllFilters}
+				class="text-sm underline transition-colors hover:text-primary/80"
 			>
-				<ArrowLeft class="size-5 text-white" />
+				Clear all
 			</button>
 		</div>
+	{/if}
 
-		<!-- Page Header -->
-		<div class="mb-3 flex items-center justify-between gap-4">
-			<div class="min-w-0 flex-1">
-				{#if debouncedQuery}
-					<h1 class="text-4xl leading-tight font-bold text-white">
-						Results for "<span class="text-gray-400">{debouncedQuery}</span>"
-					</h1>
-					<p class="mt-1 text-sm text-gray-400">
-						{filteredEvents().length} event{filteredEvents().length !== 1 ? 's' : ''} · {filteredOrgs()
-							.length} organization{filteredOrgs().length !== 1 ? 's' : ''}
-					</p>
-				{:else}
-					<h1 class="text-4xl leading-tight font-bold text-white">Explore</h1>
-					<p class="mt-1 text-sm text-gray-400">Browse all events and organizations</p>
+	<!-- Search Bar (ALL screen sizes) -->
+	<div class="mb-6">
+		<SearchBar
+			bind:value={searchQuery}
+			onInput={handleSearchInput}
+			onClear={handleSearchClear}
+			onFilterClick={() => (filterDialogOpen = true)}
+			autofocus={true}
+			activeFiltersCount={activeFilters().length}
+		/>
+	</div>
+
+	<!-- Events Section -->
+	{#if selectedView === 'all' || selectedView === 'events'}
+		{#if filteredEvents().length > 0}
+			<section class="mb-8">
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4">
+					{#each displayedEvents as event}
+						<EventCard
+							{event}
+							variant="general"
+							onclick={() => openEvent(event)}
+							onBookmark={() => toggleEventBookmark(event.id)}
+							isBookmarked={bookmarkedEvents.has(event.id)}
+						/>
+					{/each}
+				</div>
+				{#if filteredEvents().length > displayedEvents.length}
+					<div class="mt-6 text-center">
+						<button
+							type="button"
+							onclick={() => (eventRowsShown += 2)}
+							class="cursor-pointer text-sm hover:underline"
+						>
+							View more events ({filteredEvents().length - displayedEvents.length} remaining)
+						</button>
+					</div>
 				{/if}
-			</div>
-		</div>
+			</section>
+		{/if}
+	{/if}
 
-		<!-- Filter Pills -->
-		{#if activeFilters().length > 0}
-			<div class="mb-4 flex flex-wrap items-center gap-2">
-				{#each activeFilters() as filter}
-					<button
-						type="button"
-						onclick={() => removeFilter(filter)}
-						class="group flex cursor-pointer items-center gap-1.5 rounded-full bg-purple-600/20 px-3 py-1.5 text-sm text-purple-300 transition-all hover:bg-purple-600/30"
-					>
-						<span>{filter.label}</span>
-						<X class="size-3 transition-transform group-hover:scale-110" />
-					</button>
-				{/each}
+	<!-- Organizations Section -->
+	{#if selectedView === 'all' || selectedView === 'organizations'}
+		{#if filteredOrgs().length > 0}
+			<section class="mb-8">
+				<div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:gap-4">
+					{#each displayedOrgs as org}
+						<OrgCard organization={org} variant="general" onclick={() => openOrg(org)} />
+					{/each}
+				</div>
+				{#if filteredOrgs().length > displayedOrgs.length}
+					<div class="mt-6 text-center">
+						<button
+							type="button"
+							onclick={() => (orgRowsShown += 2)}
+							class="cursor-pointer text-sm hover:underline"
+						>
+							View more organizations ({filteredOrgs().length - displayedOrgs.length} remaining)
+						</button>
+					</div>
+				{/if}
+			</section>
+		{/if}
+	{/if}
+
+	<!-- Empty State -->
+	{#if (selectedView === 'all' && filteredEvents().length === 0 && filteredOrgs().length === 0) || (selectedView === 'events' && filteredEvents().length === 0) || (selectedView === 'organizations' && filteredOrgs().length === 0)}
+		<div class="flex min-h-[400px] flex-col items-center justify-center py-12 text-center">
+			<div class="mb-4 flex size-20 items-center justify-center rounded-full bg-white/5">
+				<svg class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+					/>
+				</svg>
+			</div>
+			<h2 class="mb-2 text-xl font-bold">No results found</h2>
+			<p class="mb-6 max-w-md text-sm">
+				{#if debouncedQuery}
+					Try adjusting your search or filters to find what you're looking for.
+				{:else}
+					Start typing to search for events and organizations.
+				{/if}
+			</p>
+			{#if activeFilters().length > 0}
 				<button
 					type="button"
 					onclick={clearAllFilters}
-					class="cursor-pointer text-sm text-gray-400 underline transition-colors hover:text-white"
+					class="cursor-pointer rounded-lg bg-primary px-4 py-2 text-sm font-medium transition-colors hover:bg-primary/80"
 				>
-					Clear all
+					Clear Search
 				</button>
-			</div>
-		{/if}
-
-		<!-- Search Bar (ALL screen sizes) -->
-		<div class="mb-6">
-			<SearchBar
-				bind:value={searchQuery}
-				onInput={handleSearchInput}
-				onClear={handleSearchClear}
-				onFilterClick={() => (filterDialogOpen = true)}
-				autofocus={true}
-				activeFiltersCount={activeFilters().length}
-			/>
+			{/if}
 		</div>
-
-		<!-- Events Section -->
-		{#if selectedView === 'all' || selectedView === 'events'}
-			{#if filteredEvents().length > 0}
-				<section class="mb-8">
-					<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4">
-						{#each displayedEvents as event}
-							<EventCard
-								{event}
-								variant="general"
-								onclick={() => openEvent(event)}
-								onBookmark={() => toggleEventBookmark(event.id)}
-								isBookmarked={bookmarkedEvents.has(event.id)}
-							/>
-						{/each}
-					</div>
-					{#if filteredEvents().length > displayedEvents.length}
-						<div class="mt-6 text-center">
-							<button
-								type="button"
-								onclick={() => (eventRowsShown += 2)}
-								class="cursor-pointer text-sm text-gray-400 transition-colors hover:text-white hover:underline"
-							>
-								View more events ({filteredEvents().length - displayedEvents.length} remaining)
-							</button>
-						</div>
-					{/if}
-				</section>
-			{/if}
-		{/if}
-
-		<!-- Organizations Section -->
-		{#if selectedView === 'all' || selectedView === 'organizations'}
-			{#if filteredOrgs().length > 0}
-				<section class="mb-8">
-					<div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:gap-4">
-						{#each displayedOrgs as org}
-							<OrgCard organization={org} variant="general" onclick={() => openOrg(org)} />
-						{/each}
-					</div>
-					{#if filteredOrgs().length > displayedOrgs.length}
-						<div class="mt-6 text-center">
-							<button
-								type="button"
-								onclick={() => (orgRowsShown += 2)}
-								class="cursor-pointer text-sm text-gray-400 transition-colors hover:text-white hover:underline"
-							>
-								View more organizations ({filteredOrgs().length - displayedOrgs.length} remaining)
-							</button>
-						</div>
-					{/if}
-				</section>
-			{/if}
-		{/if}
-
-		<!-- Empty State -->
-		{#if (selectedView === 'all' && filteredEvents().length === 0 && filteredOrgs().length === 0) || (selectedView === 'events' && filteredEvents().length === 0) || (selectedView === 'organizations' && filteredOrgs().length === 0)}
-			<div class="flex min-h-[400px] flex-col items-center justify-center py-12 text-center">
-				<div class="mb-4 flex size-20 items-center justify-center rounded-full bg-white/5">
-					<svg class="size-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-						/>
-					</svg>
-				</div>
-				<h2 class="mb-2 text-xl font-bold text-white">No results found</h2>
-				<p class="mb-6 max-w-md text-sm text-gray-400">
-					{#if debouncedQuery}
-						Try adjusting your search or filters to find what you're looking for.
-					{:else}
-						Start typing to search for events and organizations.
-					{/if}
-				</p>
-				{#if activeFilters().length > 0}
-					<button
-						type="button"
-						onclick={clearAllFilters}
-						class="cursor-pointer rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-700"
-					>
-						Clear Search
-					</button>
-				{/if}
-			</div>
-		{/if}
-	</div>
+	{/if}
 </div>
 
 <!-- Dialogs -->
