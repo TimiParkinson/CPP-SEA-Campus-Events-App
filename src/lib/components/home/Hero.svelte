@@ -22,7 +22,10 @@
 
 <svelte:window bind:scrollY />
 
-<section class="relative w-full overflow-hidden">
+<section
+	class="w-screen overflow-hidden"
+	style="margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%);"
+>
 	<!-- Hero wrapper -->
 	<div class="relative h-[600px] sm:h-[650px] md:h-[700px] lg:h-[750px] xl:h-[800px]">
 		<!-- Background Image -->
@@ -65,19 +68,11 @@
 					</p>
 
 					<div class="flex flex-wrap gap-4">
-						<Button
-							href="/discover"
-							size="lg"
-							class="px-8 sm:h-14 sm:px-10 sm:text-lg"
-						>
+						<Button href="/discover" size="lg" class="sm:h-14 sm:px-10 sm:text-lg">
 							<Compass class="size-5 sm:size-6" />
 							Discover
 						</Button>
-						<Button
-							href="/search"
-							size="lg"
-							class="px-8 sm:h-14 sm:px-10 sm:text-lg"
-						>
+						<Button href="/search" size="lg" variant="secondary" class="sm:h-14 sm:px-10 sm:text-lg">
 							<Calendar class="size-5 sm:size-6" />
 							Browse
 						</Button>
@@ -90,8 +85,9 @@
 		<div
 			class="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce transition-opacity duration-500"
 			style="opacity: {scrollY > 100 ? 0 : 1};"
+			aria-hidden="true"
 		>
-			<ChevronDown class="size-8 text-white/80" />
+			<ChevronDown class="size-8 text-white drop-shadow-lg" strokeWidth={2.5} />
 		</div>
 	</div>
 </section>

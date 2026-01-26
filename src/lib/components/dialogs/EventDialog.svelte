@@ -85,7 +85,7 @@
 
 <Dialog.Root {open} {onOpenChange}>
 	<Dialog.Content
-		class="max-h-[85vh] w-[calc(100vw-2rem)] max-w-2xl gap-0 overflow-hidden overflow-y-auto p-0 sm:max-h-[90vh] sm:w-full"
+		class="max-h-[85vh] w-[calc(100vw-4rem)] max-w-2xl gap-0 overflow-hidden overflow-y-auto border-0 p-0 sm:max-h-[90vh] sm:w-full"
 	>
 		{#if event}
 			<!-- Event Image/Gradient-->
@@ -111,27 +111,22 @@
 						<!-- RSVP  -->
 						<Button
 							onclick={handleRSVPClick}
-							class="h-9 cursor-pointer px-3 text-xs shadow-lg sm:h-10 sm:px-4 sm:text-sm"
+							class="h-9 cursor-pointer bg-primary px-3 text-xs shadow-lg sm:h-10 sm:px-4 sm:text-sm"
 						>
 							RSVP
 						</Button>
 
 						<!-- Bookmark Button -->
-						<BookmarkButton
-							{isBookmarked}
-							onclick={handleBookmarkClick}
-							size="dialog"
-							class="size-10 border bg-background shadow-lg sm:size-11"
-						/>
+						<BookmarkButton {isBookmarked} onclick={handleBookmarkClick} variant="secondary" />
 					</div>
 
 					<!-- Attendee Count -->
 					{#if event.attendeeCount}
 						<div
-							class="flex h-9 items-center gap-1 rounded-lg border bg-black px-2 text-xs font-medium whitespace-nowrap shadow-lg sm:h-10 sm:gap-1.5 sm:px-2.5 sm:text-sm md:px-4"
+							class="flex h-9 items-center gap-1 rounded-lg border bg-background px-2 text-xs font-medium whitespace-nowrap shadow-lg sm:h-10 sm:gap-1.5 sm:px-2.5 sm:text-sm md:px-4"
 						>
 							<Users class="size-3 shrink-0 sm:size-3.5 md:size-4" />
-							<span class="text-white">{event.attendeeCount}</span>
+							<span>{event.attendeeCount}</span>
 						</div>
 					{/if}
 				</div>
@@ -215,11 +210,7 @@
 				</div>
 
 				<!-- View Full Event Page -->
-				<Button
-					onclick={handleViewFullEvent}
-					variant="outline"
-					class="w-full cursor-pointer py-5 text-xs sm:py-6 sm:text-sm"
-				>
+				<Button onclick={handleViewFullEvent} class="w-full text-xs shadow sm:py-6 sm:text-sm">
 					View Full Event Details
 				</Button>
 			</div>

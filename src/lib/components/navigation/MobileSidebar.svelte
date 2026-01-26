@@ -60,9 +60,9 @@
 </script>
 
 <!-- Sidebar Content -->
-<div class="flex h-full flex-col">
+<div class="flex h-full flex-col px-5">
 	<!-- Logo Section -->
-	<div class="shrink-0 p-6">
+	<div class="shrink-0 pt-12">
 		<a href="/" class="flex items-center gap-3" onclick={onClose}>
 			<div
 				class="flex size-14 items-center justify-center rounded-xl bg-linear-to-br from-slate-700 to-slate-800 shadow-lg"
@@ -98,15 +98,13 @@
 			</div>
 			<div class="flex flex-col">
 				<span class="text-xl font-bold">Campus Events</span>
-				<span class="text-sm text-accent-foreground">Your Campus Hub</span>
+				<span class="text-sm">Your Campus Hub</span>
 			</div>
 		</a>
 	</div>
 
-	<Separator class="bg-accent-foreground/10" />
-
 	<!-- Search Bar -->
-	<div class="shrink-0 p-4">
+	<div class="shrink-0 py-8">
 		<div class="relative">
 			<Search class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
 			<input
@@ -114,15 +112,13 @@
 				bind:value={searchQuery}
 				oninput={handleSearchInput}
 				placeholder="Search events, clubs..."
-				class="w-full rounded-lg border border-accent-foreground/10 bg-accent/25 py-3 pr-4 pl-9 text-sm placeholder-accent-foreground transition-all focus:border-accent-foreground/20 focus:bg-accent/60 focus:outline-none"
+				class="w-full rounded-lg bg-accent/60 py-3 pr-4 pl-9 text-sm placeholder-current/80 transition-all focus:border-accent-foreground/20 focus:bg-accent/60 focus:outline-none"
 			/>
 		</div>
 	</div>
 
-	<Separator class="bg-accent-foreground/10" />
-
 	<!-- Quick Links -->
-	<div class="shrink-0 px-4 py-6">
+	<div class="shrink-0">
 		<h3 class="text-md mb-2 px-2 font-semibold tracking-wider uppercase">Quick Links</h3>
 		<nav class="space-y-1">
 			{#each quickLinks as link}
@@ -130,8 +126,8 @@
 				<button
 					type="button"
 					onclick={() => handleNavigation(link.path)}
-					class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-accent/45
-					{currentPath === link.path && 'bg-accent/45 font-semibold'}"
+					class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-accent/45 hover:dark:bg-current/10
+					{currentPath === link.path && 'bg-accent/45 font-semibold dark:bg-current/10'}"
 				>
 					<Icon class="size-5 shrink-0" />
 					<span>{link.name}</span>
@@ -140,10 +136,8 @@
 		</nav>
 	</div>
 
-	<Separator class="bg-accent-foreground/10" />
-
 	<!-- Main Navigation Links -->
-	<div class="min-h-0 flex-1 overflow-y-auto px-4 py-6">
+	<div class="min-h-0 flex-1 overflow-y-auto pt-6">
 		<h3 class="text-md mb-2 px-2 font-semibold tracking-wider uppercase">Explore</h3>
 		<nav class="space-y-1">
 			{#each routesWithIcons as route}
@@ -151,8 +145,8 @@
 				<button
 					type="button"
 					onclick={() => handleNavigation(route.path)}
-					class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-accent/45
-					{currentPath === route.path && 'bg-accent/45 font-semibold'}"
+					class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm transition-all hover:bg-accent/45 hover:dark:bg-current/10
+					{currentPath === route.path && 'bg-accent/45 font-semibold dark:bg-current/10'}"
 				>
 					{#if Icon}
 						<Icon class="size-5 shrink-0" />
@@ -163,15 +157,15 @@
 		</nav>
 	</div>
 
-	<Separator class="bg-accent-foreground/10" />
-
 	<!-- Account Section -->
-	<div class="shrink-0 p-4">
+	<div class="shrink-0 py-4">
 		<Popover.Root bind:open={accountMenuOpen}>
 			<Popover.Trigger
-				class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left transition-all hover:bg-accent/40 focus:outline-none"
+				class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left transition-all hover:bg-accent/45 focus:outline-none hover:dark:bg-current/10"
 			>
-				<div class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-accent/50">
+				<div
+					class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-accent/50 dark:bg-current/20"
+				>
 					{#if isLoggedIn && userAvatar}
 						<img src={userAvatar} alt="User" class="size-12 rounded-full object-cover" />
 					{:else}
@@ -182,7 +176,7 @@
 					<p class="text-base font-semibold">
 						{isLoggedIn ? 'My Account' : 'Sign In'}
 					</p>
-					<p class="text-xs text-accent-foreground">
+					<p class="text-xs">
 						{isLoggedIn ? 'Manage your profile' : 'Get started today'}
 					</p>
 				</div>
@@ -194,7 +188,7 @@
 			</Popover.Trigger>
 
 			<Popover.Content
-				class="z-100 w-56 border-accent/10 bg-accent/25 backdrop-blur-xl"
+				class="z-100 w-53 border-accent/10 bg-accent/25 backdrop-blur-xl text-center"
 				side="top"
 				align="start"
 				sideOffset={8}

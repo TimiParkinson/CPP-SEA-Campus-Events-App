@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { User, Settings, Moon, Sun, LogOut, LogIn, type Icon as IconType } from '@lucide/svelte';
 	import { mode, toggleMode } from 'mode-watcher';
-	import Separator from '../ui/separator/separator.svelte';
 	import Switch from '../ui/switch/switch.svelte';
 
 	interface Props {
@@ -21,7 +20,7 @@
 	<button
 		type="button"
 		{onclick}
-		class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-2.5 transition-colors hover:bg-accent-foreground/10 {styling}"
+		class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-2.5 transition-colors hover:bg-accent/45 hover:dark:bg-current/10 {styling}"
 	>
 		<Icon strokeWidth={2} class="size-4" />
 		<span>{name}</span>
@@ -36,7 +35,7 @@
 
 	<!-- Theme Toggle -->
 	<div
-		class="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-2.5 transition-colors hover:bg-accent-foreground/10"
+		class="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-2.5 transition-colors hover:bg-accent/45 hover:dark:bg-current/10"
 		onclick={toggleMode}
 		onkeydown={(e) => (e.key === 'Enter' || e.key === '') && toggleMode()}
 		role="button"
@@ -63,10 +62,8 @@
 		/>
 	</div>
 
-	<Separator class="my-2 bg-accent-foreground/10" />
-
 	{#if isLoggedIn}
-		{@render MenuOption('Logout', handleLogout, LogOut, 'text-red-400 hover:bg-red-500/10')}
+		{@render MenuOption('Logout', handleLogout, LogOut, 'text-red-600 hover:bg-red-500/10')}
 	{:else}
 		{@render MenuOption('Sign In', () => handleNavigation('/signin'), LogIn)}
 	{/if}

@@ -103,7 +103,7 @@
 							class="rounded-lg px-3 py-2 text-base transition-all duration-200 {currentPath ===
 							route.path
 								? 'font-bold'
-								: 'font-normal text-gray-300 hover:font-semibold hover:text-white'}"
+								: 'hover:font-bold'}"
 						>
 							{route.name}
 						</a>
@@ -116,7 +116,7 @@
 				<!-- Search -->
 				<a
 					href="/search"
-					class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white"
+					class="flex size-10 cursor-pointer items-center justify-center rounded-lg duration-200"
 					aria-label="Search"
 				>
 					<Search class="size-5" />
@@ -125,7 +125,7 @@
 				<!-- Account Dropdown -->
 				<DropdownMenu.Root>
 					<DropdownMenu.Trigger
-						class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-gray-300 transition-colors duration-200 hover:text-white focus:outline-none"
+						class="flex size-10 cursor-pointer items-center justify-center rounded-lg duration-200 focus:outline-none"
 					>
 						{#if isLoggedIn && userAvatar}
 							<!-- User has profile picture from OAuth -->
@@ -133,7 +133,7 @@
 						{:else if isLoggedIn}
 							<!-- Logged in but no avatar - show colored circle with initials fallback -->
 							<div
-								class="flex size-8 items-center justify-center rounded-full bg-purple-600 text-xs font-semibold text-white"
+								class="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold"
 							>
 								{session?.user?.email?.charAt(0).toUpperCase() || 'U'}
 							</div>
@@ -142,7 +142,10 @@
 							<User class="size-5" />
 						{/if}
 					</DropdownMenu.Trigger>
-					<DropdownMenu.Content class="w-56 border bg-background/60 backdrop-blur-md" align="end">
+					<DropdownMenu.Content
+						class="w-56 border-accent/10 bg-border/50 backdrop-blur-sm"
+						align="end"
+					>
 						<AccountMenu {isLoggedIn} {handleLogout} />
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>

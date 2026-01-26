@@ -101,7 +101,7 @@
 	<title>{event.title} - Campus Events</title>
 </svelte:head>
 
-<div class="min-h-screen bg-black">
+<div class="min-h-screen">
 	<!-- Banner -->
 	<div class="relative h-64 overflow-hidden sm:h-80 md:h-96">
 		<!-- Background Image/Gradient -->
@@ -142,7 +142,7 @@
 	<!-- Primary CTA -->
 	<div class="relative px-4 sm:px-6 lg:px-8">
 		<div class="container mx-auto max-w-4xl">
-			<div class="flex -translate-y-5 items-end justify-between gap-3 sm:gap-4">
+			<div class="flex -translate-y-6 items-end justify-between gap-3 sm:gap-4">
 				<!-- Hosts -->
 				<div class="relative">
 					{#if event.organizations && event.organizations.length === 1}
@@ -150,7 +150,7 @@
 						<button
 							type="button"
 							onclick={() => handleOrgClick(event.organizations![0].id)}
-							class="group flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/20 bg-black/80 px-3 shadow-lg backdrop-blur-sm transition-colors hover:bg-black/90 sm:h-11 sm:gap-3 sm:px-4"
+							class="group flex h-10 cursor-pointer items-center gap-2 rounded-lg border bg-popover/90 px-3 transition-colors hover:text-accent-foreground sm:h-11 sm:gap-3 sm:px-4"
 						>
 							{#if event.organizations![0].logoUrl}
 								<img
@@ -160,16 +160,16 @@
 								/>
 							{:else}
 								<div
-									class="flex size-7 shrink-0 items-center justify-center rounded-full"
+									class="flex size-7 shrink-0 items-center justify-center rounded-full text-accent"
 									style="background: {getRandomGradient(event.organizations![0].id)};"
 								>
-									<span class="text-[10px] font-bold text-white">
+									<span class="text-[10px] font-bold">
 										{generateAbbreviation(event.organizations![0].name)}
 									</span>
 								</div>
 							{/if}
 							<span
-								class="hidden text-sm font-semibold whitespace-nowrap text-white transition-opacity group-hover:opacity-80 sm:inline sm:text-base"
+								class="hidden text-sm font-semibold whitespace-nowrap transition-opacity group-hover:opacity-80 sm:inline sm:text-base"
 							>
 								{hostsDisplay()}
 							</span>
@@ -178,7 +178,7 @@
 						<!-- Multiple Organizations -->
 						<Popover.Root bind:open={hostsMenuOpen}>
 							<Popover.Trigger
-								class="group flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/20 bg-black/80 px-3 shadow-lg backdrop-blur-sm transition-colors hover:bg-black/90 sm:h-11 sm:gap-3 sm:px-4"
+								class="group flex h-10 cursor-pointer items-center gap-2 rounded-lg border bg-popover/90 px-3 transition-colors hover:text-accent-foreground sm:h-11 sm:gap-3 sm:px-4"
 							>
 								<!-- Logos -->
 								<div class="flex shrink-0 -space-x-4">
@@ -187,15 +187,15 @@
 											<img
 												src={org.logoUrl}
 												alt={org.name}
-												class="size-7 rounded-full border-2 border-black object-cover"
+												class="size-7 rounded-full border-2 object-cover"
 												style="z-index: {3 - i}"
 											/>
 										{:else}
 											<div
-												class="flex size-7 items-center justify-center rounded-full border-2 border-black"
+												class="flex size-7 items-center justify-center rounded-full border-2"
 												style="background: {getRandomGradient(org.id)}; z-index: {3 - i}"
 											>
-												<span class="text-[10px] font-bold text-white">
+												<span class="text-[10px] font-bold text-accent">
 													{generateAbbreviation(org.name)}
 												</span>
 											</div>
@@ -203,7 +203,7 @@
 									{/each}
 								</div>
 								<span
-									class="hidden text-sm font-semibold whitespace-nowrap text-white transition-opacity group-hover:opacity-80 sm:inline sm:text-base"
+									class="hidden text-sm font-semibold whitespace-nowrap transition-opacity group-hover:opacity-80 sm:inline sm:text-base"
 								>
 									{hostsDisplay()}
 								</span>
@@ -232,12 +232,12 @@
 													class="flex size-10 shrink-0 items-center justify-center rounded-full"
 													style="background: {getRandomGradient(org.id)};"
 												>
-													<span class="text-sm font-bold text-white">
+													<span class="text-sm font-bold text-accent">
 														{generateAbbreviation(org.name)}
 													</span>
 												</div>
 											{/if}
-											<span class="min-w-0 flex-1 truncate text-sm font-medium text-white">
+											<span class="min-w-0 flex-1 truncate text-sm font-medium text-accent">
 												{org.name}
 											</span>
 										</button>
@@ -251,18 +251,13 @@
 				<!-- Actions -->
 				<div class="flex shrink-0 items-center gap-2 sm:gap-3">
 					<!-- Bookmark -->
-					<BookmarkButton
-						{isBookmarked}
-						onclick={toggleBookmark}
-						size="dialog"
-						class="size-10 border border-white/20 bg-background shadow-lg sm:size-11"
-					/>
+					<BookmarkButton {isBookmarked} onclick={toggleBookmark} variant="secondary" />
 
 					<!-- RSVP -->
 					<Button
 						onclick={handleRSVP}
 						size="lg"
-						class="h-10 cursor-pointer px-4 text-sm shadow-lg sm:h-11 sm:px-6 sm:text-base"
+						class="cursor-pointer px-4 text-sm shadow-lg sm:px-6 sm:text-base"
 					>
 						RSVP
 					</Button>
@@ -276,7 +271,7 @@
 		<!-- Event Header -->
 		<div class="mb-6">
 			<!-- Title -->
-			<h1 class="mb-3 text-3xl leading-tight font-bold text-white sm:text-4xl md:text-5xl">
+			<h1 class="mb-3 text-3xl leading-tight font-bold sm:text-4xl md:text-5xl">
 				{event.title}
 			</h1>
 
@@ -367,19 +362,14 @@
 
 		<!-- Event Description -->
 		<div class="mb-8">
-			<h2 class="mb-4 text-xl font-bold text-white sm:text-2xl">About Event</h2>
-			<p class="text-sm leading-relaxed text-gray-300 sm:text-base">
+			<h2 class="mb-4 text-xl font-bold sm:text-2xl">About Event</h2>
+			<p class="text-sm leading-relaxed sm:text-base">
 				{event.description}
 			</p>
 		</div>
 
 		<!-- Send Feedback -->
-		<Button
-			onclick={handleFeedback}
-			variant="outline"
-			size="lg"
-			class="w-full cursor-pointer gap-2 sm:w-auto"
-		>
+		<Button onclick={handleFeedback} variant="secondary" size="lg" class="w-full gap-2 sm:w-auto">
 			<Send class="size-4" />
 			Send Feedback
 		</Button>

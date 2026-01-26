@@ -19,12 +19,10 @@
 	];
 </script>
 
-<div class="flex min-h-screen flex-col">
+<div class="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8">
 	<Navbar {routes} {currentPath} session={data.session} />
 
-	<main class="flex-1">
-		{@render children()}
-	</main>
+	{@render children()}
 
 	<Footer />
 </div>

@@ -41,10 +41,10 @@
 	});
 </script>
 
-<div class="relative inline-flex rounded-lg bg-white/5 p-1 backdrop-blur-sm">
+<div class="relative inline-flex rounded-lg bg-card p-1 shadow-xl dark:bg-accent">
 	<!-- Sliding background indicator -->
 	<div
-		class="absolute inset-y-1 rounded-md bg-white/10 transition-all duration-300 ease-out"
+		class="absolute inset-y-1 rounded-md bg-muted-foreground/20 transition-all duration-300 ease-out dark:bg-muted"
 		style="left: {indicatorStyle.left}; width: {indicatorStyle.width};"
 	></div>
 
@@ -54,8 +54,8 @@
 			bind:this={tabRefs[i]}
 			type="button"
 			onclick={() => onSelect(tab.value)}
-			class="relative z-10 cursor-pointer rounded-md px-6 py-2 text-sm font-medium transition-colors duration-200 sm:px-8 sm:text-base
-			       {selected === tab.value ? 'text-white' : 'text-gray-400 hover:text-gray-300'}"
+			class="relative z-10 cursor-pointer rounded-md p-2 px-5 text-sm font-semibold transition-colors duration-200 sm:text-base
+			{selected !== tab.value && 'text-muted-foreground hover:text-foreground'}"
 		>
 			{tab.label}
 		</button>
