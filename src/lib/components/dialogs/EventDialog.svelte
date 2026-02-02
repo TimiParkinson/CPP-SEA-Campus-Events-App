@@ -195,30 +195,31 @@
 					{#if event.organizations && event.organizations.length > 0}
 						{@const display = orgsDisplay()}
 						{#if display}
-							{#if display.display === 'count'}
-								<Detail icon={Users} label="Organization" value={display.displayNames[0]} />
-							{:else}
-								<Detail icon={Users} label="Organization">
-									<div class="flex flex-col gap-0.5">
-										{#each event.organizations.slice(0, 3) as org, i}
-											<div>
-												<button
-													onclick={() => handleOrgClick(org.id)}
-													title={org.name}
-													class="inline w-fit cursor-pointer text-left wrap-break-word transition-opacity hover:underline hover:opacity-80"
-												>
-													{display.displayNames[i]}
-												</button>{#if i < 2 || event.organizations.length > 3}<span>,</span>{/if}
-											</div>
-										{/each}
-										{#if event.organizations.length > 3}
-											<span class="text-muted-foreground"
-												>and {event.organizations.length - 3} more!</span
+							<Detail
+								icon={Users}
+								label={event.organizations.length > 1 ? 'Organizations' : 'Organization'}
+							>
+								<div class="flex flex-col gap-0.5">
+									{#each event.organizations.slice(0, 3) as org, i}
+										<div>
+											<button
+												onclick={() => handleOrgClick(org.id)}
+												title={org.name}
+												class="inline w-fit cursor-pointer text-left wrap-break-word transition-opacity hover:underline hover:opacity-80"
 											>
-										{/if}
-									</div>
-								</Detail>
-							{/if}
+												{display.displayNames[i]}
+											</button>{#if i < Math.min(event.organizations.length, 3) - 1 || event.organizations.length > 3}<span
+													>,</span
+												>{/if}
+										</div>
+									{/each}
+									{#if event.organizations.length > 3}
+										<span class="text-muted-foreground"
+											>and {event.organizations.length - 3} more!</span
+										>
+									{/if}
+								</div>
+							</Detail>
 						{/if}
 					{/if}
 				</div>

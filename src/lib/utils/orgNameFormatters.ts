@@ -75,7 +75,7 @@ export function formatOrgsForDisplay(orgs: Organization[], maxLength: number = 5
  * Format display for organization list (for event dialog)
  */
 export function formatOrgsForDialog(orgs: Organization[]): {
-	display: 'full' | 'abbreviated' | 'count';
+	display: 'full';
 	displayNames: string[];
 } {
 	if (orgs.length === 0) {
