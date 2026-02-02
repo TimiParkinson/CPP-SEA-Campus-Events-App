@@ -16,7 +16,7 @@ export function generateAbbreviation(name: string): string {
 }
 
 interface OrgDisplay {
-	display: 'full' | 'abbreviation' | 'count';
+	display: 'full' | 'abbreviated' | 'count';
 	text: string;
 	showMenu?: boolean;
 	organizations?: Organization[];
@@ -26,7 +26,7 @@ interface OrgDisplay {
  * Format display for organization list (for event page)
  * @param maxLength Length constriction for org names
  */
-export function formatOrgsForDisplay(orgs: Organization[], maxLength = 50): OrgDisplay {
+export function formatOrgsForDisplay(orgs: Organization[], maxLength: number = 50): OrgDisplay {
 	if (orgs.length === 0) {
 		return { display: 'full', text: '' };
 	}
@@ -35,22 +35,34 @@ export function formatOrgsForDisplay(orgs: Organization[], maxLength = 50): OrgD
 		return { display: 'full', text: orgs[0].name };
 	}
 
-	// Display full names
-	const fullNames = orgs.map((org) => org.name).join(', ');
-	if (fullNames.length <= maxLength) {
-		return { display: 'full', text: fullNames, organizations: orgs };
+	// 2-3 orgs
+	if (orgs.length <= 3) {
+		// Display full names
+		const fullNames = orgs.map((org) => org.name).join(', ');
+		if (fullNames.length <= maxLength) {
+			return { display: 'full', text: fullNames, organizations: orgs };
+		}
+
+		// Display names with abbreviations where needed
+		const shortNames = orgs
+			.map((org) => {
+				// Abbreviate if name is longer than 20 chars
+				return org.name.length > 20 ? org.abbreviation || generateAbbreviation(org.name) : org.name;
+			})
+			.join(', ');
+		if (shortNames.length <= maxLength) {
+			return { display: 'abbreviated', text: shortNames, organizations: orgs };
+		}
+
+		// Display all as abbreviations
+		const abbreviatedNames = orgs
+			.map((org) => org.abbreviation || generateAbbreviation(org.name))
+			.join(', ');
+
+		return { display: 'abbreviated', text: abbreviatedNames, organizations: orgs };
 	}
 
-	// Display abbreviations
-	const abbrevNames = orgs
-		.map((org) => org.abbreviation || generateAbbreviation(org.name))
-		.join(', ');
-
-	if (abbrevNames.length <= maxLength) {
-		return { display: 'abbreviation', text: abbrevNames, organizations: orgs };
-	}
-
-	// Fallback to count display
+	// 4+ orgs
 	return {
 		display: 'count',
 		text: `Hosted by ${orgs.length} Organizations`,
@@ -61,39 +73,30 @@ export function formatOrgsForDisplay(orgs: Organization[], maxLength = 50): OrgD
 
 /**
  * Format display for organization list (for event dialog)
- * @param maxLines Lines constriction for org names
  */
-export function formatOrgsForDialog(orgs: Organization[], maxLines: number = 3): OrgDisplay {
+export function formatOrgsForDialog(orgs: Organization[]): {
+	display: 'full' | 'abbreviated' | 'count';
+	displayNames: string[];
+} {
 	if (orgs.length === 0) {
-		return { display: 'full', text: '' };
+		return { display: 'full', displayNames: [] };
 	}
 
 	if (orgs.length === 1) {
-		return { display: 'full', text: orgs[0].name };
+		return { display: 'full', displayNames: [orgs[0].name] };
 	}
 
-	const charsPerLine = 35;
-	const maxLength = maxLines * charsPerLine;
+	// Display up to 3 org names (abbreviated if too long)
+	const displayOrgs = orgs.slice(0, 3);
+	const displayNames = displayOrgs.map((org) => {
+		if (org.name.length > 28) {
+			return org.abbreviation || generateAbbreviation(org.name);
+		}
+		return org.name;
+	});
 
-	// Display full names
-	const fullNames = orgs.map((org) => org.name).join(', ');
-	if (fullNames.length <= maxLength) {
-		return { display: 'full', text: fullNames, organizations: orgs };
-	}
-
-	// Display abbreviations
-	const abbreviatedNames = orgs
-		.map((org) => org.abbreviation || generateAbbreviation(org.name))
-		.join(', ');
-
-	if (abbreviatedNames.length <= maxLength) {
-		return { display: 'abbreviation', text: abbreviatedNames, organizations: orgs };
-	}
-
-	// Fallback to count
 	return {
-		display: 'count',
-		text: `Hosted by ${orgs.length} Organizations`,
-		organizations: orgs
+		display: 'full',
+		displayNames
 	};
 }
