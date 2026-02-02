@@ -23,7 +23,7 @@
 <svelte:window bind:scrollY />
 
 <section
-	class="w-screen overflow-hidden"
+	class="w-screen overflow-hidden mb-12"
 	style="margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%);"
 >
 	<!-- Hero wrapper -->
