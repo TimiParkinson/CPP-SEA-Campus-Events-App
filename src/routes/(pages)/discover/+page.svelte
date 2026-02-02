@@ -1,16 +1,13 @@
 <script lang="ts">
 	import TabSwitcher from '$lib/components/discover/TabSwitcher.svelte';
-	import CategoryRow from '$lib/components/discover/CategoryRow.svelte';
 	import Featured from '$lib/components/cards/Featured.svelte';
 	import EventCard from '$lib/components/cards/EventCard.svelte';
 	import OrgCard from '$lib/components/cards/OrgCard.svelte';
 	import EventDialog from '$lib/components/dialogs/EventDialog.svelte';
 	import OrgDialog from '$lib/components/dialogs/OrgDialog.svelte';
-
-	// Import types
+	import ScrollRow from '$lib/components/shared/ScrollRow.svelte';
 	import type { Event, Organization } from '$lib/types/index.js';
 
-	// Receive data from +page.server.ts
 	let { data } = $props();
 	const orgsData = data.organizations;
 	const eventData = data.events;
@@ -31,7 +28,6 @@
 	// Organize events by tag
 	const eventsByTag = $derived(() => {
 		const map = new Map<string, Event[]>();
-
 		eventData.forEach((event) => {
 			event.tags?.forEach((tag) => {
 				if (!map.has(tag.name)) {
@@ -40,14 +36,12 @@
 				map.get(tag.name)!.push(event);
 			});
 		});
-
 		return map;
 	});
 
 	// Organize orgs by category
 	const orgsByCategory = $derived(() => {
 		const map = new Map<string, Organization[]>();
-
 		orgsData.forEach((org) => {
 			org.categories?.forEach((category) => {
 				const key = category.name.toLowerCase().replace(/\s+/g, '_');
@@ -57,15 +51,14 @@
 				map.get(key)!.push(org);
 			});
 		});
-
 		return map;
 	});
 
-	// Featured items (first 2 events, first 5 orgs)
+	// Featured items
 	const featuredEvents = $derived(eventData.slice(0, 2));
 	const featuredOrgs = $derived(orgsData.slice(0, 5));
 
-	// Helper to get display labels for event tags
+	// Helper functions
 	function getEventTagLabel(tagName: string): string {
 		const labels: Record<string, string> = {
 			workshop: 'Workshops',
@@ -80,18 +73,6 @@
 		return labels[tagName] || tagName;
 	}
 
-	// Event categories to display (from consolidated mock data)
-	const eventCategories = $derived(() => {
-		return eventTagsData
-			.map((tag) => ({
-				key: tag.name,
-				label: getEventTagLabel(tag.name),
-				color: tag.color
-			}))
-			.filter((cat) => eventsByTag().has(cat.key));
-	});
-
-	// Helper to format organization category labels
 	function getOrgCategoryLabel(categoryName: string): string {
 		const labels: Record<string, string> = {
 			academic: 'Academic',
@@ -103,7 +84,16 @@
 		return labels[categoryName] || categoryName;
 	}
 
-	// Org categories to display (from consolidated mock data)
+	const eventCategories = $derived(() => {
+		return eventTagsData
+			.map((tag) => ({
+				key: tag.name,
+				label: getEventTagLabel(tag.name),
+				color: tag.color
+			}))
+			.filter((cat) => eventsByTag().has(cat.key));
+	});
+
 	const orgCategories = $derived(() => {
 		return orgCategoriesData
 			.map((category) => ({
@@ -126,20 +116,14 @@
 	}
 
 	function toggleEventBookmark(eventId: string) {
-		if (bookmarkedEvents.has(eventId)) {
-			bookmarkedEvents.delete(eventId);
-		} else {
-			bookmarkedEvents.add(eventId);
-		}
+		bookmarkedEvents.has(eventId)
+			? bookmarkedEvents.delete(eventId)
+			: bookmarkedEvents.add(eventId);
 		bookmarkedEvents = bookmarkedEvents;
 	}
 
 	function toggleOrgBookmark(orgId: string) {
-		if (bookmarkedOrgs.has(orgId)) {
-			bookmarkedOrgs.delete(orgId);
-		} else {
-			bookmarkedOrgs.add(orgId);
-		}
+		bookmarkedOrgs.has(orgId) ? bookmarkedOrgs.delete(orgId) : bookmarkedOrgs.add(orgId);
 		bookmarkedOrgs = bookmarkedOrgs;
 	}
 
@@ -151,7 +135,6 @@
 		console.log('Join clicked');
 	}
 
-	// Navigation handlers
 	function navigateToSearchWithFilter(type: 'tag' | 'category', value: string) {
 		window.location.href = `/search?${type}=${encodeURIComponent(value)}`;
 	}
@@ -162,17 +145,14 @@
 	<meta name="description" content="Discover events and organizations on campus" />
 </svelte:head>
 
-<div class="pt-24">
-	<!-- Page Header with Tab Switcher -->
-	<div
-		class="mb-8 flex flex-col items-start gap-6 sm:mb-12 sm:flex-row sm:items-center sm:justify-between"
-	>
+<div class="pt-24 space-y-16">
+	<!-- Header -->
+	<div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
 		<div>
 			<h1 class="mb-2 text-3xl font-bold sm:text-4xl lg:text-5xl">Discover</h1>
 			<p class="text-sm sm:text-base">Explore campus events and organizations</p>
 		</div>
 
-		<!-- Tab Switcher -->
 		<TabSwitcher
 			tabs={[
 				{ value: 'events', label: 'Events' },
@@ -186,25 +166,15 @@
 	<!-- Events Tab -->
 	{#if selectedTab === 'events'}
 		<!-- Featured Events -->
-		<section class="mb-10 sm:mb-12">
-			<div class="mb-6 flex items-center justify-between sm:mb-8">
-				<h2 class="text-2xl font-bold sm:text-3xl lg:text-4xl">Featured Events</h2>
-				<a href="/search" class="group flex items-center gap-2 text-sm transition-colors">
-					<span>View all</span>
-					<span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
-				</a>
-			</div>
-			<Featured variant="events" events={featuredEvents} minimal={true} />
-		</section>
+		<Featured variant="events" events={featuredEvents} title="Featured Events" viewHref="/search" />
 
 		<!-- Event Categories -->
 		{#each eventCategories() as category}
 			{@const categoryEvents = eventsByTag().get(category.key) || []}
 			{#if categoryEvents.length > 0}
 				<div class="mb-10 sm:mb-12">
-					<CategoryRow
+					<ScrollRow
 						title={category.label}
-						cardType="event"
 						onTitleClick={() => navigateToSearchWithFilter('tag', category.key)}
 					>
 						{#each categoryEvents as event (event.id)}
@@ -216,7 +186,7 @@
 								isBookmarked={bookmarkedEvents.has(event.id)}
 							/>
 						{/each}
-					</CategoryRow>
+					</ScrollRow>
 				</div>
 			{/if}
 		{/each}
@@ -225,31 +195,28 @@
 	<!-- Organizations Tab -->
 	{#if selectedTab === 'organizations'}
 		<!-- Featured Organizations -->
-		<section class="mb-10 sm:mb-12">
-			<div class="mb-6 flex items-center justify-between sm:mb-8">
-				<h2 class="text-2xl font-bold sm:text-3xl lg:text-4xl">Featured Organizations</h2>
-				<a href="/search" class="group flex items-center gap-2 text-sm transition-colors">
-					<span>View all</span>
-					<span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
-				</a>
-			</div>
-			<Featured variant="orgs" organizations={featuredOrgs} minimal={true} />
-		</section>
+		<Featured
+			variant="orgs"
+			organizations={featuredOrgs}
+			title="Featured Organizations"
+			viewHref="/search"
+		/>
 
 		<!-- Org Categories -->
 		{#each orgCategories() as category}
 			{@const categoryOrgs = orgsByCategory().get(category.key) || []}
 			{#if categoryOrgs.length > 0}
 				<div class="mb-10 sm:mb-12">
-					<CategoryRow
+					<ScrollRow
 						title={category.label}
-						cardType="org"
 						onTitleClick={() => navigateToSearchWithFilter('category', category.key)}
 					>
 						{#each categoryOrgs as org (org.id)}
-							<OrgCard organization={org} variant="general" onclick={() => openOrg(org)} />
+							<div class="w-44 shrink-0 sm:w-48 md:w-52">
+								<OrgCard organization={org} variant="general" onclick={() => openOrg(org)} />
+							</div>
 						{/each}
-					</CategoryRow>
+					</ScrollRow>
 				</div>
 			{/if}
 		{/each}
