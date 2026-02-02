@@ -75,7 +75,7 @@
 </script>
 
 <section>
-	<div class="mb-4 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+	<div class="mb-4 flex flex-row items-center justify-between gap-3">
 		<h2 class="text-2xl font-bold sm:text-3xl lg:text-4xl">
 			{title ?? defaultTitle}
 		</h2>
@@ -84,7 +84,7 @@
 			href={viewHref}
 			class="group flex items-center gap-2 text-sm font-medium transition-colors hover:text-primary"
 		>
-			<span>{viewText}</span>
+			<span class="hidden sm:inline">{viewText}</span>
 			<ArrowRight class="size-4 transition-transform group-hover:translate-x-1" />
 		</a>
 	</div>
