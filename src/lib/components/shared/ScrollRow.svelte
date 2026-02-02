@@ -60,7 +60,7 @@
 	<div class="-mx-4 sm:-mx-6 lg:-mx-8">
 		<div
 			bind:this={scrollContainer}
-			class="scrollbar-hide flex gap-4 overflow-x-auto py-4 sm:px-6 lg:px-8"
+			class="scrollbar-hide flex gap-4 overflow-x-auto py-4 px-6 lg:px-8"
 		>
 			{@render children()}
 		</div>
