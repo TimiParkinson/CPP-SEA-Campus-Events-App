@@ -145,7 +145,7 @@
 	<meta name="description" content="Discover events and organizations on campus" />
 </svelte:head>
 
-<div class="pt-24 space-y-16">
+<div class="space-y-16 pt-24">
 	<!-- Header -->
 	<div class="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
 		<div>
@@ -178,13 +178,15 @@
 						onTitleClick={() => navigateToSearchWithFilter('tag', category.key)}
 					>
 						{#each categoryEvents as event (event.id)}
-							<EventCard
-								{event}
-								variant="general"
-								onclick={() => openEvent(event)}
-								onBookmark={() => toggleEventBookmark(event.id)}
-								isBookmarked={bookmarkedEvents.has(event.id)}
-							/>
+							<div class="w-44 shrink-0 sm:w-48 md:w-52">
+								<EventCard
+									{event}
+									variant="general"
+									onclick={() => openEvent(event)}
+									onBookmark={() => toggleEventBookmark(event.id)}
+									isBookmarked={bookmarkedEvents.has(event.id)}
+								/>
+							</div>
 						{/each}
 					</ScrollRow>
 				</div>
