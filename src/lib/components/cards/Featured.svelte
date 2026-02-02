@@ -104,7 +104,7 @@
 	{:else if variant === 'orgs' && organizations}
 		<ScrollRow showArrows={false}>
 			{#each organizations as organization (organization.id)}
-				<div class="w-32 shrink-0 sm:w-36 md:w-40 lg:w-44">
+				<div class="w-32 shrink-0 sm:w-36 md:w-40 lg:w-50">
 					<OrgCard {organization} variant="featured" onclick={() => openOrg(organization)} />
 				</div>
 			{/each}
