@@ -41,7 +41,7 @@
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
-		"@internationalized/date": "^3.9.0",
+		"@internationalized/date": "^3.10.1",
 		"@lucide/svelte": "^0.544.0",
 		"@sveltejs/adapter-vercel": "^5.10.2",
 		"@sveltejs/kit": "^2.43.5",
@@ -52,7 +52,7 @@
 		"@tailwindcss/vite": "^4.0.0",
 		"@types/node": "^22",
 		"@vitest/browser": "^3.2.3",
-		"bits-ui": "^2.11.4",
+		"bits-ui": "^2.15.5",
 		"clsx": "^2.1.1",
 		"drizzle-kit": "^0.30.6",
 		"drizzle-orm": "^0.40.1",
