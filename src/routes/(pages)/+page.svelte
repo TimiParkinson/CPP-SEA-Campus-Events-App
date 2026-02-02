@@ -3,7 +3,6 @@
 	import CTA from '$lib/components/home/CTA.svelte';
 	import Featured from '$lib/components/cards/Featured.svelte';
 
-	// Receive data from +page.server.ts
 	let { data } = $props();
 	const featuredOrgs = data.featuredOrgs;
 	const featuredEvents = data.featuredEvents;
@@ -18,6 +17,18 @@
 </svelte:head>
 
 <Hero />
-<Featured variant="orgs" organizations={featuredOrgs} />
-<Featured variant="events" events={featuredEvents} />
-<CTA />
+<div class="space-y-6 sm:space-y-12">
+	<Featured
+		variant="orgs"
+		organizations={featuredOrgs}
+		viewText="Discover more orgs"
+		viewHref="/discover"
+	/>
+	<Featured
+		variant="events"
+		events={featuredEvents}
+		viewText="Discover more events"
+		viewHref="/discover"
+	/>
+	<CTA />
+</div>
