@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Menu, Search, User } from '@lucide/svelte';
+	import { goto } from '$app/navigation';
 	import { supabaseBrowser } from '$lib/supabaseClient.js';
 	import * as DropdownMenu from '../ui/dropdown-menu/index.js';
 	import * as Sheet from '../ui/sheet/index.js';
@@ -29,7 +30,7 @@
 
 	async function handleLogout() {
 		await supabaseBrowser.auth.signOut();
-		window.location.href = '/';
+		await goto('/', { invalidateAll: true });
 	}
 </script>
 

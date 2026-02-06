@@ -53,7 +53,7 @@
 
 		// Success - redirect to home with full page reload to refresh session
 		loading = false;
-		window.location.href = '/';
+		await goto('/', { invalidateAll: true });
 	}
 
 	async function handleOAuthSignIn(provider: 'google' | 'microsoft') {
