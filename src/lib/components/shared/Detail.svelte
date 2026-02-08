@@ -27,7 +27,7 @@
 		{#if isInteractive}
 			<svelte:element
 				this={LinkComponent}
-				role={onclick ? 'button' : null}
+				role={href ? undefined : onclick ? 'button' : undefined}
 				{href}
 				{onclick}
 				class="block cursor-pointer text-left text-xs transition-opacity hover:underline hover:opacity-80 sm:text-sm"
