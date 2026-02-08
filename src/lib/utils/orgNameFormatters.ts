@@ -24,7 +24,7 @@ interface OrgDisplay {
 
 /**
  * Format display for organization list (for event page)
- * @param maxLength Length constriction for org names
+ * @param maxLength Length constraint for org names
  */
 export function formatOrgsForDisplay(orgs: Organization[], maxLength: number = 50): OrgDisplay {
 	if (orgs.length === 0) {
