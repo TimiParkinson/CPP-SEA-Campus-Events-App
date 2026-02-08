@@ -111,7 +111,12 @@
 						</Button>
 
 						<!-- Bookmark Button -->
-						<BookmarkButton {isBookmarked} onclick={handleBookmarkClick} variant="secondary" />
+						<BookmarkButton
+							{isBookmarked}
+							onclick={handleBookmarkClick}
+							variant="secondary"
+							class="h-9 w-9 sm:h-10 sm:w-10"
+						/>
 					</div>
 
 					<!-- Attendee Count -->

@@ -19,6 +19,12 @@
 		class: className
 	}: Props = $props();
 
+	const buttonSizes = {
+		sm: 'size-8',
+		default: 'size-9',
+		lg: 'size-14'
+	};
+
 	const iconSizes = {
 		sm: 'size-4',
 		default: 'size-5',
@@ -31,7 +37,7 @@
 	{onclick}
 	{size}
 	{variant}
-	class={cn('relative cursor-pointer border-0 shadow-lg backdrop-blur-sm', size === 'lg' ? 'py-7' : 'py-5', className)}
+	class={cn('relative cursor-pointer border-0 shadow-lg backdrop-blur-sm', buttonSizes[size], className)}
 	aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark'}
 >
 	<Bookmark

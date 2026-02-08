@@ -19,18 +19,9 @@
 	const isFeatured = $derived(variant === 'featured');
 	let gradient = $derived(getRandomGradient(event.id));
 
-	function handleTitleClick(e: MouseEvent) {
-		e.stopPropagation();
-		window.location.href = `/events/${event.id}`;
-	}
-
 	function handleBookmarkClick(e: MouseEvent) {
 		e.stopPropagation();
 		onBookmark?.();
-	}
-
-	function handleTagClick(e: MouseEvent) {
-		e.stopPropagation();
 	}
 </script>
 
@@ -64,20 +55,20 @@
 
 		<!-- Date Badge -->
 		<div
-			class="pointer-events-none absolute rounded-lg bg-background text-center backdrop-blur-sm
-			       {isFeatured
-				? 'top-4 left-4 min-w-14 px-2.5 py-2'
-				: 'top-2 left-2 min-w-9 px-1.5 py-1 @[200px]:top-3 @[200px]:left-3 @[200px]:min-w-11 @[200px]:px-2 @[200px]:py-1.5 @[280px]:min-w-[50px] @[280px]:px-2.5 @[280px]:py-2'}"
+			class="pointer-events-none absolute flex flex-col items-center justify-center rounded-lg bg-background text-center backdrop-blur-sm
+	       {isFeatured
+				? 'top-4 left-4 size-14'
+				: 'top-2 left-2 size-8 @[200px]:top-2.5 @[200px]:left-2.5 @[200px]:size-9'}"
 		>
 			<p
 				class="leading-none font-bold
-			          {isFeatured ? 'text-xl' : 'text-[11px] @[200px]:text-xs @[280px]:text-sm'}"
+	          {isFeatured ? 'text-xl' : 'text-[10px] @[200px]:text-xs'}"
 			>
 				{getDayOfMonth(event.startTime)}
 			</p>
 			<p
-				class="mt-0.5 font-medium uppercase
-			          {isFeatured ? 'mt-1 text-[10px]' : 'text-[8px] @[200px]:text-[9px] @[280px]:text-[10px]'}"
+				class="leading-none font-medium uppercase
+	          {isFeatured ? 'mt-1 text-[10px]' : 'mt-0.5 text-[7px] @[200px]:text-[8px]'}"
 			>
 				{getMonthAbbr(event.startTime)}
 			</p>
@@ -87,13 +78,14 @@
 		<div
 			class="absolute {isFeatured
 				? 'top-4 right-4'
-				: 'top-2 right-2 @[200px]:top-3 @[200px]:right-3'}"
+				: 'top-2 right-2 @[200px]:top-2.5 @[200px]:right-2.5'}"
 		>
 			<BookmarkButton
 				{isBookmarked}
 				onclick={handleBookmarkClick}
 				variant="outline"
-				size={isFeatured ? 'lg' : 'default'}
+				size={isFeatured ? 'lg' : 'sm'}
+				class={isFeatured ? '' : 'size-8 @[200px]:size-9'}
 			/>
 		</div>
 
@@ -102,12 +94,12 @@
 			class="absolute inset-x-0 bottom-0 {isFeatured ? 'p-5' : 'p-2.5 @[200px]:p-3 @[280px]:p-4'}"
 		>
 			{#if isFeatured}
-				<!-- Featured Layout: Two column on md+, single column on mobile -->
+				<!-- Featured -->
 				<div class="flex flex-col gap-3 md:flex-row md:items-end md:gap-6">
 					<div class="min-w-0 flex-1">
-						<h3 class="mb-1.5 text-xl leading-tight font-bold">
+						<p class="mb-1.5 text-xl leading-tight font-bold">
 							{event.title}
-						</h3>
+						</p>
 						{#if event.description}
 							<p class="line-clamp-2 text-sm md:max-w-md">
 								{event.description}
@@ -123,44 +115,13 @@
 					</Button>
 				</div>
 			{:else}
-				<!-- General Layout: Tags → Title → Quick Details -->
-				<!-- Tags -->
-				{#if event.tags && event.tags.length > 0}
-					<div class="mb-1 hidden flex-wrap gap-1 @[240px]:flex">
-						{#each event.tags.slice(0, 2) as tag}
-							<button
-								type="button"
-								onclick={handleTagClick}
-								class="cursor-pointer rounded-full px-1.5 py-0.5 text-[9px] font-medium transition-opacity hover:opacity-80 @[280px]:px-2 @[280px]:text-[10px]"
-								style="background-color: {tag.color}40; border: 1px solid {tag.color}80;"
-							>
-								{tag.name}
-							</button>
-						{/each}
-						{#if event.tags.length > 2}
-							<span
-								class="rounded-full bg-white/20 px-1.5 py-0.5 text-[9px] @[280px]:px-2 @[280px]:text-[10px]"
-							>
-								+{event.tags.length - 2}
-							</span>
-						{/if}
-					</div>
-				{/if}
-
-				<!-- Title -->
-				<button
-					type="button"
-					onclick={handleTitleClick}
-					class="mb-1 w-full cursor-pointer rounded text-left hover:underline focus:ring-2 focus:ring-white/50 focus:outline-none @[200px]:mb-1.5"
+				<!-- General -->
+				<p
+					class="mb-1 w-full truncate text-[11px] font-semibold @[200px]:mb-1.5 @[200px]:text-xs @[280px]:text-sm @[320px]:text-base"
 				>
-					<h3
-						class="truncate text-[11px] font-semibold @[200px]:text-xs @[280px]:text-sm @[320px]:text-base"
-					>
-						{event.title}
-					</h3>
-				</button>
+					{event.title}
+				</p>
 
-				<!-- Quick Details -->
 				<div
 					class="pointer-events-none hidden items-start gap-1.5 text-[8px] @[180px]:flex @[200px]:gap-2 @[200px]:text-[9px] @[280px]:gap-3 @[280px]:text-[10px] @[320px]:text-xs"
 				>
