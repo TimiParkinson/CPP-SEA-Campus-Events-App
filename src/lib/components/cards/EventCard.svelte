@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { MapPin, Clock, Users } from '@lucide/svelte';
 	import { getRandomGradient } from '$lib/utils/gradients.js';
 	import { formatTime, getDayOfMonth, getMonthAbbr } from '$lib/utils/dateFormatters.js';
@@ -19,6 +20,14 @@
 	const isFeatured = $derived(variant === 'featured');
 	let gradient = $derived(getRandomGradient(event.id));
 
+<<<<<<< HEAD
+=======
+	function handleTitleClick(e: MouseEvent) {
+		e.stopPropagation();
+		goto(`/events/${event.id}`);
+	}
+
+>>>>>>> 4013d59 (fix(nav): replace hard refresh navigation with goto())
 	function handleBookmarkClick(e: MouseEvent) {
 		e.stopPropagation();
 		onBookmark?.();

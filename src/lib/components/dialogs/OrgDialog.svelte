@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -62,7 +63,7 @@
 
 	function handleViewFullOrg() {
 		if (organization) {
-			window.location.href = `/organizations/${organization.id}`;
+			goto(`/organizations/${organization.id}`);
 		}
 	}
 

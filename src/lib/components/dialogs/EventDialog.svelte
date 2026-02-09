@@ -1,4 +1,9 @@
 <script lang="ts">
+<<<<<<< HEAD
+=======
+	import { goto } from '$app/navigation';
+	import { Button } from '$lib/components/ui/button/index.js';
+>>>>>>> 4013d59 (fix(nav): replace hard refresh navigation with goto())
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -42,7 +47,7 @@
 
 	function handleViewFullEvent() {
 		if (event) {
-			window.location.href = `/events/${event.id}`;
+			goto(`/events/${event.id}`);
 		}
 	}
 
