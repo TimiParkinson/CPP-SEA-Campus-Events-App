@@ -79,6 +79,7 @@
 	"dependencies": {
 		"@supabase/ssr": "^0.7.0",
 		"@supabase/supabase-js": "^2.83.0",
+		"date-fns": "^4.1.0",
 		"dotenv": "^17.2.3",
 		"mode-watcher": "^1.1.0",
 		"postgres": "^3.4.5",
