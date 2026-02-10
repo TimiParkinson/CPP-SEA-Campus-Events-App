@@ -1,19 +1,14 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { Calendar, Clock, MapPin, Users, Icon } from '@lucide/svelte';
-	import {
-		formatDateRange,
-		formatFullDate,
-		formatTimeRange,
-		isMultiDayEvent
-	} from '$lib/utils/dateFormatters.js';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import { Calendar, Clock, MapPin, Users } from '@lucide/svelte';
 	import { getRandomGradient } from '$lib/utils/gradients.js';
+	import { formatDateRange, formatTimeRange } from '$lib/utils/dateFormatters.js';
 	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
 	import Detail from '../shared/Detail.svelte';
-	import { formatMultipleOrgs } from '$lib/utils/orgNameFormatters.js';
 	import type { Event } from '$lib/types/index.js';
+	import { formatOrgsForDialog } from '$lib/utils/orgNameFormatters.js';
 
 	interface Props {
 		event: Event | null;
@@ -40,9 +35,9 @@
 		return event.description.slice(0, MAX_DESCRIPTION_DISPLAY) + '...';
 	});
 
-	let hostsDisplay = $derived(() => {
-		if (!event) return '';
-		return formatMultipleOrgs(event.organizations || [], 60);
+	const orgsDisplay = $derived(() => {
+		if (!event?.organizations) return '';
+		return formatOrgsForDialog(event.organizations);
 	});
 
 	function handleViewFullEvent() {
@@ -51,10 +46,9 @@
 		}
 	}
 
-	function handleOrgClick() {
+	function handleOrgClick(orgId: string) {
 		if (event?.organizations && event.organizations.length > 0) {
-			// TODO
-			console.log('Navigate to org:', event.organizations[0].name);
+			window.location.href = `/organizations/${orgId}`;
 		}
 	}
 
@@ -117,7 +111,12 @@
 						</Button>
 
 						<!-- Bookmark Button -->
-						<BookmarkButton {isBookmarked} onclick={handleBookmarkClick} variant="secondary" />
+						<BookmarkButton
+							{isBookmarked}
+							onclick={handleBookmarkClick}
+							variant="secondary"
+							class="h-9 w-9 sm:h-10 sm:w-10"
+						/>
 					</div>
 
 					<!-- Attendee Count -->
@@ -189,23 +188,44 @@
 						value={formatTimeRange(event.startTime, event.endTime)}
 					/>
 
-					<!-- Location (Clickable) -->
+					<!-- Location -->
 					<Detail
 						icon={MapPin}
 						label="Location"
 						value={event.location}
-						clickable={true}
 						onclick={handleLocationClick}
 					/>
 
+					<!-- Host(s) -->
 					{#if event.organizations && event.organizations.length > 0}
-						<Detail
-							icon={Users}
-							label="Organization"
-							value={hostsDisplay()}
-							clickable={true}
-							onclick={handleOrgClick}
-						/>
+						{@const display = orgsDisplay()}
+						{#if display}
+							<Detail
+								icon={Users}
+								label={event.organizations.length > 1 ? 'Organizations' : 'Organization'}
+							>
+								<div class="flex flex-col gap-0.5">
+									{#each event.organizations.slice(0, 3) as org, i}
+										<div>
+											<button
+												onclick={() => handleOrgClick(org.id)}
+												title={org.name}
+												class="inline w-fit cursor-pointer text-left wrap-break-word transition-opacity hover:underline hover:opacity-80"
+											>
+												{display.displayNames[i]}
+											</button>{#if i < Math.min(event.organizations.length, 3) - 1 || event.organizations.length > 3}<span
+													>,</span
+												>{/if}
+										</div>
+									{/each}
+									{#if event.organizations.length > 3}
+										<span class="text-muted-foreground"
+											>and {event.organizations.length - 3} more!</span
+										>
+									{/if}
+								</div>
+							</Detail>
+						{/if}
 					{/if}
 				</div>
 

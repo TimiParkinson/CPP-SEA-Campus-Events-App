@@ -1,109 +1,102 @@
-/**
- * Organization name and abbreviation utilities
- */
+import type { Organization } from '$lib/types/index.js';
 
-interface OrgLike {
-	id: string;
-	name: string;
-	abbreviation?: string | null;
-}
+const SKIP_WORDS = new Set(['of', 'the', 'and', 'for', 'at', 'in', 'on', 'to', 'a', 'an']);
 
 /**
- * Generate abbreviation from organization name.
+ * Generate abbreviation from organization name
  */
 export function generateAbbreviation(name: string): string {
-	// If name is already short (≤ 10 chars), return as-is
-	if (name.length <= 10) {
-		return name;
-	}
-
-	// Split into words, filtering out common small words
-	const skipWords = ['of', 'the', 'and', 'for', 'at', 'in', 'on'];
-	const words = name
+	// Extract first letters of significant words
+	const letters = name
 		.split(/\s+/)
-		.filter((word) => word.length > 0 && !skipWords.includes(word.toLowerCase()));
+		.filter((word) => word.length > 0 && !SKIP_WORDS.has(word.toLowerCase()));
 
-	// Take first letter of each significant word
-	const abbrev = words.map((word) => word[0].toUpperCase()).join('');
-
-	return abbrev;
+	// Join letters to form abbreviation
+	return letters.map((letter) => letter[0].toUpperCase()).join('');
 }
 
-/**
- * Get display name for organization (full name or abbreviation).
- */
-export function getOrgDisplayName(org: OrgLike, preferAbbreviation = false): string {
-	if (preferAbbreviation && org.abbreviation) {
-		return org.abbreviation;
-	}
-	if (preferAbbreviation && org.name.length > 10) {
-		return generateAbbreviation(org.name);
-	}
-	return org.name;
-}
-
-/**
- * Format multiple organization names intelligently.
- *
- * @param orgs - Array of organizations
- * @param maxLength - Maximum total character length
- * @returns Formatted string (e.g., "SEA, SheCodes" or "Hosted by 3 Organizations")
- */
-export function formatMultipleOrgs(orgs: OrgLike[], maxLength = 50): string {
-	if (orgs.length === 0) return '';
-	if (orgs.length === 1) return orgs[0].name;
-
-	// Try full names display
-	const fullNames = orgs.map((org) => org.name).join(', ');
-	if (fullNames.length <= maxLength) {
-		return fullNames;
-	}
-
-	// Try abbreviated display for long names, keep short names as-is
-	const mixedNames = orgs
-		.map((org) => {
-			// Use abbreviation if name is long (> 20 chars)
-			if (org.name.length > 20) {
-				return org.abbreviation || generateAbbreviation(org.name);
-			}
-			return org.name;
-		})
-		.join(', ');
-
-	if (mixedNames.length <= maxLength) {
-		return mixedNames;
-	}
-
-	// Try all abbreviations
-	const allAbbrevs = orgs
-		.map((org) => org.abbreviation || generateAbbreviation(org.name))
-		.join(', ');
-
-	if (allAbbrevs.length <= maxLength) {
-		return allAbbrevs;
-	}
-
-	return `Hosted by ${orgs.length} Organizations`;
-}
-
-/**
- * Format organization display with icon for UI
- * Returns object with display text and whether to show icon
- */
-export function formatOrgDisplay(
-	orgs: OrgLike[],
-	maxLength = 50
-): {
+interface OrgDisplay {
+	display: 'full' | 'abbreviated' | 'count';
 	text: string;
-	showIcon: boolean;
-	fullList?: string[];
+	showMenu?: boolean;
+	organizations?: Organization[];
+}
+
+/**
+ * Format display for organization list (for event page)
+ * @param maxLength Length constraint for org names
+ */
+export function formatOrgsForDisplay(orgs: Organization[], maxLength: number = 50): OrgDisplay {
+	if (orgs.length === 0) {
+		return { display: 'full', text: '' };
+	}
+
+	if (orgs.length === 1) {
+		return { display: 'full', text: orgs[0].name };
+	}
+
+	// 2-3 orgs
+	if (orgs.length <= 3) {
+		// Display full names
+		const fullNames = orgs.map((org) => org.name).join(', ');
+		if (fullNames.length <= maxLength) {
+			return { display: 'full', text: fullNames, organizations: orgs };
+		}
+
+		// Display names with abbreviations where needed
+		const shortNames = orgs
+			.map((org) => {
+				// Abbreviate if name is longer than 20 chars
+				return org.name.length > 20 ? org.abbreviation || generateAbbreviation(org.name) : org.name;
+			})
+			.join(', ');
+		if (shortNames.length <= maxLength) {
+			return { display: 'abbreviated', text: shortNames, organizations: orgs };
+		}
+
+		// Display all as abbreviations
+		const abbreviatedNames = orgs
+			.map((org) => org.abbreviation || generateAbbreviation(org.name))
+			.join(', ');
+
+		return { display: 'abbreviated', text: abbreviatedNames, organizations: orgs };
+	}
+
+	// 4+ orgs
+	return {
+		display: 'count',
+		text: `Hosted by ${orgs.length} Organizations`,
+		showMenu: true,
+		organizations: orgs
+	};
+}
+
+/**
+ * Format display for organization list (for event dialog)
+ */
+export function formatOrgsForDialog(orgs: Organization[]): {
+	display: 'full';
+	displayNames: string[];
 } {
-	const formatted = formatMultipleOrgs(orgs, maxLength);
-	const isGeneric = formatted.startsWith('Hosted by');
+	if (orgs.length === 0) {
+		return { display: 'full', displayNames: [] };
+	}
+
+	if (orgs.length === 1) {
+		return { display: 'full', displayNames: [orgs[0].name] };
+	}
+
+	// Display up to 3 org names (abbreviated if too long)
+	const displayOrgs = orgs.slice(0, 3);
+	const displayNames = displayOrgs.map((org) => {
+		if (org.name.length > 28) {
+			return org.abbreviation || generateAbbreviation(org.name);
+		}
+		return org.name;
+	});
 
 	return {
-		text: formatted,
-		showIcon: orgs.length > 1,
-		fullList: isGeneric ? orgs.map((o) => o.name) : undefined
+		display: 'full',
+		displayNames
 	};
 }

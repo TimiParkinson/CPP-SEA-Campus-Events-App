@@ -1,40 +1,49 @@
 <script lang="ts">
-	import { Icon, type Icon as IconType } from '@lucide/svelte';
+	import { type Icon as IconType } from '@lucide/svelte';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		icon: typeof IconType;
 		label: string;
-		value: string;
-		clickable?: boolean;
+		value?: string;
+		href?: string;
 		onclick?: () => void;
+		children?: Snippet;
 	}
 
-	let { icon, label, value, clickable = false, onclick }: Props = $props();
+	let { icon, label, value, href, onclick, children }: Props = $props();
+
+	const isInteractive = $derived(!!href || !!onclick);
+	const LinkComponent = $derived(href ? 'a' : onclick ? 'button' : 'span');
+	const IconComponent = icon;
 </script>
 
-{#if clickable}
-	{@const Icon = icon}
-	<button
-		{onclick}
-		class="-m-1 flex cursor-pointer items-center gap-2.5 rounded p-1 text-left transition-opacity hover:opacity-80 focus:ring-2 focus:ring-ring focus:outline-none sm:gap-3"
-	>
-		<Icon class="size-4 shrink-0 text-muted-foreground sm:size-5" />
-		<div class="min-w-0">
-			<h3 class="mb-0.5 text-[11px] font-medium text-muted-foreground sm:text-xs md:text-sm">
-				{label}
-			</h3>
-			<p class="text-xs wrap-break-word hover:underline sm:text-sm">{value}</p>
-		</div>
-	</button>
-{:else}
-	{@const Icon = icon}
-	<div class="flex items-center gap-2.5 sm:gap-3">
-		<Icon class="size-4 shrink-0 text-muted-foreground sm:size-5" />
-		<div class="min-w-0">
-			<h3 class="mb-0.5 text-[11px] font-medium text-muted-foreground sm:text-xs md:text-sm">
-				{label}
-			</h3>
-			<p class="text-xs sm:text-sm">{value}</p>
-		</div>
+<div class="flex items-start gap-2.5 sm:gap-3">
+	<IconComponent class="mt-0.5 size-4 shrink-0 text-muted-foreground sm:size-5" />
+	<div class="min-w-0 flex-1">
+		<h3 class="mb-0.5 text-[11px] font-medium text-muted-foreground sm:text-xs md:text-sm">
+			{label}
+		</h3>
+		{#if isInteractive}
+			<svelte:element
+				this={LinkComponent}
+				role={href ? undefined : onclick ? 'button' : undefined}
+				{href}
+				{onclick}
+				class="block cursor-pointer text-left text-xs transition-opacity hover:underline hover:opacity-80 sm:text-sm"
+			>
+				{#if children}
+					{@render children()}
+				{:else if value}
+					<span class="wrap-break-word">{value}</span>
+				{/if}
+			</svelte:element>
+		{:else if children}
+			<div class="text-left text-xs sm:text-sm">
+				{@render children()}
+			</div>
+		{:else if value}
+			<p class="text-left text-xs wrap-break-word sm:text-sm">{value}</p>
+		{/if}
 	</div>
-{/if}
+</div>

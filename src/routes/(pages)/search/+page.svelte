@@ -2,18 +2,16 @@
 	import { page } from '$app/stores';
 	import { replaceState } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { ArrowLeft, X } from '@lucide/svelte';
+	import { X } from '@lucide/svelte';
 	import SearchBar from '$lib/components/shared/SearchBar.svelte';
 	import FilterDialog from '$lib/components/dialogs/FilterDialog.svelte';
 	import EventCard from '$lib/components/cards/EventCard.svelte';
 	import OrgCard from '$lib/components/cards/OrgCard.svelte';
 	import EventDialog from '$lib/components/dialogs/EventDialog.svelte';
 	import OrgDialog from '$lib/components/dialogs/OrgDialog.svelte';
-
-	// Import types
 	import type { Event, Organization } from '$lib/types/index.js';
 
-	// Receive data from +page.server.ts
+	// Data
 	let { data } = $props();
 	const eventData = data.events;
 	const orgData = data.organizations;
@@ -245,10 +243,6 @@
 		}
 		bookmarkedOrgs = bookmarkedOrgs;
 	}
-
-	function handleBack() {
-		window.history.back();
-	}
 </script>
 
 <svelte:head>
@@ -279,7 +273,6 @@
 		<div class="mb-4 flex flex-wrap items-center gap-2">
 			{#each activeFilters() as filter}
 				<button
-					type="button"
 					onclick={() => removeFilter(filter)}
 					class="group flex items-center gap-1.5 rounded-full bg-primary/80 px-3 py-1.5 text-sm transition-all hover:bg-primary"
 				>
@@ -288,7 +281,6 @@
 				</button>
 			{/each}
 			<button
-				type="button"
 				onclick={clearAllFilters}
 				class="text-sm underline transition-colors hover:text-primary/80"
 			>
@@ -297,7 +289,7 @@
 		</div>
 	{/if}
 
-	<!-- Search Bar (ALL screen sizes) -->
+	<!-- Search Bar -->
 	<div class="mb-6">
 		<SearchBar
 			bind:value={searchQuery}
@@ -312,8 +304,9 @@
 	<!-- Events Section -->
 	{#if selectedView === 'all' || selectedView === 'events'}
 		{#if filteredEvents().length > 0}
-			<section class="mb-8">
-				<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 lg:gap-4">
+			<section class="mb-12">
+				<h2 class="mb-4 text-xl font-bold sm:text-2xl">Events</h2>
+				<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 md:gap-6 lg:grid-cols-5">
 					{#each displayedEvents as event}
 						<EventCard
 							{event}
@@ -324,12 +317,12 @@
 						/>
 					{/each}
 				</div>
+
 				{#if filteredEvents().length > displayedEvents.length}
 					<div class="mt-6 text-center">
 						<button
-							type="button"
 							onclick={() => (eventRowsShown += 2)}
-							class="cursor-pointer text-sm hover:underline"
+							class="cursor-pointer text-sm font-medium transition-colors hover:text-primary hover:underline"
 						>
 							View more events ({filteredEvents().length - displayedEvents.length} remaining)
 						</button>
@@ -342,18 +335,21 @@
 	<!-- Organizations Section -->
 	{#if selectedView === 'all' || selectedView === 'organizations'}
 		{#if filteredOrgs().length > 0}
-			<section class="mb-8">
-				<div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:gap-4">
+			<section class="mb-12">
+				<h2 class="mb-4 text-xl font-bold sm:text-2xl">Organizations</h2>
+				<div
+					class="grid grid-cols-2 gap-3 min-[480px]:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+				>
 					{#each displayedOrgs as org}
 						<OrgCard organization={org} variant="general" onclick={() => openOrg(org)} />
 					{/each}
 				</div>
+
 				{#if filteredOrgs().length > displayedOrgs.length}
 					<div class="mt-6 text-center">
 						<button
-							type="button"
 							onclick={() => (orgRowsShown += 2)}
-							class="cursor-pointer text-sm hover:underline"
+							class="cursor-pointer text-sm font-medium transition-colors hover:text-primary hover:underline"
 						>
 							View more organizations ({filteredOrgs().length - displayedOrgs.length} remaining)
 						</button>
@@ -386,7 +382,6 @@
 			</p>
 			{#if activeFilters().length > 0}
 				<button
-					type="button"
 					onclick={clearAllFilters}
 					class="cursor-pointer rounded-lg bg-primary px-4 py-2 text-sm font-medium transition-colors hover:bg-primary/80"
 				>

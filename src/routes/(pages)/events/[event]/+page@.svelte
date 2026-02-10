@@ -1,39 +1,20 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { ArrowLeft, Calendar, Clock, MapPin, Send, UsersRound } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import * as Popover from '$lib/components/ui/popover/index.js';
 	import Detail from '$lib/components/shared/Detail.svelte';
 	import BookmarkButton from '$lib/components/shared/BookmarkBtn.svelte';
 	import { getRandomGradient } from '$lib/utils/gradients.js';
 	import { formatDateRange, formatTimeRange } from '$lib/utils/dateFormatters.js';
-	import { generateAbbreviation } from '$lib/utils/orgNameFormatters.js';
-
-	// Import types
+	import OrgHostsDisplay from '$lib/components/orgs/OrgHostsDisplay.svelte';
 	import type { Event } from '$lib/types/index.js';
 
-	// Receive data from +page.server.ts
+	// Data
 	let { data } = $props();
 	const event: Event = data.event;
 
 	let gradient = $derived(getRandomGradient(event.id));
 	let isBookmarked = $state(false);
-	let hostsMenuOpen = $state(false);
-
-	const hostsDisplay = $derived(() => {
-		const orgs = event.organizations || [];
-		if (orgs.length === 0) return 'No host';
-		if (orgs.length === 1) {
-			const orgName = orgs[0].name;
-			// If org name too long, generate abbreviation
-			if (orgName.length > 80) {
-				return orgs[0].abbreviation || generateAbbreviation(orgName);
-			}
-			return orgName;
-		}
-		return `Hosted by ${orgs.length} Organizations`;
-	});
 
 	const isLocationLong = $derived(event.location.length > 35);
 	const isMultiDayEvent = $derived(
@@ -88,7 +69,6 @@
 
 	function handleOrgClick(orgId: string) {
 		window.location.href = `/organizations/${orgId}`;
-		hostsMenuOpen = false;
 	}
 
 	function handleTagClick(tagName: string) {
@@ -117,7 +97,6 @@
 		<!-- Back Button -->
 		<div class="absolute top-4 left-4 sm:top-6 sm:left-6">
 			<button
-				type="button"
 				onclick={handleBack}
 				class="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-white/90 hover:text-black sm:size-12"
 				aria-label="Go back"
@@ -144,116 +123,15 @@
 		<div class="container mx-auto max-w-4xl">
 			<div class="flex -translate-y-6 items-end justify-between gap-3 sm:gap-4">
 				<!-- Hosts -->
-				<div class="relative">
-					{#if event.organizations && event.organizations.length === 1}
-						<!-- Single Organization -->
-						<button
-							type="button"
-							onclick={() => handleOrgClick(event.organizations![0].id)}
-							class="group flex h-10 cursor-pointer items-center gap-2 rounded-lg border bg-popover/90 px-3 transition-colors hover:text-accent-foreground sm:h-11 sm:gap-3 sm:px-4"
-						>
-							{#if event.organizations![0].logoUrl}
-								<img
-									src={event.organizations![0].logoUrl}
-									alt={event.organizations![0].name}
-									class="size-7 shrink-0 rounded-full object-cover"
-								/>
-							{:else}
-								<div
-									class="flex size-7 shrink-0 items-center justify-center rounded-full text-accent"
-									style="background: {getRandomGradient(event.organizations![0].id)};"
-								>
-									<span class="text-[10px] font-bold">
-										{generateAbbreviation(event.organizations![0].name)}
-									</span>
-								</div>
-							{/if}
-							<span
-								class="hidden text-sm font-semibold whitespace-nowrap transition-opacity group-hover:opacity-80 sm:inline sm:text-base"
-							>
-								{hostsDisplay()}
-							</span>
-						</button>
-					{:else if event.organizations && event.organizations.length > 1}
-						<!-- Multiple Organizations -->
-						<Popover.Root bind:open={hostsMenuOpen}>
-							<Popover.Trigger
-								class="group flex h-10 cursor-pointer items-center gap-2 rounded-lg border bg-popover/90 px-3 transition-colors hover:text-accent-foreground sm:h-11 sm:gap-3 sm:px-4"
-							>
-								<!-- Logos -->
-								<div class="flex shrink-0 -space-x-4">
-									{#each event.organizations.slice(0, 3) as org, i}
-										{#if org.logoUrl}
-											<img
-												src={org.logoUrl}
-												alt={org.name}
-												class="size-7 rounded-full border-2 object-cover"
-												style="z-index: {3 - i}"
-											/>
-										{:else}
-											<div
-												class="flex size-7 items-center justify-center rounded-full border-2"
-												style="background: {getRandomGradient(org.id)}; z-index: {3 - i}"
-											>
-												<span class="text-[10px] font-bold text-accent">
-													{generateAbbreviation(org.name)}
-												</span>
-											</div>
-										{/if}
-									{/each}
-								</div>
-								<span
-									class="hidden text-sm font-semibold whitespace-nowrap transition-opacity group-hover:opacity-80 sm:inline sm:text-base"
-								>
-									{hostsDisplay()}
-								</span>
-							</Popover.Trigger>
-							<Popover.Content
-								class="w-[calc(100vw-2rem)] max-w-xs border-white/20 bg-black/80 p-2 backdrop-blur-sm sm:w-80"
-								align="start"
-								side="top"
-								sideOffset={8}
-							>
-								<div class="space-y-1">
-									{#each event.organizations as org}
-										<button
-											type="button"
-											onclick={() => handleOrgClick(org.id)}
-											class="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-white/10"
-										>
-											{#if org.logoUrl}
-												<img
-													src={org.logoUrl}
-													alt={org.name}
-													class="size-10 shrink-0 rounded-full object-cover"
-												/>
-											{:else}
-												<div
-													class="flex size-10 shrink-0 items-center justify-center rounded-full"
-													style="background: {getRandomGradient(org.id)};"
-												>
-													<span class="text-sm font-bold text-accent">
-														{generateAbbreviation(org.name)}
-													</span>
-												</div>
-											{/if}
-											<span class="min-w-0 flex-1 truncate text-sm font-medium text-accent">
-												{org.name}
-											</span>
-										</button>
-									{/each}
-								</div>
-							</Popover.Content>
-						</Popover.Root>
-					{/if}
-				</div>
+				{#if event.organizations && event.organizations.length > 0}
+					<div class="relative">
+						<OrgHostsDisplay organizations={event.organizations} onOrgClick={handleOrgClick} />
+					</div>
+				{/if}
 
 				<!-- Actions -->
 				<div class="flex shrink-0 items-center gap-2 sm:gap-3">
-					<!-- Bookmark -->
 					<BookmarkButton {isBookmarked} onclick={toggleBookmark} variant="secondary" />
-
-					<!-- RSVP -->
 					<Button
 						onclick={handleRSVP}
 						size="lg"
@@ -280,7 +158,6 @@
 				<div class="flex flex-wrap gap-2">
 					{#each event.tags as tag}
 						<button
-							type="button"
 							onclick={() => handleTagClick(tag.name)}
 							class="cursor-pointer transition-opacity hover:opacity-80"
 						>
@@ -325,7 +202,6 @@
 								icon={MapPin}
 								label="Location"
 								value={event.location}
-								clickable={true}
 								onclick={() => console.log('Open map for:', event.location)}
 							/>
 						{/if}
@@ -351,7 +227,6 @@
 								icon={MapPin}
 								label="Location"
 								value={event.location}
-								clickable={true}
 								onclick={() => console.log('Open map for:', event.location)}
 							/>
 						{/if}

@@ -5,7 +5,6 @@
 		itemCount: number;
 		emptyMessage?: string;
 		variant?: 'featured' | 'general';
-		columns?: 3 | 4 | 5;
 		cardType?: 'event' | 'org';
 		children: Snippet;
 	}
@@ -14,34 +13,24 @@
 		itemCount,
 		emptyMessage = 'No items found',
 		variant = 'general',
-		columns = 4,
 		cardType = 'event',
 		children
 	}: Props = $props();
 
 	const gridClasses = $derived(() => {
+		// Featured
 		if (variant === 'featured') {
 			if (cardType === 'event') {
 				return 'grid grid-cols-1 gap-6 md:grid-cols-2';
 			}
+
 			if (cardType === 'org') {
-				const baseClasses =
-					'grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-5';
-				const isOdd = itemCount % 2 === 1;
-				const centerLastClasses = isOdd
-					? '[&>*:last-child:nth-child(odd)]:col-span-2 [&>*:last-child:nth-child(odd)]:justify-self-center [&>*:last-child:nth-child(odd)]:w-1/2 sm:[&>*:last-child:nth-child(odd)]:col-span-1 sm:[&>*:last-child:nth-child(odd)]:w-full'
-					: '';
-				return `${baseClasses} ${centerLastClasses}`;
+				return 'grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 lg:gap-5';
 			}
 		}
 
-		if (columns === 3) {
-			return 'grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3';
-		} else if (columns === 5) {
-			return 'grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5';
-		} else {
-			return 'grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
-		}
+		// General
+		return 'flex gap-4 overflow-x-auto pb-4 scrollbar-hide';
 	});
 </script>
 
@@ -54,3 +43,14 @@
 		{@render children()}
 	</div>
 {/if}
+
+<style>
+	/* Hide scrollbar */
+	.scrollbar-hide {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
+</style>
