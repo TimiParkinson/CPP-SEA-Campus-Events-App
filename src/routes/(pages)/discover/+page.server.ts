@@ -7,27 +7,18 @@ import {
 } from '$lib/server/db/dataHelpers.js';
 
 export const load: PageServerLoad = async () => {
-	// Currently return seed mock data
+	// Fetch all data from database
+	const [events, organizations, eventTags, organizationCategories] = await Promise.all([
+		getAllEvents(),
+		getAllOrganizations(),
+		getAllEventTags(),
+		getAllOrganizationCategories()
+	]);
+
 	return {
-		events: getAllEvents(),
-		organizations: getAllOrganizations(),
-		eventTags: getAllEventTags(),
-		organizationCategories: getAllOrganizationCategories()
+		events,
+		organizations,
+		eventTags,
+		organizationCategories
 	};
-
-	// when backend ready:
-
-	// const [eventsRes, orgsRes, tagsRes, categoriesRes] = await Promise.all([
-	//   fetch('/api/events'),
-	//   fetch('/api/organizations'),
-	//   fetch('/api/event-tags'),
-	//   fetch('/api/organization-categories')
-	// ]);
-	// const [events, organizations, eventTags, organizationCategories] = await Promise.all([
-	//   eventsRes.json(),
-	//   orgsRes.json(),
-	//   tagsRes.json(),
-	//   categoriesRes.json()
-	// ]);
-	// return { events, organizations, eventTags, organizationCategories };
 };
