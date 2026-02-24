@@ -30,9 +30,9 @@
 <div class="text-sm font-medium">
 	{#if isLoggedIn}
 		{@render MenuOption('Dashboard', () => handleNavigation('/'), User)}
-		{@render MenuOption('Settings', () => handleNavigation('/'), Settings)}
+		{@render MenuOption('Settings', () => handleNavigation('/Settings'), Settings)}
 	{/if}
-
+   
 	<!-- Theme Toggle -->
 	<div
 		class="flex cursor-pointer items-center gap-3 rounded-lg px-4 py-2.5 transition-colors hover:bg-accent/45 hover:dark:bg-current/10"
