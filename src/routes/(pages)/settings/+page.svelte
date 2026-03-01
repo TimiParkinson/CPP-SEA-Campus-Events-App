@@ -104,13 +104,16 @@
       {#each selectedPronouns as item (item.value)}
         <Badge class="flex items-center gap-1 px-3 py-1">
           {item.label}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => removePronoun(item)}
+          <button
+            type="button"
+            class="ml-1 text-xs opacity-60 hover:opacity-100 transition"
+            onclick={(e) => {
+              e.stopPropagation();
+              removePronoun(item);
+            }}
           >
             ✕
-          </Button>
+          </button>
         </Badge>
       {/each}
 
