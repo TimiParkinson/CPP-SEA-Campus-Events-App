@@ -62,6 +62,18 @@
  
   let selectedPronouns = $state<Pronoun[]>([]);
 
+  // select a pronoun
+  function selectPronoun(option: Pronoun) {
+    if (!selectedPronouns.includes(option)) {
+      selectedPronouns = [...selectedPronouns, option];
+    }
+  }
+
+  // remove pronoun
+  function removePronoun(option: Pronoun) {
+    selectedPronouns = selectedPronouns.filter((o) => o !== option);
+  }
+
   const selectedValue = $derived(
     allPronounOptions.find((f) => f.value === value)?.label
   );
@@ -84,7 +96,40 @@
 
 
 <div class="space-y-16 pt-24">
-    <h1 class="text-4xl leading-tight font-bold">Settings</h1>
+  <h1 class="text-4xl leading-tight font-bold">Settings</h1>
+
+  <div class="space-y-2">
+    <!-- Selected items box -->
+    <div class="flex gap-2 p-2 border rounded bg-gray-100">
+      {#each selectedPronouns as item (item.value)}
+        <Badge class="flex items-center gap-1 px-3 py-1">
+          {item.label}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => removePronoun(item)}
+          >
+            ✕
+          </Button>
+        </Badge>
+      {/each}
+
+    </div>
+
+    <!-- Options list -->
+    <!--<div class="flex gap-2">
+      {#each allPronounOptions as option}
+        <Button
+          variant={selectedPronouns.includes(option) ? "secondary" : "outline"}
+          onClick={() => selectPronoun(option)}
+        >
+          {option.label}
+        </Button>
+      {/each}
+    </div> -->
+  </div>
+
+
     
     <Popover.Root bind:open>
     <Popover.Trigger bind:ref={triggerRef}>
@@ -96,7 +141,9 @@
             role="combobox"
             aria-expanded={open}
         >
-            {selectedValue || "Select your pronouns..."}
+            {selectedPronouns.length > 0
+              ? selectedPronouns.map(p => p.label).join(", ")
+              : "Select your pronouns..."}
             <ChevronsUpDownIcon class="opacity-50" />
         </Button>
         {/snippet}
@@ -111,12 +158,21 @@
                 <Command.Item
                 value={pronoun.value}
                 onSelect={() => {
-                    value = pronoun.value;
-                    closeAndFocusTrigger();
+                    const exists = selectedPronouns.find(p => p.value === pronoun.value);
+                  if (exists) {
+                    selectedPronouns = selectedPronouns.filter(
+                      p => p.value !== pronoun.value
+                    );
+                  } else {
+                    selectedPronouns = [...selectedPronouns, pronoun];
+                  }
                 }}
                 >
                 <CheckIcon
-                    class={cn(value !== pronoun.value && "text-transparent")}
+                    class={cn(
+                      !selectedPronouns.some(p => p.value === pronoun.value) &&
+                      "text-transparent"
+                    )}
                 />
                 {pronoun.label}
                 </Command.Item>
