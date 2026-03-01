@@ -118,18 +118,6 @@
       {/each}
 
     </div>
-
-    <!-- Options list -->
-    <!--<div class="flex gap-2">
-      {#each allPronounOptions as option}
-        <Button
-          variant={selectedPronouns.includes(option) ? "secondary" : "outline"}
-          onClick={() => selectPronoun(option)}
-        >
-          {option.label}
-        </Button>
-      {/each}
-    </div> -->
   </div>
 
 
@@ -144,9 +132,7 @@
             role="combobox"
             aria-expanded={open}
         >
-            {selectedPronouns.length > 0
-              ? selectedPronouns.map(p => p.label).join(", ")
-              : "Select your pronouns..."}
+            Select your pronouns...
             <ChevronsUpDownIcon class="opacity-50" />
         </Button>
         {/snippet}
