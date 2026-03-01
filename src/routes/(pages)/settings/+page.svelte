@@ -95,33 +95,36 @@
 </svelte:head>
 
 
-<div class="space-y-16 pt-24">
-  <h1 class="text-4xl leading-tight font-bold">Settings</h1>
+<div class="pt-24">
+  <div>
+    <h1 class="text-4xl mb-8 leading-tight font-bold">Settings</h1>
 
-  <div class="space-y-2">
-    <!-- Selected items box -->
-    <div class="flex gap-2 p-2 border rounded bg-gray-100">
-      {#each selectedPronouns as item (item.value)}
-        <Badge class="flex items-center gap-1 px-3 py-1">
-          {item.label}
-          <button
-            type="button"
-            class="ml-1 text-xs opacity-60 hover:opacity-100 transition"
-            onclick={(e) => {
-              e.stopPropagation();
-              removePronoun(item);
-            }}
-          >
-            ✕
-          </button>
-        </Badge>
-      {/each}
+    <h2 class="mb-4 text-xl font-bold sm:text-2xl">Pronouns</h2>
 
+    <div>
+      <!-- Selected items box -->
+      <div class="flex gap-2 p-2 mb-4 border rounded bg-gray-100">
+        {#each selectedPronouns as item (item.value)}
+          <Badge class="flex items-center gap-1 px-3 py-1">
+            {item.label}
+            <button
+              type="button"
+              class="ml-1 text-xs opacity-60 hover:opacity-100 transition"
+              onclick={(e) => {
+                e.stopPropagation();
+                removePronoun(item);
+              }}
+            >
+              ✕
+            </button>
+          </Badge>
+        {/each}
+
+      </div>
     </div>
-  </div>
 
 
-    
+  
     <Popover.Root bind:open>
     <Popover.Trigger bind:ref={triggerRef}>
         {#snippet child({ props })}
@@ -157,12 +160,12 @@
                   }
                 }}
                 >
-                <CheckIcon
+                <!--<CheckIcon
                     class={cn(
                       !selectedPronouns.some(p => p.value === pronoun.value) &&
                       "text-transparent"
                     )}
-                />
+                /> -->
                 {pronoun.label}
                 </Command.Item>
             {/each}
@@ -172,5 +175,5 @@
     </Popover.Content>
     </Popover.Root>
 
-
+  </div>
 </div>
