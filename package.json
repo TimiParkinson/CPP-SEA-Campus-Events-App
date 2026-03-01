@@ -42,7 +42,7 @@
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.10.1",
-		"@lucide/svelte": "^0.544.0",
+		"@lucide/svelte": "^0.561.0",
 		"@sveltejs/adapter-vercel": "^5.10.2",
 		"@sveltejs/kit": "^2.43.5",
 		"@sveltejs/package": "^2.0.0",
