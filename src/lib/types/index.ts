@@ -6,7 +6,7 @@
 // ============================================================================
 
 /** User roles */
-export type UserRole = 'student' | 'club_leader' | 'admin';
+export type UserRole = 'student' | 'admin';
 
 /** Organization member roles */
 export type OrgMemberRole = 'member' | 'board_member' | 'president';
