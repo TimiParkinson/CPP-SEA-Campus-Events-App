@@ -8,7 +8,7 @@ Campus Events App (CEA) is a web application designed to help users organize and
 - ✏️ Event creation and management
 - 🎟️ In-app RSVP system
 
-## 🛠️ Tech Stack:
+## 🛠️ Tech Stack
 - Frontend: SvelteKit, TypeScript, Tailwind CSS, shadcn/ui
 - Backend: SvelteKit API Routes, Drizzle ORM
 - Database: PostgreSQL (Supabase)
