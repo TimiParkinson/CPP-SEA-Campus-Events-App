@@ -1,11 +1,14 @@
 # Campus Events App
 Campus Events App (CEA) is a web application designed to help users organize and discover campus activities. Developed by Cal Poly Pomona students for Cal Poly Pomona students, our app is designed to be intuitive and versatile. Student organizations create profiles, manage leadership roles, and publish events, while students can join organizations, browse events, and RSVP—all within a single platform! 
 
+#### 🌐 Live Demo: [Campus Events App](https://cpp-sea-campus-events-app.vercel.app/)
+
 ## ✨ Features
 - 📅 Calendar view of upcoming events
 - 🔎 Discover page for organizations and activities
-- 🏫 Organization profiles with leadership roles
+- 🏫 Organization profiles for creating and managing events
 - ✏️ Event creation and management
+- 🔑 Single Sign-On (SSO) with your CPP account 
 - 🎟️ In-app RSVP system
 
 ## 🛠️ Tech Stack
