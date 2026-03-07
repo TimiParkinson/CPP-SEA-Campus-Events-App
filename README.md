@@ -18,6 +18,56 @@ Campus Events App (CEA) is a web application designed to help users organize and
 - Deployment: Vercel
 - Tools: Git/GitHub, Figma, Trello
 
+
+## 🚀 How to Build
+### Download Dependencies
+  
+#### 1) Node.js and npm
+Node.js runs the JavaScript code, and npm manages the packages.
+
+**Installation:**
+1. Visit [nodejs.org](https://nodejs.org)
+2. Download the LTS (Long Term Support) version
+3. Run the installer with default settings
+4. Verify installation in terminal/command prompt:
+   `node --versionnpm --version`
+#### 2) Git
+For version control and collaboration.
+
+**Installation:**
+1. Windows: Download from [Git SCM](git-scm.com)
+   Mac: Install via Homebrew (`brew install git`) or download from [Git SCM](git-scm.com)
+   Linux: Use package manager (`sudo apt install git` for Ubuntu)
+2. Verify installation:
+   git --version
+
+### Initial Project Setup 
+#### 1) Clone this GitHub repository
+  ```bash
+  git clone https://github.com/TimiParkinson/Cal-Poly-Pomona-SEA-Campus-Events-App.git
+  ```
+
+   Naviagate to the repository on your machine using the `cd` command
+#### 2) Initialize the SvelteKit Project:
+  ```
+npm create svelte@latest
+npm install
+  ```
+#### 3) Add Tech Stack Dependencies
+```
+# Tailwind CSS and plugins
+npm install -D tailwindcss @tailwindcss/typography @tailwindcss/forms
+
+# Database & authentication
+npm install drizzle-orm lucia
+
+# TypeScript types
+npm install @types/node typescript
+
+# Animation library
+npm install gsap
+```
+
 ## 👤 Contributers
 * Christian Parkinson: Project Lead
   - [TimiParkinson](https://github.com/TimiParkinson)
@@ -30,63 +80,4 @@ Campus Events App (CEA) is a web application designed to help users organize and
 * Umar Azizadah: Backend Lead
   - [umarazizadah](https://github.com/umarazizadah)
 * Spencer Tien: Backend
-  - [dustsunrise](https://github.com/dustsunrise) 
-
-## 🚀 How to Build
-
-Everything you need to build a Svelte library, powered by [`sv`](https://npmjs.com/package/sv).
-
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
-
-### Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```sh
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-### Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
-
-### Building
-
-To build your library:
-
-```sh
-npm pack
-```
-
-To create a production version of your showcase app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
-
-### Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```sh
-npm publish
-```
+  - [dustsunrise](https://github.com/dustsunrise)
