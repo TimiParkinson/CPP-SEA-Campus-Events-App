@@ -20,7 +20,7 @@ Campus Events App (CEA) is a web application designed to help users organize and
 
 
 ## 🚀 How to Build
-### Download Dependencies
+### Download Dependencies 🥚
   
 #### 1) Node.js and npm
 Node.js runs the JavaScript code, and npm manages the packages.
@@ -43,7 +43,7 @@ For version control and collaboration.
 2. Verify installation:
    `git --version`
 ---
-### Initial Project Setup 
+### Initial Project Setup 🐣
 #### 1) Clone this GitHub repository
   ```bash
   git clone https://github.com/TimiParkinson/Cal-Poly-Pomona-SEA-Campus-Events-App.git
