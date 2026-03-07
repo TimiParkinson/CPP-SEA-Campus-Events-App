@@ -36,18 +36,20 @@ For version control and collaboration.
 
 **Installation:**
 1. Windows: Download from [Git SCM](git-scm.com)
+   
    Mac: Install via Homebrew (`brew install git`) or download from [Git SCM](git-scm.com)
+   
    Linux: Use package manager (`sudo apt install git` for Ubuntu)
 2. Verify installation:
-   git --version
-
+   `git --version`
+---
 ### Initial Project Setup 
 #### 1) Clone this GitHub repository
   ```bash
   git clone https://github.com/TimiParkinson/Cal-Poly-Pomona-SEA-Campus-Events-App.git
   ```
 
-   Naviagate to the repository on your machine using the `cd` command
+   Navigate to the repository on your machine using the `cd` command
 #### 2) Initialize the SvelteKit Project:
   ```
 npm create svelte@latest
