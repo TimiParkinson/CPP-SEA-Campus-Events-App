@@ -211,7 +211,13 @@
 				{/if}
 
 				{#if org.contactEmail}
-					<Detail icon={Mail} label="Contact" value={org.contactEmail} onclick={handleEmailClick} />
+					<Detail
+						icon={Mail}
+						label="Contact"
+						value={org.contactEmail}
+						clickable={true}
+						onclick={handleEmailClick}
+					/>
 				{/if}
 
 				{#if org.websiteUrl}
@@ -219,6 +225,7 @@
 						icon={Globe}
 						label="Website"
 						value={org.websiteUrl}
+						clickable={true}
 						onclick={handleWebsiteClick}
 					/>
 				{/if}
@@ -283,7 +290,7 @@
 		{#if pastEvents && pastEvents.length > 0}
 			<div class="mb-8">
 				<h2 class="mb-4 text-xl font-bold sm:text-2xl">Past Events</h2>
-				<div class="grid grid-cols-1 gap-4 min-[500px]:grid-cols-2 md:grid-cols-3 md:gap-6">
+				<CardGrid itemCount={pastEvents.length} variant="general" cardType="event">
 					{#each pastEvents as event (event.id)}
 						<EventCard
 							{event}
@@ -293,7 +300,7 @@
 							isBookmarked={bookmarkedEvents.has(event.id)}
 						/>
 					{/each}
-				</div>
+				</CardGrid>
 			</div>
 		{/if}
 	</div>
