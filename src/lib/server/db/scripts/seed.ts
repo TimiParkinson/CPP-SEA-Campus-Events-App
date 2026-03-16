@@ -15,7 +15,7 @@ const inUTC = (iso: string) => new Date(iso);
 const mock = {
   users: [
     { email: 'sarah.chen@university.edu', name: 'Sarah Chen', role: 'student' as const },
-    { email: 'mike.rodriguez@university.edu', name: 'Mike Rodriguez', role: 'club_leader' as const },
+    { email: 'mike.rodriguez@university.edu', name: 'Mike Rodriguez', role: 'student' as const },
     { email: 'admin@university.edu',         name: 'Campus Admin',  role: 'admin' as const },
   ],
   organizationCategories: [

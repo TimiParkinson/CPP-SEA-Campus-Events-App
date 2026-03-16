@@ -1,9 +1,6 @@
 <script lang="ts">
-<<<<<<< HEAD
-=======
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
->>>>>>> 4013d59 (fix(nav): replace hard refresh navigation with goto())
 	import { ArrowLeft, Calendar, Clock, MapPin, Send, UsersRound } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
@@ -73,12 +70,7 @@
 	}
 
 	function handleOrgClick(orgId: string) {
-<<<<<<< HEAD
 		window.location.href = `/organizations/${orgId}`;
-=======
-		goto(`/organizations/${orgId}`);
-		hostsMenuOpen = false;
->>>>>>> 4013d59 (fix(nav): replace hard refresh navigation with goto())
 	}
 
 	function handleTagClick(tagName: string) {

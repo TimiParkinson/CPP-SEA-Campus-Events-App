@@ -12,7 +12,7 @@ export const seedMock = {
 		{
 			email: 'mike.rodriguez@university.edu',
 			name: 'Mike Rodriguez',
-			role: 'club_leader' as const
+			role: 'student' as const
 		},
 		{ email: 'admin@university.edu', name: 'Campus Admin', role: 'admin' as const }
 	],

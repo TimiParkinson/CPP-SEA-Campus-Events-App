@@ -20,14 +20,11 @@
 	const isFeatured = $derived(variant === 'featured');
 	let gradient = $derived(getRandomGradient(event.id));
 
-<<<<<<< HEAD
-=======
 	function handleTitleClick(e: MouseEvent) {
 		e.stopPropagation();
 		goto(`/events/${event.id}`);
 	}
 
->>>>>>> 4013d59 (fix(nav): replace hard refresh navigation with goto())
 	function handleBookmarkClick(e: MouseEvent) {
 		e.stopPropagation();
 		onBookmark?.();
