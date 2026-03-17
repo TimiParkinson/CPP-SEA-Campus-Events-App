@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -42,7 +43,7 @@
 
 	function handleViewFullEvent() {
 		if (event) {
-			window.location.href = `/events/${event.id}`;
+			goto(`/events/${event.id}`);
 		}
 	}
 

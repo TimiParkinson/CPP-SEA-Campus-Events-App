@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { Menu, Search, User } from '@lucide/svelte';
-	import { supabaseBrowser } from '$lib/supabaseClient.js';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import * as DropdownMenu from '../ui/dropdown-menu/index.js';
 	import * as Sheet from '../ui/sheet/index.js';
 	import AccountMenu from './AccountMenu.svelte';
 	import MobileSidebar from './MobileSidebar.svelte';
 	import type { Session } from '@supabase/supabase-js';
+
 
 	interface Route {
 		name: string;
@@ -14,12 +16,13 @@
 	}
 
 	interface Props {
-		routes?: Route[];
+		routes?: Route[];		
 		currentPath?: string;
-		session: Session | null;
 	}
 
-	let { routes = [], currentPath = '/', session }: Props = $props();
+	let { routes = [], currentPath = '/' }: Props = $props();
+	const session = $derived($page.data.session as Session | null);
+
 
 	let mobileMenuOpen = $state(false);
 
@@ -28,8 +31,9 @@
 	const userAvatar = $derived(session?.user?.user_metadata?.avatar_url || null);
 
 	async function handleLogout() {
-		await supabaseBrowser.auth.signOut();
-		window.location.href = '/';
+		// Sign out through the server so Supabase SSR cookies get cleared
+		await fetch('/api/auth/signout', { method: 'POST' });
+		await goto('/', { invalidateAll: true });
 	}
 </script>
 

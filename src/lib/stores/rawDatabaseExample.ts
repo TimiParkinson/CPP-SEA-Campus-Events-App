@@ -3,7 +3,7 @@ export type User = {
   id: string;
   email: string;
   full_name: string;
-  role: 'student' | 'club_leader' | 'admin';
+  role: 'student' | 'admin';
   created_at: Date;
   updated_at: Date;
 }
@@ -79,7 +79,7 @@ export const users: User[] = [
     id: 'user-2',
     email: 'mike.rodriguez@university.edu',
     full_name: 'Mike Rodriguez',
-    role: 'club_leader',
+    role: 'student',
     created_at: new Date('2024-08-15T10:00:00Z'),
     updated_at: new Date('2024-08-15T10:00:00Z')
   },

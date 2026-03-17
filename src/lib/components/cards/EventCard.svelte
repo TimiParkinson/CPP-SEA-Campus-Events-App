@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { MapPin, Clock, Users } from '@lucide/svelte';
 	import { getRandomGradient } from '$lib/utils/gradients.js';
 	import { formatTime, getDayOfMonth, getMonthAbbr } from '$lib/utils/dateFormatters.js';
@@ -18,6 +19,11 @@
 
 	const isFeatured = $derived(variant === 'featured');
 	let gradient = $derived(getRandomGradient(event.id));
+
+	function handleTitleClick(e: MouseEvent) {
+		e.stopPropagation();
+		goto(`/events/${event.id}`);
+	}
 
 	function handleBookmarkClick(e: MouseEvent) {
 		e.stopPropagation();

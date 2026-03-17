@@ -16,7 +16,7 @@ import {
 // uniqueIndex()/index(): define unique or normal indexes in the table’s extras block, , primaryKey(): explicit primary key builder used for join tables
 
 // Schema helpers: postgres enum type named user_role with fixed allowed values
-export const userRole = pgEnum('user_role', ['student', 'club_leader', 'admin']);
+export const userRole = pgEnum('user_role', ['student', 'admin']);
 // Postgres enum type named org_member_role for org membership roles
 export const orgMemberRole = pgEnum('org_member_role', ['member', 'board_member', 'president']);
 

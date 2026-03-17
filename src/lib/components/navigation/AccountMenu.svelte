@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { User, Settings, Moon, Sun, LogOut, LogIn, type Icon as IconType } from '@lucide/svelte';
 	import { mode, toggleMode } from 'mode-watcher';
 	import Switch from '../ui/switch/switch.svelte';
@@ -11,7 +12,7 @@
 	let { isLoggedIn, handleLogout }: Props = $props();
 
 	function handleNavigation(path: string) {
-		window.location.href = path;
+		goto(path);
 	}
 </script>
 
