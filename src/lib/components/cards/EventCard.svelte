@@ -101,24 +101,15 @@
 		>
 			{#if isFeatured}
 				<!-- Featured -->
-				<div class="flex flex-col gap-3 md:flex-row md:items-end md:gap-6">
-					<div class="min-w-0 flex-1">
-						<p class="mb-1.5 text-xl leading-tight font-bold">
-							{event.title}
+				<div class="flex flex-col gap-3">
+					<p class="text-xl leading-tight line-clamp-1 font-bold">
+						{event.title}
+					</p>
+					{#if event.description}
+						<p class="line-clamp-2 text-sm lg:max-w-md">
+							{event.description}
 						</p>
-						{#if event.description}
-							<p class="line-clamp-2 text-sm md:max-w-md">
-								{event.description}
-							</p>
-						{/if}
-					</div>
-					<Button
-						{onclick}
-						variant="outline"
-						class="w-full shrink-0 cursor-pointer rounded-lg px-5 py-2 text-sm font-medium transition-colors md:w-auto"
-					>
-						View More Info
-					</Button>
+					{/if}
 				</div>
 			{:else}
 				<!-- General -->
