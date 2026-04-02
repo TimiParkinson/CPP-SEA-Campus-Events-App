@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { ArrowLeft, Calendar, Globe, Mail, Users, Send, User } from '@lucide/svelte';
+	import { Calendar, Globe, Mail, Users, Send, User } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Detail from '$lib/components/shared/Detail.svelte';
@@ -8,9 +7,9 @@
 	import EventCard from '$lib/components/cards/EventCard.svelte';
 	import EventDialog from '$lib/components/dialogs/EventDialog.svelte';
 	import CardGrid from '$lib/components/cards/CardGrid.svelte';
-	import { getRandomGradient } from '$lib/utils/gradients.js';
+	import OrgPageShell from '$lib/components/orgs/OrgPageShell.svelte';
+	import OrgPageContent from '$lib/components/orgs/OrgPageContent.svelte';
 	import { formatFullDate } from '$lib/utils/dateFormatters.js';
-	import { generateAbbreviation } from '$lib/utils/orgNameFormatters.js';
 
 	// Import types
 	import type { Organization, Event } from '$lib/types/index.js';
@@ -21,15 +20,10 @@
 	const upcomingEvents: Event[] = data.upcomingEvents;
 	const pastEvents: Event[] = data.pastEvents;
 
-	let gradient = $derived(getRandomGradient(org.id));
 	let isBookmarked = $state(false);
 	let bookmarkedEvents = $state<Set<string>>(new Set());
 	let selectedEvent = $state<Event | null>(null);
 	let eventDialogOpen = $state(false);
-
-	function handleBack() {
-		window.history.back();
-	}
 
 	function toggleBookmark() {
 		isBookmarked = !isBookmarked;
@@ -86,96 +80,30 @@
 	<title>{org.name} - Campus Events</title>
 </svelte:head>
 
-<div class="min-h-screen">
-	<!-- Banner -->
-	<div class="relative h-64 overflow-hidden sm:h-80 md:h-96">
-		<!-- Background Image/Gradient -->
-		{#if org.bannerImageUrl}
-			<img src={org.bannerImageUrl} alt={org.name} class="size-full object-cover object-center" />
-		{:else}
-			<div class="size-full" style="background: {gradient};"></div>
-		{/if}
-
-		<!-- Dark overlay -->
-		<div class="absolute inset-0 bg-linear-to-t from-black/30 to-black/10"></div>
-
-		<!-- Back Button -->
-		<div class="absolute top-4 left-4 sm:top-6 sm:left-6">
-			<button
-				type="button"
-				onclick={handleBack}
-				class="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-white/90 hover:text-black sm:size-12"
-				aria-label="Go back"
-			>
-				<ArrowLeft class="size-5 sm:size-6" />
-			</button>
-		</div>
-
-		<!-- Member Count -->
+<OrgPageShell {org}>
+	{#snippet topRight()}
 		{#if org.memberCount}
-			<div class="absolute top-4 right-4 sm:top-6 sm:right-6">
-				<div
-					class="flex items-center gap-2 rounded-lg border border-white/20 bg-black/60 px-3 py-2 text-white backdrop-blur-sm sm:px-4"
-				>
-					<Users size="17" />
-					<span class="text-sm font-semibold">{org.memberCount} members</span>
-				</div>
+			<div
+				class="flex items-center gap-2 rounded-lg border border-white/20 bg-black/60 px-3 py-2 text-white backdrop-blur-sm sm:px-4"
+			>
+				<Users size="17" />
+				<span class="text-sm font-semibold">{org.memberCount} members</span>
 			</div>
 		{/if}
-	</div>
+	{/snippet}
 
-	<!-- Logo & CTAs -->
-	<div class="relative px-4 sm:px-6 lg:px-8">
-		<div class="container mx-auto max-w-4xl">
-			<div class="shift-content-up | flex items-center justify-between gap-3 sm:gap-4">
-				<!-- Logo - Increased size with inline width/height -->
-				<div class="relative">
-					{#if org.logoUrl}
-						<img
-							src={org.logoUrl}
-							alt={org.name}
-							class="rounded-full object-cover shadow-lg"
-							style="width: 120px; height: 120px;"
-						/>
-					{:else}
-						<div
-							class="overflow-hidden rounded-full shadow-lg"
-							style="width: 96px; height: 96px; background: {gradient};"
-						>
-							<div class="flex size-full items-center justify-center">
-								<span
-									class="text-center text-2xl leading-none font-bold tracking-tight whitespace-nowrap text-white select-none"
-								>
-									{org.abbreviation || generateAbbreviation(org.name)}
-								</span>
-							</div>
-						</div>
-					{/if}
-				</div>
+	{#snippet actions()}
+		<BookmarkButton {isBookmarked} onclick={toggleBookmark} variant="secondary" />
+		<Button
+			onclick={handleJoin}
+			size="lg"
+			class="cursor-pointer px-4 text-sm shadow-lg sm:px-6 sm:text-base"
+		>
+			Join
+		</Button>
+	{/snippet}
 
-				<!-- Actions -->
-				<div class="flex shrink-0 items-center gap-2 sm:gap-3">
-					<!-- Bookmark -->
-					<BookmarkButton {isBookmarked} onclick={toggleBookmark} variant="secondary" />
-
-					<!-- Join -->
-					<Button
-						onclick={handleJoin}
-						size="lg"
-						class="cursor-pointer px-4 text-sm shadow-lg sm:px-6 sm:text-base"
-					>
-						Join
-					</Button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Content -->
-	<div
-		class="container mx-auto max-w-4xl px-4 pb-12 sm:px-6 lg:px-8"
-		style="transform: translateY(-40px);"
-	>
+	<OrgPageContent>
 		<!-- Organization Header -->
 		<div class="my-8">
 			<h1 class="mb-3 text-3xl leading-tight font-bold sm:text-4xl md:text-5xl">
@@ -296,8 +224,8 @@
 				</div>
 			</div>
 		{/if}
-	</div>
-</div>
+	</OrgPageContent>
+</OrgPageShell>
 
 <!-- Event Dialog -->
 <EventDialog
@@ -308,9 +236,3 @@
 	onRSVP={handleRSVP}
 	isBookmarked={selectedEvent ? bookmarkedEvents.has(selectedEvent.id) : false}
 />
-
-<style>
-	.shift-content-up {
-		transform: translateY(-50px);
-	}
-</style>
