@@ -5,6 +5,7 @@ import { error, redirect, fail } from '@sveltejs/kit';
 import {
 	getOrganizationById,
 	getAllOrganizationCategories,
+	getEventsByOrganization,
 	updateOrganization
 } from '$lib/server/db/dataHelpers.js';
 
@@ -12,16 +13,21 @@ export const load: PageServerLoad = async (event) => {
 	// const userId = requireAuth(event); // redirects to /signin if not authenticated
 	const orgId = event.params.organization;
 
-	const [organization, allCategories] = await Promise.all([
+	const [organization, allCategories, allOrgEvents] = await Promise.all([
 		getOrganizationById(orgId),
-		getAllOrganizationCategories()
+		getAllOrganizationCategories(),
+		getEventsByOrganization(orgId)
 	]);
+
+	const now = new Date();
+	const upcomingEvents = allOrgEvents.filter((e) => new Date(e.startTime) > now).slice(0, 2);
+	const pastEvents = allOrgEvents.filter((e) => new Date(e.startTime) < now);
 
 	if (!organization) throw error(404, 'Organization not found');
 
 	// await requireCanManageOrg(userId, orgId); // throws 403 if not board_member/president/admin
 
-	return { organization, allCategories };
+	return { organization, allCategories, upcomingEvents, pastEvents };
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

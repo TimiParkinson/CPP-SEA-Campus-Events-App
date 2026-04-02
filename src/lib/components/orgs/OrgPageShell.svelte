@@ -9,10 +9,12 @@
 		org: Organization;
 		topRight?: Snippet;
 		actions?: Snippet;
+		bannerOverlay?: Snippet;
+		logoOverlay?: Snippet;
 		children: Snippet;
 	}
 
-	let { org, topRight, actions, children }: Props = $props();
+	let { org, topRight, actions, bannerOverlay, logoOverlay, children }: Props = $props();
 
 	let gradient = $derived(getRandomGradient(org.id));
 
@@ -35,7 +37,7 @@
 		<div class="absolute inset-0 bg-linear-to-t from-black/30 to-black/10"></div>
 
 		<!-- Back Button -->
-		<div class="absolute top-4 left-4 sm:top-6 sm:left-6">
+		<div class="absolute top-4 left-4 z-10 sm:top-6 sm:left-6">
 			<button
 				type="button"
 				onclick={handleBack}
@@ -46,11 +48,16 @@
 			</button>
 		</div>
 
-		<!-- Top right slot (e.g. member count badge) -->
+		<!-- Top right slot -->
 		{#if topRight}
-			<div class="absolute top-4 right-4 sm:top-6 sm:right-6">
+			<div class="absolute top-4 right-4 z-10 sm:top-6 sm:right-6">
 				{@render topRight()}
 			</div>
+		{/if}
+
+		<!-- Banner Edit visual -->
+		{#if bannerOverlay}
+			{@render bannerOverlay()}
 		{/if}
 	</div>
 
@@ -59,7 +66,7 @@
 		<div class="container mx-auto max-w-4xl">
 			<div class="shift-content-up | flex items-center justify-between gap-3 sm:gap-4">
 				<!-- Logo -->
-				<div class="relative">
+				<div class="group relative">
 					{#if org.logoUrl}
 						<img
 							src={org.logoUrl}
@@ -81,9 +88,14 @@
 							</div>
 						</div>
 					{/if}
+
+					<!-- Logo Edit visual -->
+					{#if logoOverlay}
+						{@render logoOverlay()}
+					{/if}
 				</div>
 
-				<!-- Actions slot (e.g. bookmark + join, or edit controls) -->
+				<!-- Actions slot (e.g. bookmark + join, or save + cancel) -->
 				{#if actions}
 					<div class="flex shrink-0 items-center gap-2 sm:gap-3">
 						{@render actions()}
