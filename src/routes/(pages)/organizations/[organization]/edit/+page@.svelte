@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { Calendar, Globe, Mail, Users, User, Pencil } from '@lucide/svelte';
+	import { Calendar, Globe, Mail, Users, User, Pencil, Send } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Detail from '$lib/components/shared/Detail.svelte';
@@ -115,20 +115,16 @@
 	{/snippet}
 
 	{#snippet bannerOverlay()}
-		<!--
-			Full-cover button: hovering anywhere on the banner blurs it and
-			reveals the centered edit prompt (Spotify-style). z-index is below
-			the back button (z-10) so that still works.
-		-->
+		<!-- Banner edit overlay -->
 		<button
 			type="button"
 			onclick={openBannerPopup}
 			aria-label="Change banner image"
 			class="group absolute inset-0 cursor-pointer"
 		>
-			<!-- Blur + dim layer -->
+			<!-- Dim layer -->
 			<div
-				class="backdrop-blur-0 absolute inset-0 bg-black/0 transition-all duration-200 group-hover:bg-black/30 group-hover:backdrop-blur-xs"
+				class="absolute inset-0 bg-black/0 transition-all duration-150 group-hover:bg-black/30"
 			></div>
 			<!-- Centered edit label -->
 			<div
@@ -145,19 +141,15 @@
 	{/snippet}
 
 	{#snippet logoOverlay()}
-		<!--
-			Absolute overlay on top of the logo circle. Group hover is on the
-			parent div in OrgPageShell (class="group relative"), so these
-			group-hover: classes respond to hovering anywhere on the logo area.
-		-->
+		<!-- Logo edit overlay -->
 		<button
 			type="button"
 			onclick={openLogoPopup}
 			aria-label="Change logo"
-			class="absolute inset-0 rounded-full opacity-0 transition-all duration-200 group-hover:opacity-100"
+			class="absolute inset-0 rounded-full opacity-0 transition-all duration-150 group-hover:opacity-100"
 		>
-			<!-- Blur + dim -->
-			<div class="absolute inset-0 rounded-full backdrop-blur-xs"></div>
+			<!-- Dark overlay -->
+			<div class="absolute inset-0 rounded-full bg-black/40"></div>
 			<!-- Centered pencil -->
 			<div class="absolute inset-0 flex items-center justify-center">
 				<Pencil class="size-5 text-white drop-shadow" />
@@ -236,7 +228,7 @@
 						<button
 							type="button"
 							onclick={() => toggleCategory(category.id)}
-							class="cursor-pointer transition-opacity"
+							class="cursor-pointer transition-opacity hover:opacity-80"
 							class:opacity-30={!selectedCategoryIds.has(category.id)}
 							title={selectedCategoryIds.has(category.id) ? 'Remove category' : 'Add category'}
 						>
@@ -312,6 +304,12 @@
 				></textarea>
 			</div>
 		</form>
+
+		<!-- Send Feedback -->
+		<Button variant="secondary" size="lg" class="mb-8 w-full gap-2 sm:w-auto" disabled>
+			<Send class="size-4" />
+			Send Feedback
+		</Button>
 
 		<!-- Upcoming Events (read-only) -->
 		{#if upcomingEvents && upcomingEvents.length > 0}
@@ -430,9 +428,8 @@
 		letter-spacing: inherit;
 		color: inherit;
 		display: block;
-		/* Size is set by Tailwind classes on the element */
 		font-size: clamp(1.875rem, 4vw, 3rem);
-		line-height: 1.1;
+		line-height: 1.25;
 		font-weight: 700;
 	}
 
