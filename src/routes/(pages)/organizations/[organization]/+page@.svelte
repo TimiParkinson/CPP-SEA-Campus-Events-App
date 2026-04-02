@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Calendar, Globe, Mail, Users, Send, User } from '@lucide/svelte';
+	import { Calendar, Globe, Mail, Users, Send, User, Pencil } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Detail from '$lib/components/shared/Detail.svelte';
@@ -93,6 +93,15 @@
 	{/snippet}
 
 	{#snippet actions()}
+		{#if data.canEdit}
+			<Button
+				href="/organizations/{org.id}/edit"
+				variant="secondary"
+				class="relative cursor-pointer border-0 shadow-lg backdrop-blur-sm"
+			>
+				<Pencil class="size-4" />
+			</Button>
+		{/if}
 		<BookmarkButton {isBookmarked} onclick={toggleBookmark} variant="secondary" />
 		<Button
 			onclick={handleJoin}
