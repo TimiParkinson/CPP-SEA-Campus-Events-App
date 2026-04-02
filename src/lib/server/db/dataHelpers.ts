@@ -367,3 +367,44 @@ export async function getEventsByOrganization(orgId: string): Promise<Event[]> {
 
 	return enrichedEvents;
 }
+
+/**
+ * Update an organization's editable fields and sync its category assignments.
+ *
+ * Only persists fields that currently exist in the DB schema.
+ * TODO: persist when DB columns exist:
+ *   websiteUrl, feedbackUrl, logoUrl, bannerImageUrl, abbreviation, establishedDate
+ */
+export async function updateOrganization(
+	id: string,
+	data: {
+		name: string;
+		description: string | null;
+		contactEmail: string;
+		categoryIds: string[];
+	}
+): Promise<Organization | null> {
+	const { name, description, contactEmail, categoryIds } = data;
+
+	// Update the core org row
+	await db
+		.update(organizations)
+		.set({ name, description, contactEmail, updatedAt: new Date() })
+		.where(eq(organizations.id, id));
+
+	// Sync categories
+	await db
+		.delete(organizationCategoryAssignments)
+		.where(eq(organizationCategoryAssignments.organizationId, id));
+
+	if (categoryIds.length > 0) {
+		await db.insert(organizationCategoryAssignments).values(
+			categoryIds.map((categoryId) => ({
+				organizationId: id,
+				categoryId
+			}))
+		);
+	}
+
+	return getOrganizationById(id);
+}
