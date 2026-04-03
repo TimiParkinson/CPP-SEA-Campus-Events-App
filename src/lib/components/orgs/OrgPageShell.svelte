@@ -11,10 +11,11 @@
 		actions?: Snippet;
 		bannerOverlay?: Snippet;
 		logoOverlay?: Snippet;
+		hideBackButton?: boolean;
 		children: Snippet;
 	}
 
-	let { org, topRight, actions, bannerOverlay, logoOverlay, children }: Props = $props();
+	let { org, topRight, actions, bannerOverlay, logoOverlay, hideBackButton = false, children }: Props = $props();
 
 	let gradient = $derived(getRandomGradient(org.id));
 
@@ -37,16 +38,18 @@
 		<div class="absolute inset-0 bg-linear-to-t from-black/30 to-black/10"></div>
 
 		<!-- Back Button -->
-		<div class="absolute top-4 left-4 z-10 sm:top-6 sm:left-6">
-			<button
-				type="button"
-				onclick={handleBack}
-				class="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-white/90 hover:text-black sm:size-12"
-				aria-label="Go back"
-			>
-				<ArrowLeft class="size-5 sm:size-6" />
-			</button>
-		</div>
+		{#if !hideBackButton}
+			<div class="absolute top-4 left-4 z-10 sm:top-6 sm:left-6">
+				<button
+					type="button"
+					onclick={handleBack}
+					class="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-white/90 hover:text-black sm:size-12"
+					aria-label="Go back"
+				>
+					<ArrowLeft class="size-5 sm:size-6" />
+				</button>
+			</div>
+		{/if}
 
 		<!-- Top right slot -->
 		{#if topRight}

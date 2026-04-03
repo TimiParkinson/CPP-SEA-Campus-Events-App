@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Calendar, Globe, Mail, Users, Send, User, Pencil } from '@lucide/svelte';
+	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 	import Detail from '$lib/components/shared/Detail.svelte';
@@ -95,9 +96,10 @@
 	{#snippet actions()}
 		{#if data.canEdit}
 			<Button
-				href="/organizations/{org.id}/edit"
+				type="button"
 				variant="secondary"
 				class="relative cursor-pointer border-0 shadow-lg backdrop-blur-sm"
+				onclick={() => goto(`/organizations/${org.id}/edit`, { replaceState: true })}
 			>
 				<Pencil class="size-4" />
 			</Button>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 	import { Calendar, Globe, Mail, Users, User, Pencil, Send } from '@lucide/svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
@@ -102,6 +103,7 @@
 		bannerImageUrl: bannerImageUrl || org.bannerImageUrl,
 		logoUrl: logoUrl || org.logoUrl
 	}}
+	hideBackButton
 >
 	{#snippet topRight()}
 		{#if org.memberCount}
@@ -160,10 +162,11 @@
 	{#snippet actions()}
 		<!-- Save / Cancel replace Bookmark + Join during edit -->
 		<Button
-			href="/organizations/{org.id}"
+			type="button"
 			variant="secondary"
 			size="lg"
 			class="cursor-pointer px-4 text-sm shadow-lg sm:px-6 sm:text-base"
+			onclick={() => goto(`/organizations/${org.id}`, { replaceState: true })}
 		>
 			Cancel
 		</Button>
@@ -188,10 +191,13 @@
 					submitting = false;
 					if (result.type === 'failure' && result.data?.errors) {
 						serverErrors = result.data.errors as Record<string, string>;
+						await update({ reset: false });
+					} else if (result.type === 'redirect') {
+						await goto(result.location, { replaceState: true });
 					} else {
 						serverErrors = {};
+						await update({ reset: false });
 					}
-					await update({ reset: false });
 				};
 			}}
 		>
