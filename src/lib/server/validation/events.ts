@@ -172,7 +172,9 @@ function compactUndefined<T extends Record<string, unknown>>(value: T): Partial<
 	return result as Partial<T>;
 }
 
-export function validateEventCreate(data: unknown): ValidationOk<EventCreatePayload> | ValidationFail {
+export function validateEventCreate(
+	data: unknown
+): ValidationOk<EventCreatePayload> | ValidationFail {
 	if (!isPlainObject(data)) {
 		return { ok: false, errors: { _error: 'Expected a JSON object body' } };
 	}
