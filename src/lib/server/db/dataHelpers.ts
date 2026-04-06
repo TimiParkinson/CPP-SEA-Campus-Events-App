@@ -369,6 +369,47 @@ export async function getEventsByOrganization(orgId: string): Promise<Event[]> {
 }
 
 /**
+ * Update an event's editable fields and sync its tag assignments.
+ *
+ * Only persists fields that currently exist in the DB schema.
+ * TODO: persist when DB columns exist:
+ *   imageUrl, rsvpUrl, feedbackUrl
+ */
+export async function updateEvent(
+	id: string,
+	data: {
+		title: string;
+		description: string | null;
+		location: string;
+		startTime: Date;
+		endTime: Date;
+		tagIds: string[];
+	}
+): Promise<Event | null> {
+	const { title, description, location, startTime, endTime, tagIds } = data;
+
+	// Update the core event row
+	await db
+		.update(events)
+		.set({ title, description, location, startTime, endTime, updatedAt: new Date() })
+		.where(eq(events.id, id));
+
+	// Sync tags
+	await db.delete(eventTagAssignments).where(eq(eventTagAssignments.eventId, id));
+
+	if (tagIds.length > 0) {
+		await db.insert(eventTagAssignments).values(
+			tagIds.map((tagId) => ({
+				eventId: id,
+				tagId
+			}))
+		);
+	}
+
+	return getEventById(id);
+}
+
+/**
  * Update an organization's editable fields and sync its category assignments.
  *
  * Only persists fields that currently exist in the DB schema.
