@@ -4,8 +4,8 @@
 	import Featured from '$lib/components/cards/Featured.svelte';
 
 	let { data } = $props();
-	const featuredOrgs = data.featuredOrgs;
-	const featuredEvents = data.featuredEvents;
+	const featuredOrgs = $derived(data.featuredOrgs);
+	const featuredEvents = $derived(data.featuredEvents);
 </script>
 
 <svelte:head>
