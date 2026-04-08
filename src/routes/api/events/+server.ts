@@ -3,19 +3,7 @@ import { db } from '$lib/server/db/index.js';
 import { events } from '$lib/server/db/schema.js';
 import { error as kitError, isHttpError, isRedirect, json } from '@sveltejs/kit';
 import { requireAuth, requireCanManageOrg } from '$lib/server/authz.js';
-
-function isNonEmptyString(value: unknown): value is string {
-	return typeof value === 'string' && value.trim().length > 0;
-}
-
-function parseDate(value: unknown): Date | null {
-	if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
-	if (typeof value === 'string') {
-		const parsed = new Date(value);
-		return Number.isNaN(parsed.getTime()) ? null : parsed;
-	}
-	return null;
-}
+import { validateEventCreate } from '$lib/server/validation/events.js';
 
 export async function GET() {
 	// Public list for now, if we want private drafts later, we can add authz here
@@ -32,41 +20,25 @@ export async function POST(event) {
 	// Server enforcement, students should not be able to POST /api/events unless they manage that org
 	const userId = requireAuth(event); // Blocks anonymous users
 
+	let data: unknown;
 	try {
-		const data = await event.request.json();
+		data = await event.request.json();
+	} catch {
+		return json({ error: 'Invalid JSON body' }, { status: 400 });
+	}
 
-		// Security: organizationId MUST come from the request for a create,
-		// but we validate it and then check membership on the server
-		const organizationId = data.organizationId;
-		if (!isNonEmptyString(organizationId)) {
-			return json({ error: 'organizationId is required' }, { status: 400 });
-		}
+	const validation = validateEventCreate(data);
+	if (!validation.ok) {
+		return json({ error: 'Validation failed', details: validation.errors }, { status: 400 });
+	}
 
-		if (!isNonEmptyString(data.title)) {
-			return json({ error: 'title is required' }, { status: 400 });
-		}
-		if (!isNonEmptyString(data.location)) {
-			return json({ error: 'location is required' }, { status: 400 });
-		}
-
-		// Drizzle timestamps are configured to expect Date objects.
-		const startTime = parseDate(data.startTime);
-		const endTime = parseDate(data.endTime);
-		if (!startTime) {
-			return json({ error: 'startTime must be a valid ISO date string' }, { status: 400 });
-		}
-		if (!endTime) {
-			return json({ error: 'endTime must be a valid ISO date string' }, { status: 400 });
-		}
-
+	try {
 		// Blocks: non-admin users who are not board_member/president for this org
-		await requireCanManageOrg(userId, organizationId);
+		await requireCanManageOrg(userId, validation.value.organizationId);
 
 		// Security: never trust client-provided createdBy
 		const insertData = {
-			...data,
-			startTime,
-			endTime,
+			...validation.value,
 			createdBy: userId
 		};
 
