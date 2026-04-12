@@ -3,7 +3,7 @@
  * Handles missing schema fields by returning null for fields not yet implemented.
  */
 
-import { and, desc, eq, gte, ilike, inArray, lte, or, sql } from 'drizzle-orm';
+import { and, eq, gte, ilike, inArray, lte, or, sql } from 'drizzle-orm';
 import type { Event, Organization, EventTag, OrganizationCategory } from '$lib/types/index.js';
 import { db } from './index.js';
 import {
@@ -189,7 +189,7 @@ export async function getEventsForDiscovery(
 		eventsQuery = eventsQuery.where(whereExpression);
 	}
 	const eventRows = await eventsQuery
-		.orderBy(desc(events.startTime))
+		.orderBy(events.startTime)
 		.limit(pagination.pageSize)
 		.offset(offset);
 
