@@ -3,7 +3,7 @@
  * Handles missing schema fields by returning null for fields not yet implemented.
  */
 
-import { eq } from 'drizzle-orm';
+import { and, eq, gte, ilike, inArray, lte, or, sql } from 'drizzle-orm';
 import type { Event, Organization, EventTag, OrganizationCategory } from '$lib/types/index.js';
 import { db } from './index.js';
 import {
@@ -88,6 +88,194 @@ export async function getAllEvents(): Promise<Event[]> {
 	);
 
 	return enrichedEvents;
+}
+
+export type EventDiscoveryFilters = {
+	organizationId?: string;
+	tagNames?: string[];
+	orgCategoryNames?: string[];
+	startDate?: Date;
+	endDate?: Date;
+	search?: string;
+};
+
+export type EventDiscoveryPagination = {
+	page: number;
+	pageSize: number;
+};
+
+export async function getEventsForDiscovery(
+	filters: EventDiscoveryFilters,
+	pagination: EventDiscoveryPagination
+): Promise<{ events: Event[]; total: number }> {
+	const tagNames = filters.tagNames ?? [];
+	const orgCategoryNames = filters.orgCategoryNames ?? [];
+
+	let tagEventIds: string[] | undefined;
+	if (tagNames.length > 0) {
+		const tagMatches = await db
+			.select({ eventId: eventTagAssignments.eventId })
+			.from(eventTagAssignments)
+			.innerJoin(eventTags, eq(eventTagAssignments.tagId, eventTags.id))
+			.where(inArray(eventTags.name, tagNames));
+		tagEventIds = Array.from(new Set(tagMatches.map((row) => row.eventId)));
+		if (tagEventIds.length === 0) {
+			return { events: [], total: 0 };
+		}
+	}
+
+	let orgIdsFromCategory: string[] | undefined;
+	if (orgCategoryNames.length > 0) {
+		const orgMatches = await db
+			.select({ organizationId: organizationCategoryAssignments.organizationId })
+			.from(organizationCategoryAssignments)
+			.innerJoin(
+				organizationCategories,
+				eq(organizationCategoryAssignments.categoryId, organizationCategories.id)
+			)
+			.where(inArray(organizationCategories.name, orgCategoryNames));
+		orgIdsFromCategory = Array.from(new Set(orgMatches.map((row) => row.organizationId)));
+		if (orgIdsFromCategory.length === 0) {
+			return { events: [], total: 0 };
+		}
+	}
+
+	let orgIdsFromSearch: string[] | undefined;
+	if (filters.search) {
+		const searchMatches = await db
+			.select({ id: organizations.id })
+			.from(organizations)
+			.where(ilike(organizations.name, `%${filters.search}%`));
+		orgIdsFromSearch = searchMatches.map((row) => row.id);
+	}
+
+	const whereClauses = [] as Array<ReturnType<typeof and>>;
+	if (filters.organizationId) {
+		whereClauses.push(eq(events.organizationId, filters.organizationId));
+	}
+	if (filters.startDate) {
+		whereClauses.push(gte(events.startTime, filters.startDate));
+	}
+	if (filters.endDate) {
+		whereClauses.push(lte(events.startTime, filters.endDate));
+	}
+	if (tagEventIds && tagEventIds.length > 0) {
+		whereClauses.push(inArray(events.id, tagEventIds));
+	}
+	if (orgIdsFromCategory && orgIdsFromCategory.length > 0) {
+		whereClauses.push(inArray(events.organizationId, orgIdsFromCategory));
+	}
+	if (filters.search) {
+		const searchTerm = `%${filters.search}%`;
+		const searchClauses = [ilike(events.title, searchTerm), ilike(events.description, searchTerm)];
+		if (orgIdsFromSearch && orgIdsFromSearch.length > 0) {
+			searchClauses.push(inArray(events.organizationId, orgIdsFromSearch));
+		}
+		whereClauses.push(or(...searchClauses));
+	}
+
+	const whereExpression = whereClauses.length > 0 ? and(...whereClauses) : undefined;
+	const offset = (pagination.page - 1) * pagination.pageSize;
+
+	let totalQuery = db.select({ count: sql<number>`count(*)` }).from(events);
+	if (whereExpression) {
+		totalQuery = totalQuery.where(whereExpression);
+	}
+	const totalResult = await totalQuery;
+	const total = totalResult[0]?.count ?? 0;
+
+	let eventsQuery = db.select().from(events);
+	if (whereExpression) {
+		eventsQuery = eventsQuery.where(whereExpression);
+	}
+	const eventRows = await eventsQuery
+		.orderBy(events.startTime)
+		.limit(pagination.pageSize)
+		.offset(offset);
+
+	if (eventRows.length === 0) {
+		return { events: [], total };
+	}
+
+	const eventIds = eventRows.map((event) => event.id);
+	const orgIds = Array.from(new Set(eventRows.map((event) => event.organizationId)));
+
+	const [orgRows, tagRows, orgCategoryRows] = await Promise.all([
+		db.select().from(organizations).where(inArray(organizations.id, orgIds)),
+		db
+			.select({
+				eventId: eventTagAssignments.eventId,
+				tagId: eventTags.id,
+				tagName: eventTags.name,
+				tagColor: eventTags.color
+			})
+			.from(eventTagAssignments)
+			.innerJoin(eventTags, eq(eventTagAssignments.tagId, eventTags.id))
+			.where(inArray(eventTagAssignments.eventId, eventIds)),
+		db
+			.select({
+				organizationId: organizationCategoryAssignments.organizationId,
+				categoryId: organizationCategories.id,
+				categoryName: organizationCategories.name,
+				categoryColor: organizationCategories.color
+			})
+			.from(organizationCategoryAssignments)
+			.innerJoin(
+				organizationCategories,
+				eq(organizationCategoryAssignments.categoryId, organizationCategories.id)
+			)
+			.where(inArray(organizationCategoryAssignments.organizationId, orgIds))
+	]);
+
+	const orgById = new Map(orgRows.map((org) => [org.id, org]));
+	const tagsByEventId = new Map<string, Event['tags']>();
+	for (const row of tagRows) {
+		const existing = tagsByEventId.get(row.eventId) ?? [];
+		existing.push({ id: row.tagId, name: row.tagName, color: row.tagColor });
+		tagsByEventId.set(row.eventId, existing);
+	}
+
+	const categoriesByOrgId = new Map<string, Array<{ id: string; name: string; color: string }>>();
+	for (const row of orgCategoryRows) {
+		const existing = categoriesByOrgId.get(row.organizationId) ?? [];
+		existing.push({
+			id: row.categoryId,
+			name: row.categoryName,
+			color: row.categoryColor
+		});
+		categoriesByOrgId.set(row.organizationId, existing);
+	}
+
+	const enrichedEvents = eventRows.map((event) => {
+		const org = orgById.get(event.organizationId);
+		const orgCategories = categoriesByOrgId.get(event.organizationId) ?? [];
+		return {
+			id: event.id,
+			title: event.title,
+			description: event.description,
+			location: event.location,
+			startTime: event.startTime.toISOString(),
+			endTime: event.endTime.toISOString(),
+			imageUrl: null,
+			attendeeCount: null,
+			rsvpUrl: null,
+			feedbackUrl: null,
+			organizations: org
+				? [
+						{
+							id: org.id,
+							name: org.name,
+							abbreviation: null,
+							logoUrl: null,
+							categories: orgCategories
+						}
+					]
+				: [],
+			tags: tagsByEventId.get(event.id) ?? []
+		} satisfies Event;
+	});
+
+	return { events: enrichedEvents, total };
 }
 
 /**
