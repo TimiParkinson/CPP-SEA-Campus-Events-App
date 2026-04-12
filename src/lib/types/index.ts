@@ -74,6 +74,11 @@ export interface Event {
 		name: string;
 		abbreviation?: string | null; // BACKEND TODO: Add this column to organizations table
 		logoUrl?: string | null; // BACKEND TODO: Add this column to organizations table
+		categories?: Array<{
+			id: string;
+			name: string;
+			color: string;
+		}>;
 	}>; // BACKEND TODO: Join via event_organization_assignments (currently single org via organization_id)
 	tags?: Array<{
 		id: string;
