@@ -10,6 +10,7 @@
 	import { formatDateRange, formatTimeRange } from '$lib/utils/dateFormatters.js';
 	import OrgHostsDisplay from '$lib/components/orgs/OrgHostsDisplay.svelte';
 	import type { Event } from '$lib/types/index.js';
+	import EventPageShell from '$lib/components/events/EventPageShell.svelte';
 
 	// Data
 	let { data } = $props();
@@ -82,70 +83,41 @@
 <svelte:head>
 	<title>{event.title} - Campus Events</title>
 </svelte:head>
+	
 
-<div class="min-h-screen">
-	<!-- Banner -->
-	<div class="relative h-64 overflow-hidden sm:h-80 md:h-96">
-		<!-- Background Image/Gradient -->
-		{#if event.imageUrl}
-			<img src={event.imageUrl} alt={event.title} class="size-full object-cover object-center" />
-		{:else}
-			<div class="size-full" style="background: {gradient};"></div>
-		{/if}
+	
+<EventPageShell {event}>
 
-		<!-- Dark overlay -->
-		<div class="absolute inset-0 bg-linear-to-t from-black/30 to-black/10"></div>
+	{#snippet topRight()} <!-- attendee count -->
 
-		<!-- Back Button -->
-		<div class="absolute top-4 left-4 sm:top-6 sm:left-6">
-			<button
-				onclick={handleBack}
-				class="flex size-10 cursor-pointer items-center justify-center rounded-lg bg-black/60 text-white backdrop-blur-sm transition-all hover:bg-white/90 hover:text-black sm:size-12"
-				aria-label="Go back"
-			>
-				<ArrowLeft class="size-5 sm:size-6" />
-			</button>
-		</div>
-
-		<!-- Attendee Count -->
 		{#if event.attendeeCount}
-			<div class="absolute top-4 right-4 sm:top-6 sm:right-6">
-				<div
-					class="flex items-center gap-2 rounded-lg border border-white/20 bg-black/60 px-3 py-2 text-white backdrop-blur-sm sm:px-4"
-				>
-					<UsersRound size="17" />
-					<span class="text-sm font-semibold">{event.attendeeCount} attending</span>
-				</div>
+			<div class="flex items-center gap-2 rounded-lg border border-white/20 
+			bg-black/60 px-3 py-2 text-white backdrop-blur-sm sm:px-4">
+
+				<UsersRound size = "17" />
+				<span class="text-sm font-semibold">{event.attendeeCount} attending</span>
+			
 			</div>
 		{/if}
-	</div>
+	{/snippet}
 
-	<!-- Primary CTA -->
-	<div class="relative px-4 sm:px-6 lg:px-8">
-		<div class="container mx-auto max-w-4xl">
-			<div class="flex -translate-y-6 items-end justify-between gap-3 sm:gap-4">
-				<!-- Hosts -->
-				{#if event.organizations && event.organizations.length > 0}
-					<div class="relative">
-						<OrgHostsDisplay organizations={event.organizations} onOrgClick={handleOrgClick} />
-					</div>
-				{/if}
+	{#snippet hosts()}
+		{#if event.organizations && event.organizations.length > 0}
+				<OrgHostsDisplay organizations={event.organizations} onOrgClick={handleOrgClick} />
+		{/if}
+	{/snippet}
 
-				<!-- Actions -->
-				<div class="flex shrink-0 items-center gap-2 sm:gap-3">
-					<BookmarkButton {isBookmarked} onclick={toggleBookmark} variant="secondary" />
-					<Button
-						onclick={handleRSVP}
-						size="lg"
-						class="cursor-pointer px-4 text-sm shadow-lg sm:px-6 sm:text-base"
-					>
-						RSVP
-					</Button>
-				</div>
-			</div>
-		</div>
-	</div>
+	{#snippet actions()}
+		//TODO: enable edit button only for authorized Users
 
+		<BookmarkButton {isBookmarked} onclick={toggleBookmark} variant="secondary" />
+
+		<Button onclick={handleRSVP} size="lg" class="cursor-pointer px-4 text-sm shadow-lg sm:px-6 sm:text-base">
+			RSVP
+		</Button>
+
+	{/snippet}
+	
 	<!-- Content -->
 	<div class="container mx-auto max-w-4xl px-4 pt-2 pb-12 sm:px-6 sm:pt-4 lg:px-8">
 		<!-- Event Header -->
@@ -251,4 +223,4 @@
 			Send Feedback
 		</Button>
 	</div>
-</div>
+</EventPageShell>
